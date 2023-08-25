@@ -1,1 +1,1 @@
-# SDOS_Graduation_Checklist
+For the provision degree, providing the academic team  to check the graduation status of the students based on the information available on ERP automatically. Due to limitations on the ERP side and course replacement flexibility, we need to recalculate the CGPA and verify it for correctness repeatedly. This is a time-consuming process and needs to be completed in a short period between May and June, as results must be declared by the start of July. Currently, all this is done manually using Excel sheets with in-built macros. 
