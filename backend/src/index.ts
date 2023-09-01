@@ -1,10 +1,14 @@
-import { DatabaseMap, getStudentDatabase, StudentInfo } from "./database";
+import { DatabaseMap, getStudentDatabase, StudentInfo, CourseMap, getCourseDatabase } from "./database";
 import { CSEDegree } from "./degree";
 import { SSHRule } from "./rule";
 
-const filePath = "data/Student_Database_2019.xlsm";
+// Path to the excel sheet containing student records.
+const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
+// Path to the excel sheet containing courses and their course codes.
+const courseListFilePath = "data/Course_Codes.xlsm";
 const rollNumber = 2018232;
-const studentDatabase: DatabaseMap = getStudentDatabase(filePath);
+const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
+const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath)
 
 function checkGraduation(rollNumber: number): Boolean {
   // Simple example for 1 rule in CSE
