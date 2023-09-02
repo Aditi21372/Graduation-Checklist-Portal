@@ -1,8 +1,33 @@
-import { get } from "http";
-import { DatabaseMap, getStudentDatabase } from "./database";
+import { DatabaseMap, getStudentDatabase, StudentInfo } from "./database";
+import { CSEDegree } from "./degree";
+import { SSHRule } from "./rule";
 
 const filePath = "data/Student_Database_2019.xlsm";
-
+const rollNumber = 2018232;
 const studentDatabase: DatabaseMap = getStudentDatabase(filePath);
 
-console.log(studentDatabase[2018232]);
+function checkGraduation(rollNumber: number): Boolean {
+  // Simple example for 1 rule in CSE
+  const student: StudentInfo = studentDatabase[rollNumber];
+  const degree: CSEDegree = new CSEDegree();
+  const sshRule: SSHRule = new SSHRule();
+
+  degree.addRule(sshRule);
+
+  let isPassed: Boolean = true;
+  for (let rule of degree.graduationRules) {
+    if (!rule.checkRule(rollNumber, student)) {
+      isPassed = false;
+    }
+  }
+
+  if (isPassed) {
+    console.log("Student Passed");
+    return true;
+  } else {
+    console.log("Student Failed");
+    return false;
+  }
+}
+
+checkGraduation(rollNumber);
