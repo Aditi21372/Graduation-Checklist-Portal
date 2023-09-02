@@ -2,7 +2,7 @@ export interface IDegree {
   name: string;
   degreeType: "BTECH" | "MTECH" | "PHD";
   minors: string[];
-  graduationRules: IRule[];
+  graduationRules: Rule[];
 }
 
 export interface IRule {
@@ -10,7 +10,7 @@ export interface IRule {
   checkRule: (rollNumber: number, degree: IDegree) => Boolean;
 }
 
-export interface IStudentCourse {
+export type StudentCourse = {
   courseCode: string;
   grade:
     | "A+"
@@ -28,4 +28,4 @@ export interface IStudentCourse {
     | "X";
   semster: number;
   credit: 1 | 2 | 4 | 8 | 12;
-}
+};

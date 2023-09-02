@@ -1,4 +1,4 @@
-import { IStudentCourse } from "./degree";
+import { StudentCourse } from "./degree";
 
 const xlsx = require("xlsx");
 const filePath = "data/Student_Database_2019.xlsm";
@@ -9,6 +9,18 @@ let worksheet = workbook.Sheets[workbook.SheetNames[0]];
 // Index the excel sheet data starting from zero index.
 let range = xlsx.utils.decode_range(worksheet["!ref"]);
 let data = [];
+
+export type StudentInfo = {
+  studentName: string;
+  program: string;
+  courses: StudentCourse[];
+};
+
+export type DatabaseMap = {
+  [key: number]: StudentInfo; // Here, specify the types for keys and values
+};
+
+const studentDatabase: DatabaseMap = {};
 
 for (let row = range.s.r; row <= range.e.r; row++) {
   let rowData = [];
@@ -23,32 +35,20 @@ for (let row = range.s.r; row <= range.e.r; row++) {
   data.push(rowData);
 }
 
-type StudentInfo = {
-  studentName: string;
-  program: string;
-  courses: IStudentCourse[];
-};
-
-type DatabaseMap = {
-  [key: number]: StudentInfo; // Here, specify the types for keys and values
-};
-
-const studentDatabase: DatabaseMap = {};
-
 // Iterate through the data and construct the mapping
 data.forEach((row) => {
   const [
-    sn,
+    _sn,
     _rollNo,
     _studentName,
     _program,
-    termCode,
-    courseCode,
-    course,
-    credit,
-    grade,
-    spi,
-    cpi,
+    _termCode,
+    _courseCode,
+    _course,
+    _credit,
+    _grade,
+    _spi,
+    _cpi,
   ] = row;
 
   // Check if the roll number already exists in the mapping
@@ -59,15 +59,18 @@ data.forEach((row) => {
       program: _program,
       courses: [],
     };
-
-    // Add the course information to the courses array
-    studentDatabase[_rollNo].courses.push({
-      courseCode,
-      grade,
-      termCode,
-      credit,
-    });
+    studentDatabase[_rollNo] = thisStudent;
   }
+
+  const course: StudentCourse = {
+    courseCode: _courseCode,
+    grade: _grade,
+    semster: _termCode,
+    credit: _credit,
+  };
+
+  // Add the course information to the courses array
+  studentDatabase[_rollNo].courses.push(course);
 });
 
-console.log(rollNumberMapping[2018232]);
+console.log(studentDatabase[2018232]);
