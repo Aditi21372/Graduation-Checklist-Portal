@@ -1,6 +1,6 @@
 import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
 import { CSEDegree } from "./degree";
-import { SSHRule, CWRule, SGRule } from "./rule";
+import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule } from "./rule";
 
 // Path to the excel sheet containing student records.
 const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
@@ -14,10 +14,14 @@ function checkGraduation(rollNumber: number): Boolean {
   const sshRule: SSHRule = new SSHRule();
   const cwRule: CWRule = new CWRule();
   const sgRule: SGRule = new SGRule();
+  const ipRule: IPRule = new IPRule();
+  const onlineCourseRule: OnlineCourseRule = new OnlineCourseRule();
 
   degree.addRule(sshRule);
   degree.addRule(cwRule);
   degree.addRule(sgRule);
+  degree.addRule(ipRule);
+  degree.addRule(onlineCourseRule);
 
   let isPassed: Boolean = true;
   for (let rule of degree.graduationRules) {
