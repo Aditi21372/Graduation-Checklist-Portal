@@ -1,22 +1,23 @@
-import { DatabaseMap, getStudentDatabase, StudentInfo, CourseMap, getCourseDatabase } from "./database";
+import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
 import { CSEDegree } from "./degree";
-import { SSHRule } from "./rule";
+import { SSHRule, CWRule, SGRule } from "./rule";
 
 // Path to the excel sheet containing student records.
 const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
-// Path to the excel sheet containing courses and their course codes.
-const courseListFilePath = "data/Course_Codes.xlsm";
 const rollNumber = 2018232;
 const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
-const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath)
 
 function checkGraduation(rollNumber: number): Boolean {
   // Simple example for 1 rule in CSE
   const student: StudentInfo = studentDatabase[rollNumber];
   const degree: CSEDegree = new CSEDegree();
   const sshRule: SSHRule = new SSHRule();
+  const cwRule: CWRule = new CWRule();
+  const sgRule: SGRule = new SGRule();
 
   degree.addRule(sshRule);
+  degree.addRule(cwRule);
+  degree.addRule(sgRule);
 
   let isPassed: Boolean = true;
   for (let rule of degree.graduationRules) {
