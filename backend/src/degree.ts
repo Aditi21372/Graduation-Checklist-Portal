@@ -24,7 +24,7 @@ export type StudentCourse = {
     | "I"
     | "W"
     | "X";
-  semster: number;
+  semester: string;
   credit: 1 | 2 | 4 | 8 | 12;
 };
 
