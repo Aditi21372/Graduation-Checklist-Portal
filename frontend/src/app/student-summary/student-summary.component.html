@@ -1,0 +1,18 @@
+<mat-table [dataSource]="dataSource">
+    <!-- First Column -->
+    <ng-container matColumnDef="column1">
+      <mat-header-cell *matHeaderCellDef>Column 1</mat-header-cell>
+      <mat-cell *matCellDef="let entry">{{ entry }}</mat-cell>
+    </ng-container>
+  
+    <!-- Second Column -->
+    <ng-container matColumnDef="column2">
+      <mat-header-cell *matHeaderCellDef>Column 2</mat-header-cell>
+      <mat-cell *matCellDef="let entry"> <!-- Content for Column 2 --> </mat-cell>
+    </ng-container>
+  
+    <!-- Define the data source for the table -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  

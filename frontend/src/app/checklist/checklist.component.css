@@ -1,0 +1,14 @@
+.checklist {
+    margin: 20px;
+  }
+  
+  .info {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .mat-row.not-done {
+    background-color: red;
+    color: white;
+  }
+  
