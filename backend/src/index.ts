@@ -1,10 +1,10 @@
 import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
 import { CSEDegree } from "./degree";
-import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule } from "./rule";
+import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule, BTPRule, MandateRule, BucketRule, TwoXCreditRule} from "./rule";
 
 // Path to the excel sheet containing student records.
 const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
-const rollNumber = 2018232;
+const rollNumber = 2019032;
 const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
 
 function checkGraduation(rollNumber: number): Boolean {
@@ -16,12 +16,20 @@ function checkGraduation(rollNumber: number): Boolean {
   const sgRule: SGRule = new SGRule();
   const ipRule: IPRule = new IPRule();
   const onlineCourseRule: OnlineCourseRule = new OnlineCourseRule();
+  const btpRule: BTPRule = new BTPRule();
+  const mandateRule: MandateRule = new MandateRule();
+  const bucketRule: BucketRule = new BucketRule();
+  const twoXCreditRule: TwoXCreditRule = new TwoXCreditRule();
 
   degree.addRule(sshRule);
   degree.addRule(cwRule);
   degree.addRule(sgRule);
   degree.addRule(ipRule);
   degree.addRule(onlineCourseRule);
+  degree.addRule(btpRule);
+  degree.addRule(mandateRule);
+  degree.addRule(bucketRule);
+  degree.addRule(twoXCreditRule);
 
   let isPassed: Boolean = true;
   for (let rule of degree.graduationRules) {

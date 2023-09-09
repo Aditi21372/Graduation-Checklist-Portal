@@ -99,7 +99,7 @@ export function getStudentDatabase(filePath: string): DatabaseMap {
     const course: StudentCourse = {
       courseCode: _courseCode,
       grade: _grade,
-      semster: _termCode,
+      semester: _termCode,
       credit: _credit,
     };
 
