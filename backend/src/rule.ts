@@ -27,6 +27,7 @@ export class SSHRule implements IRule {
         }
       }
     }
+    console.log(courseDatabase);
     if (credits >= 12){
       return true;
     }
@@ -225,7 +226,22 @@ export class RequiredCreditRule implements IRule {
   ruleId: number = 8;
 
   checkRule(rollNumber: number, studentInfo: StudentInfo): Boolean {
-    return true;
+    const studentCourses = studentInfo['courses'];
+    disallowedGrades = ['I', 'W', 'F', 'X'];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourses) {
+      if(!disallowedGrades.includes(course['grade']) && !coursesTaken.has(course['courseCode'])){
+        credits += course['credit'];
+        coursesTaken.set(course['courseCode'], course['credit']);
+      }
+    }
+    if(credits >= 156){
+      return true;
+    }
+    console.log(credits, studentCourses)
+    return false;
   }  
 }
 
