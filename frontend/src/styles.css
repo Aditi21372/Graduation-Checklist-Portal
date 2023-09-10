@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* styles.css */
+/* Change the background color and text color */
+.mat-toolbar {
+    background-color: #2196F3; /* Blue color */
+    color: white;
+  }
+  
+  /* Center the text horizontally and vertically */
+  .mat-toolbar span {
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  /* Add a subtle box-shadow to the toolbar */
+  .mat-toolbar {
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Increase the font size and add some padding */
+  .mat-toolbar span {
+    font-size: 24px;
+    padding: 10px;
+  }
+  
