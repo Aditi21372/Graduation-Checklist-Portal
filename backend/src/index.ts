@@ -2,8 +2,14 @@ import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
 import { CSEDegree } from "./degree";
 import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule, BTPRule, MandateRule, BucketRule, TwoXCreditRule, ThirtyTwoCreditRule} from "./rule";
 
+import express from 'express';
+const app = express();
+const port = 3000;
+
+app.use(express.json());
+
 // Path to the excel sheet containing student records.
-const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
+const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
 const rollNumber = 2019032;
 const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
 
@@ -50,3 +56,25 @@ function checkGraduation(rollNumber: number): Boolean {
 }
 
 checkGraduation(rollNumber);
+
+app.get('/api/student/:rollNumber', (req, res) => {
+  // Get the rollNumber parameter from the request URL.
+  const { rollNumber } = req.params;
+  // Check if the roll number exists in the database.
+  if (studentDatabase.hasOwnProperty(rollNumber)) {
+    const studentData = {
+      rollNumber: rollNumber,
+      studentName: studentDatabase[Number(rollNumber)].studentName,
+    };
+
+    res.json(studentData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: 'Student not found' });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+

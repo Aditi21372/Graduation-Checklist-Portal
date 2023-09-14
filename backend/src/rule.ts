@@ -1,7 +1,7 @@
 import { StudentInfo, CourseMap, getCourseDatabase } from "./database";
 
 // Path to the excel sheet containing courses and their course codes.
-const courseListFilePath = "data/Course_Codes.xlsm";
+const courseListFilePath = "src/data/Course_Codes.xlsm";
 const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
 let disallowedGrades = ['I', 'S', 'W', 'F', 'X'];
 
