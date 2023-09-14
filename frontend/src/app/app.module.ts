@@ -9,7 +9,8 @@ import { StudentSummaryComponent } from './student-summary/student-summary.compo
 import { MatTableModule } from '@angular/material/table';
 import { ChecklistComponent } from './checklist/checklist.component';
 import { StudentInfoComponent } from './student-info/student-info.component';
-
+import { StudentServiceService } from './student-service.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,9 +25,12 @@ import { StudentInfoComponent } from './student-info/student-info.component';
     BrowserAnimationsModule,
     MatToolbarModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    StudentServiceService,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
