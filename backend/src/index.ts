@@ -1,6 +1,6 @@
 import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
 import { CSEDegree } from "./degree";
-import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule, BTPRule, MandateRule, BucketRule, TwoXCreditRule} from "./rule";
+import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule, BTPRule, MandateRule, BucketRule, TwoXCreditRule, ThirtyTwoCreditRule} from "./rule";
 
 // Path to the excel sheet containing student records.
 const studentRecordsFilePath = "data/Student_Database_2019.xlsm";
@@ -20,6 +20,7 @@ function checkGraduation(rollNumber: number): Boolean {
   const mandateRule: MandateRule = new MandateRule();
   const bucketRule: BucketRule = new BucketRule();
   const twoXCreditRule: TwoXCreditRule = new TwoXCreditRule();
+  const thirtyTwoCreditRule: ThirtyTwoCreditRule = new ThirtyTwoCreditRule();
 
   degree.addRule(sshRule);
   degree.addRule(cwRule);
@@ -30,6 +31,7 @@ function checkGraduation(rollNumber: number): Boolean {
   degree.addRule(mandateRule);
   degree.addRule(bucketRule);
   degree.addRule(twoXCreditRule);
+  degree.addRule(thirtyTwoCreditRule);
 
   let isPassed: Boolean = true;
   for (let rule of degree.graduationRules) {

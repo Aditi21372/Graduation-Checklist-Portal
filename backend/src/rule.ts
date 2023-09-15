@@ -273,4 +273,35 @@ export class TwoXCreditRule implements IRule {
   }  
 }
 
+// Checks if the student has completed 32 credits worth of CSE courses in the last four semesters.
+// Counts all courses except 2xx courses (This includes online courses, 3xx and 5xx courses).
+export class ThirtyTwoCreditRule implements IRule {
+  ruleId: number = 11;
+
+  checkRule(rollNumber: number, studentInfo: StudentInfo): Boolean {
+    const studentCourses = studentInfo['courses'];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourses){
+      // Doesn't check for a 2xx course.
+      // Doesn't check for courses that were not done in the last four semesters.
+      if(course['courseCode'].startsWith("CSE2") || course['semester'] < '5'){
+        continue;
+      }
+      // Checks if the course has a valid grade against it and is a CSE course.
+      if(!disallowedGrades.includes(course['grade']) && !coursesTaken.has(course['courseCode']) && course['courseCode'].startsWith("CSE")){
+        credits += course['credit'];
+        coursesTaken.set(course['courseCode'], course['credit']);
+      }
+    }
+      
+    // Passes the criteria if the counted credits is more than or equal to 32.
+    if(credits >= 32){
+      return true;
+    }
+    return false;
+  }  
+}
+
 
