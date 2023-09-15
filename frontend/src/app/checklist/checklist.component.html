@@ -1,40 +1,25 @@
-<div class="checklist">
-    <ng-container *ngFor="let section of checklistData">
-      <h1>{{ section.title }}</h1>
-      <p>{{ section.subtitle }}</p>
-      <div class="info">
-        ROLL NO.: {{ section.rollNo }}&nbsp;&nbsp;&nbsp;NAME: {{ section.name }}
-      </div>
-      <table mat-table [dataSource]="section.rules" class="mat-elevation-z8">
-        <!-- Rule Column -->
-        <ng-container matColumnDef="ruleName">
-          <th mat-header-cell *matHeaderCellDef>Rule</th>
-          <td mat-cell *matCellDef="let rule">{{ rule.ruleName }}</td>
-        </ng-container>
-  
-        <!-- Course Column -->
-        <ng-container matColumnDef="course">
-          <th mat-header-cell *matHeaderCellDef>Course</th>
-          <td mat-cell *matCellDef="let course">{{ course.course }}</td>
-        </ng-container>
-  
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let course" [ngClass]="{ 'not-done': course.status === 'Not Done' }">
-            {{ course.status }}
-          </td>
-        </ng-container>
-  
-        <!-- Credits Column -->
-        <ng-container matColumnDef="credits">
-          <th mat-header-cell *matHeaderCellDef>Credits</th>
-          <td mat-cell *matCellDef="let course">{{ course.credits }}</td>
-        </ng-container>
-  
-        <tr mat-header-row *matHeaderRowDef="['ruleName', 'course', 'status', 'credits']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['ruleName', 'course', 'status', 'credits']"></tr>
-      </table>
-    </ng-container>
-  </div>
-  
+<mat-card>
+  <mat-card-content>
+    <h2>Graduation Checklist</h2>
+    <table mat-table [dataSource]="dataSource">
+      <!-- Define your table columns here -->
+      <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef> Course </th>
+        <td mat-cell *matCellDef="let element"> {{ element.course }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element"> {{ element.status }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="credits">
+        <th mat-header-cell *matHeaderCellDef> Credits </th>
+        <td mat-cell *matCellDef="let element"> {{ element.credits }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
