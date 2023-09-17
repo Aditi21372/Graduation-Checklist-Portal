@@ -1,5 +1,7 @@
 import express from "express";
-import { DatabaseMap, getStudentDatabase, StudentInfo } from "./database";
+import { DatabaseMap, getStudentDatabase, CourseMap,  getCourseDatabase} from "./database";
+
+
 
 const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
 const rollNumber = 2019032;
@@ -30,6 +32,22 @@ app.get("/api/student/:rollNumber", (req, res) => {
     };
 
     res.json(studentData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.get("/api/degree/:branch", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { branch } = req.params;
+  if(branch === 'CSE'){
+    // Path to the excel sheet containing courses and their course codes.
+    const courseListFilePath = "src/data/Course_Codes.xlsm";
+    const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
+    const coreCourses = courseDatabase['CSE Core Courses '];
+
+    res.json(coreCourses);
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
