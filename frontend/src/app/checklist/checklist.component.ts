@@ -21,27 +21,30 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateTable() {
-    this.degreeService.getMandatoryCourses('CSE').subscribe((data: any) => {
-      let courseList = data;
+    this.degreeService
+      .getMandatoryCourses('CSE', 2019020)
+      .subscribe((data: any) => {
+        this.dataSource = new MatTableDataSource();
+        let courseDetails = data;
 
-      // Create a new array to store the data
-      const newData = [];
+        console.log(courseDetails);
 
-      for (let i = 0; i < courseList.length; i++) {
-        newData.push({
-          course: courseList[i],
-          status: '',
-          credits: 0,
-        });
-      }
+        // Create a new array to store the data
+        const newData = [];
 
-      // Assign the new data to the MatTableDataSource
-      this.dataSource.data = [...this.dataSource.data, ...newData];
+        for (let i = 0; i < courseDetails.length; i++) {
+          newData.push({
+            course: courseDetails[i].course,
+            status: courseDetails[i].status,
+            credits: courseDetails[i].credits,
+          });
+        }
 
-      console.log(courseList);
-      console.log(this.dataSource);
-    });
+        // Assign the new data to the MatTableDataSource
+        this.dataSource.data = [...this.dataSource.data, ...newData];
+
+        // console.log(courseList);
+        console.log(this.dataSource);
+      });
   }
-  // this.dataSource.push({course: 'Course 1', status: 'In Progress', credits: 3});
-  // Populate all elements of course list into the course field in dataSource
 }

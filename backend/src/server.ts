@@ -1,11 +1,16 @@
 import express from "express";
-import { DatabaseMap, getStudentDatabase, CourseMap,  getCourseDatabase} from "./database";
+import {
+  DatabaseMap,
+  getStudentDatabase,
+  CourseMap,
+  getCourseDatabase,
+  StudentInfo,
+} from "./database";
 
-
-
+const courseListFilePath = "src/data/Course_Codes.xlsm";
 const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
-const rollNumber = 2019032;
 const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
+const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
 
 const app = express();
 const port = 3000;
@@ -38,16 +43,44 @@ app.get("/api/student/:rollNumber", (req, res) => {
   }
 });
 
-app.get("/api/degree/:branch", (req, res) => {
+app.get("/api/degree/:branch/:rollNumber", (req, res) => {
   // Get the branch parameter from the request URL.
-  const { branch } = req.params;
-  if(branch === 'CSE'){
-    // Path to the excel sheet containing courses and their course codes.
-    const courseListFilePath = "src/data/Course_Codes.xlsm";
-    const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
-    const coreCourses = courseDatabase['CSE Core Courses '];
+  const { branch, rollNumber } = req.params;
+  if (branch === "CSE") {
+    // Path to the excel sheet containing courses and their course codes
 
-    res.json(coreCourses);
+    const coreCourses = courseDatabase["CSE Core Courses "];
+
+    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+    let disallowedGrades = ["I", "S", "W", "F", "X"];
+
+    const studentCourses = studentInfo["courses"];
+    let courses = 0;
+
+    let studentCoreCourse = [];
+
+    for (const courseCode of coreCourses) {
+      let courseEntry = {
+        course: courseCode,
+        status: "NOT DONE",
+        credits: 0,
+      };
+
+      for (const studentCourse of studentCourses) {
+        if (studentCourse["courseCode"] === courseCode) {
+          if (!disallowedGrades.includes(studentCourse["grade"])) {
+            courseEntry.status = "DONE";
+            courseEntry.credits = studentCourse["credit"];
+          } else {
+            courseEntry.status = "FAILED";
+            courseEntry.credits = 0;
+          }
+          studentCoreCourse.push(courseEntry);
+        }
+      }
+    }
+
+    res.json(studentCoreCourse);
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
