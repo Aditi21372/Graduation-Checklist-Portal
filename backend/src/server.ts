@@ -6,6 +6,7 @@ import {
   getCourseDatabase,
   StudentInfo,
 } from "./database";
+import { stringify } from "querystring";
 
 const courseListFilePath = "src/data/Course_Codes.xlsm";
 const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
@@ -53,6 +54,7 @@ app.get("/api/degree/:branch/:rollNumber", (req, res) => {
 
     const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
     let disallowedGrades = ["I", "S", "W", "F", "X"];
+    const gradeHierarchy: string[] = ["A+", "A", "A-", "B", "B-", "C", "C-", "D", ""];
 
     const studentCourses = studentInfo["courses"];
     let courses = 0;
@@ -64,6 +66,7 @@ app.get("/api/degree/:branch/:rollNumber", (req, res) => {
         course: courseCode,
         status: "NOT DONE",
         credits: 0,
+        grade: "",
       };
 
       for (const studentCourse of studentCourses) {
@@ -71,13 +74,21 @@ app.get("/api/degree/:branch/:rollNumber", (req, res) => {
           if (!disallowedGrades.includes(studentCourse["grade"])) {
             courseEntry.status = "DONE";
             courseEntry.credits = studentCourse["credit"];
+            const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
+            const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
+            if (gradeIndex < currentGradeIndex) {
+                courseEntry.grade = studentCourse["grade"];
+            }
           } else {
+            if(courseEntry.status == "DONE")
+              continue;
             courseEntry.status = "FAILED";
             courseEntry.credits = 0;
+            courseEntry.grade = "F";
           }
-          studentCoreCourse.push(courseEntry);
         }
       }
+      studentCoreCourse.push(courseEntry);
     }
 
     res.json(studentCoreCourse);
