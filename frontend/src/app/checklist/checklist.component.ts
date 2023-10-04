@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DegreeService } from '../degree.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { StudentServiceService } from '../student-service.service';
 
 @Component({
   selector: 'app-checklist',
@@ -8,21 +8,21 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./checklist.component.css'],
 })
 export class ChecklistComponent implements OnInit {
-  displayedColumns: string[] = ['course', 'status', 'credits'];
+  displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
   dataSource: MatTableDataSource<any>;
 
-  constructor(private degreeService: DegreeService) {
+  constructor(private studentService: StudentServiceService) {
     this.dataSource = new MatTableDataSource();
   }
 
   ngOnInit() {
-    // Call the service to fetch student data
+    // // Call the service to fetch student data
     this.populateTable();
   }
 
   populateTable() {
-    this.degreeService
-      .getMandatoryCourses('CSE', 2019020)
+    this.studentService
+      .getMandatoryCourses('CSE', 2019107)
       .subscribe((data: any) => {
         this.dataSource = new MatTableDataSource();
         let courseDetails = data;
@@ -37,6 +37,7 @@ export class ChecklistComponent implements OnInit {
             course: courseDetails[i].course,
             status: courseDetails[i].status,
             credits: courseDetails[i].credits,
+            grade: courseDetails[i].grade,
           });
         }
 
