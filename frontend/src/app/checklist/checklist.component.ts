@@ -13,6 +13,7 @@ export class ChecklistComponent implements OnInit {
   displayedColumns: string[] = ["course", "status", "credits", "grade"];
   dataSource: MatTableDataSource<any>;
   isChecklistVisible = false;
+  tablesData: MatTableDataSource<any>[] = [];
 
   constructor(private studentService: StudentServiceService) {
     this.dataSource = new MatTableDataSource();
@@ -58,23 +59,23 @@ export class ChecklistComponent implements OnInit {
 
   populateBuckets() {
     this.studentService
-      .getMandatoryCourses(this.branch, 2019107)
+      .getBucketCourses(this.branch, 2019107)
       .subscribe((data: any) => {
-        this.dataSource = new MatTableDataSource();
-        let courseDetails = data;
+        let courseBucketDetails = data;
 
-        const newData = [];
+        for (let i = 0; i < courseBucketDetails.length; i++) {
+          const newData = [];
 
-        for (let i = 0; i < courseDetails.length; i++) {
-          newData.push({
-            course: courseDetails[i].course,
-            status: courseDetails[i].status,
-            credits: courseDetails[i].credits,
-            grade: courseDetails[i].grade,
-          });
+          for (let j = 0; j < courseBucketDetails[i].length; j++) {
+            newData.push({
+              course: courseBucketDetails[i][j].course,
+              status: courseBucketDetails[i][j].status,
+              credits: courseBucketDetails[i][j].credits,
+              grade: courseBucketDetails[i][j].grade,
+            });
+          }
+          this.tablesData.push(new MatTableDataSource(newData));
         }
-
-        this.dataSource.data = [...this.dataSource.data, ...newData];
       });
   }
 }

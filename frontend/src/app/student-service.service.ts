@@ -16,7 +16,13 @@ export class StudentServiceService {
 
   getMandatoryCourses(branch: string, rollNumber: number): Observable<any> {
     return this.http.get(
-      this.apiUrl + "degree/" + branch + "/" + String(rollNumber)
+      this.apiUrl + "degree/" + branch + "/" + String(rollNumber) + "/mandatory"
+    );
+  }
+
+  getBucketCourses(branch: string, rollNumber: number): Observable<any> {
+    return this.http.get(
+      this.apiUrl + "degree/" + branch + "/" + String(rollNumber) + "/bucket"
     );
   }
 }
