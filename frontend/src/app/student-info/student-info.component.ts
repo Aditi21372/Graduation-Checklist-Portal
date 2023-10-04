@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { StudentServiceService } from '../student-service.service';
 
 @Component({
@@ -8,8 +8,9 @@ import { StudentServiceService } from '../student-service.service';
 })
 
 export class StudentInfoComponent implements OnInit {
-  rollNumber: string = ''; // Initialize with an empty string
+  @Input() rollNumber: number = 0;
   studentName: string = ''; // Initialize with an empty string
+  branch: string = '';
 
   constructor(private studentService: StudentServiceService) {}
 
@@ -19,12 +20,11 @@ export class StudentInfoComponent implements OnInit {
   }
 
   getStudentData() {
-    this.studentService.getStudentData('2019107').subscribe((data: any) => {
+    this.studentService.getStudentData((this.rollNumber).toString()).subscribe((data: any) => {
       // Assuming the response JSON contains 'name' and 'rollNumber' fields
       this.rollNumber = data.rollNumber;
       this.studentName = data.studentName;
-      console.log(this.rollNumber, this.studentName);
-      console.log("hi");
+      this.branch = data.branch;
     });
   }
 }

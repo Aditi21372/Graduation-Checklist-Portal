@@ -35,6 +35,7 @@ app.get("/api/student/:rollNumber", (req, res) => {
     const studentData = {
       rollNumber: rollNumber,
       studentName: studentDatabase[Number(rollNumber)].studentName,
+      branch: studentDatabase[Number(rollNumber)].program,
     };
 
     res.json(studentData);
