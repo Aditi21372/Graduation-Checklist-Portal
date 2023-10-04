@@ -1,21 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ChecklistComponent } from './checklist.component';
+import { ChecklistComponent } from "./checklist.component";
 
-describe('ChecklistComponent', () => {
+describe("ChecklistComponent", () => {
   let component: ChecklistComponent;
   let fixture: ComponentFixture<ChecklistComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ChecklistComponent]
+      declarations: [ChecklistComponent],
     });
     fixture = TestBed.createComponent(ChecklistComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

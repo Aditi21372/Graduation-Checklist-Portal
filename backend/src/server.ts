@@ -55,7 +55,17 @@ app.get("/api/degree/:branch/:rollNumber", (req, res) => {
 
     const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
     let disallowedGrades = ["I", "S", "W", "F", "X"];
-    const gradeHierarchy: string[] = ["A+", "A", "A-", "B", "B-", "C", "C-", "D", ""];
+    const gradeHierarchy: string[] = [
+      "A+",
+      "A",
+      "A-",
+      "B",
+      "B-",
+      "C",
+      "C-",
+      "D",
+      "",
+    ];
 
     const studentCourses = studentInfo["courses"];
     let courses = 0;
@@ -78,11 +88,10 @@ app.get("/api/degree/:branch/:rollNumber", (req, res) => {
             const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
             const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
             if (gradeIndex < currentGradeIndex) {
-                courseEntry.grade = studentCourse["grade"];
+              courseEntry.grade = studentCourse["grade"];
             }
           } else {
-            if(courseEntry.status == "DONE")
-              continue;
+            if (courseEntry.status == "DONE") continue;
             courseEntry.status = "FAILED";
             courseEntry.credits = 0;
             courseEntry.grade = "F";
