@@ -240,6 +240,206 @@ app.get("/api/degree/:rollNumber/sg", (req, res) => {
   res.json(courseEntry);
 });
 
+app.get("/api/degree/:rollNumber/btp", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let sem = [];
+  let credits = 0;
+
+  let courseEntry = {
+    status: "Not Done",
+    credits: 0,
+  };
+
+  for (const course of studentCourses) {
+    const courseCodebtp = course["courseCode"].substring(0, 3);
+    if (
+      courseCodebtp === "BTP" &&
+      !disallowedGrades.includes(course["grade"])
+    ) {
+      credits += course["credit"];
+      sem.push(course["semester"]);
+    }
+  }
+
+  if (credits >= 8 && credits <= 12) {
+    const pairDifferences = [];
+    for (let i = 0; i < sem.length; i++) {
+      for (let j = i + 1; j < sem.length; j++) {
+        const num1 = parseFloat(sem[i]); // Convert the string to a number
+        const num2 = parseFloat(sem[j]); // Convert the string to a number
+
+        if (!isNaN(num1) && !isNaN(num2)) {
+          const difference = Math.abs(num1 - num2); // Calculate the absolute difference
+          pairDifferences.push(difference);
+        }
+      }
+    }
+    for (const pairDiff of pairDifferences) {
+      if (pairDiff == 1) {
+        courseEntry.status = "Done";
+      }
+    }
+  } else if (credits == 0) {
+    courseEntry.status = "Done";
+  } else {
+    courseEntry.status = "Doesn't fulfill BTP requirements";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/twoxxcourses", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const coreCourses = courseDatabase["CSE Core Courses "];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let courses = 0;
+  let credits = 0;
+
+  let courseEntry = {
+    status: "Not Done",
+    credits: 0,
+  };
+
+  const mandatoryBuckets = [];
+  for (const key of Object.keys(courseDatabase)) {
+    if (key.startsWith("Mandatory")) {
+      mandatoryBuckets.push(courseDatabase[key]);
+    }
+  }
+
+  const mandatoryBucketCourses = [];
+  for (const courseBucket of mandatoryBuckets) {
+    for (const course of courseBucket) {
+      mandatoryBucketCourses.push(course);
+    }
+  }
+
+  for (const course of studentCourses) {
+    if (
+      course["courseCode"].substring(3, 4) === "2" &&
+      !disallowedGrades.includes(course["grade"]) &&
+      (course["semester"] >= "5" || course["semester"] >= "Summer Term 3") &&
+      !courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
+      !coreCourses.includes(course["courseCode"]) &&
+      !mandatoryBucketCourses.includes(course["courseCode"])
+    ) {
+      courses += 1;
+    }
+  }
+
+  if (courses <= 2) {
+    courseEntry.status = "Done";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/ip", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const ipCourses = courseDatabase["IP/IS/UR"];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let credits = 0;
+
+  let courseEntry = {
+    status: "Not Done",
+    credits: 0,
+  };
+
+  for (const course of studentCourses) {
+    const courseCodeIp = course["courseCode"].substring(0, 3);
+    for (const courseCode of ipCourses) {
+      if (
+        courseCodeIp === courseCode &&
+        !disallowedGrades.includes(course["grade"])
+      ) {
+        credits += course["credit"];
+      }
+    }
+  }
+
+  if (credits <= 8) {
+    courseEntry.status = "Done";
+  } else {
+    courseEntry.status = "Doesn't fulfill IP/IS/UR requirements";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/onlinecourses", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const onlineCourses = courseDatabase["Online course"];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let credits = 0;
+
+  let courseEntry = {
+    status: "Not Done",
+    credits: 0,
+  };
+
+  for (const course of studentCourses) {
+    for (const courseCode of onlineCourses) {
+      if (course["courseCode"] === courseCode && course["grade"] == "S") {
+        credits += course["credit"];
+      }
+    }
+  }
+
+  if (credits <= 8) {
+    courseEntry.status = "Done";
+  } else {
+    courseEntry.status = "Doesn't fulfill Online Course requirements";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let credits = 0;
+  let coursesTaken = new Map<string, number>();
+
+  let courseEntry = {
+    status: "Not Done",
+    credits: 0,
+  };
+
+  for (const course of studentCourses) {
+    // Doesn't check for a 2xx course.
+    // Doesn't check for courses that were not done in the last four semesters.
+    if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5") {
+      continue;
+    }
+    // Checks if the course has a valid grade against it and is a CSE course.
+    if (
+      !disallowedGrades.includes(course["grade"]) &&
+      !coursesTaken.has(course["courseCode"]) &&
+      course["courseCode"].startsWith("CSE")
+    ) {
+      credits += course["credit"];
+      coursesTaken.set(course["courseCode"], course["credit"]);
+    }
+  }
+
+  if (credits >= 32) {
+    courseEntry.status = "Done";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -274,21 +274,37 @@ export class TwoXCreditRule implements IRule {
   ruleId: number = 10;
 
   checkRule(rollNumber: number, studentInfo: StudentInfo): Boolean {
-    const coreCourses = courseDatabase["CSE Core Courses"];
+    const coreCourses = courseDatabase["CSE Core Courses "];
     const studentCourses = studentInfo["courses"];
     let courses = 0;
+
+    const mandatoryBuckets = [];
+    for (const key of Object.keys(courseDatabase)) {
+      if (key.startsWith("Mandatory")) {
+        mandatoryBuckets.push(courseDatabase[key]);
+      }
+    }
+
+    const mandatoryBucketCourses = [];
+    for (const courseBucket of mandatoryBuckets) {
+      for (const course of courseBucket) {
+        mandatoryBucketCourses.push(course);
+      }
+    }
 
     for (const course of studentCourses) {
       if (
         course["courseCode"].substring(3, 4) === "2" &&
         !disallowedGrades.includes(course["grade"]) &&
         (course["semester"] >= "5" || course["semester"] >= "Summer Term 3") &&
-        !courseDatabase["SSH Courses"].includes(course["courseCode"])
+        !courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
+        !coreCourses.includes(course["courseCode"]) &&
+        !mandatoryBucketCourses.includes(course["courseCode"])
       ) {
         courses += 1;
       }
     }
-    if (courses <= 4) {
+    if (courses <= 2) {
       return true;
     }
     return false;
