@@ -1,14 +1,39 @@
-.checklist {
-    margin: 20px;
-  }
-  
-  .info {
-    margin-bottom: 20px;
-    font-weight: bold;
-  }
-  
-  .mat-row.not-done {
-    background-color: red;
-    color: white;
-  }
-  
+/* Add styling to the Graduation Checklist table */
+.mat-card {
+  margin: 20px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+}
+
+h2 {
+  font-size: 24px;
+  margin: 20px 0; /* Add margin to the top and bottom of headings */
+  color: #333;
+}
+
+/* Style the tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0; /* Add margin to the top and bottom of tables */
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #ddd;
+}

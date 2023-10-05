@@ -1,6 +1,17 @@
-import { DatabaseMap, getStudentDatabase, StudentInfo} from "./database";
+import { DatabaseMap, getStudentDatabase, StudentInfo } from "./database";
 import { CSEDegree } from "./degree";
-import { SSHRule, CWRule, SGRule, IPRule, OnlineCourseRule, BTPRule, MandateRule, BucketRule, TwoXCreditRule, ThirtyTwoCreditRule} from "./rule";
+import {
+  SSHRule,
+  CWRule,
+  SGRule,
+  IPRule,
+  OnlineCourseRule,
+  BTPRule,
+  MandateRule,
+  BucketRule,
+  TwoXCreditRule,
+  ThirtyTwoCreditRule,
+} from "./rule";
 
 // Path to the excel sheet containing student records.
 const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
@@ -50,6 +61,3 @@ function checkGraduation(rollNumber: number): Boolean {
 }
 
 // checkGraduation(rollNumber);
-
-
-
