@@ -85,17 +85,19 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateSSH() {
-    this.studentService.getSSHcourses(this.rollNumber).subscribe((data: any) => {
-      let courseBucketDetails = data;
+    this.studentService
+      .getSSHcourses(this.rollNumber)
+      .subscribe((data: any) => {
+        let courseBucketDetails = data;
 
-      const newData = [];
-      newData.push({
-        rule: "12 credits of SSH courses",
-        status: courseBucketDetails.status,
-        credits: courseBucketDetails.credits,
+        const newData = [];
+        newData.push({
+          rule: "12 credits of SSH courses",
+          status: courseBucketDetails.status,
+          credits: courseBucketDetails.credits,
+        });
+        this.rules.push(newData);
       });
-      this.rules.push(newData);
-    });
   }
 
   populateCW() {
