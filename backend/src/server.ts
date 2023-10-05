@@ -62,7 +62,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
     for (const courseCode of coreCourses) {
       let courseEntry = {
         course: courseCode,
-        status: "NOT DONE",
+        status: "Not Done",
         credits: 0,
         grade: "",
       };
@@ -70,7 +70,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
       for (const studentCourse of studentCourses) {
         if (studentCourse["courseCode"] === courseCode) {
           if (!disallowedGrades.includes(studentCourse["grade"])) {
-            courseEntry.status = "DONE";
+            courseEntry.status = "Done";
             courseEntry.credits = studentCourse["credit"];
             const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
             const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
@@ -78,7 +78,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
               courseEntry.grade = studentCourse["grade"];
             }
           } else {
-            if (courseEntry.status == "DONE") continue;
+            if (courseEntry.status == "Done") continue;
             courseEntry.status = "FAILED";
             courseEntry.credits = 0;
             courseEntry.grade = "F";
@@ -116,7 +116,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
       for (const courseCode of courseBucket) {
         let courseEntry = {
           course: courseCode,
-          status: "NOT DONE",
+          status: "Not Done",
           credits: 0,
           grade: "",
         };
@@ -124,7 +124,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
         for (const studentCourse of studentCourses) {
           if (studentCourse["courseCode"] === courseCode) {
             if (!disallowedGrades.includes(studentCourse["grade"])) {
-              courseEntry.status = "DONE";
+              courseEntry.status = "Done";
               courseEntry.credits = studentCourse["credit"];
               const currentGradeIndex = gradeHierarchy.indexOf(
                 courseEntry.grade
@@ -134,7 +134,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
                 courseEntry.grade = studentCourse["grade"];
               }
             } else {
-              if (courseEntry.status == "DONE") continue;
+              if (courseEntry.status == "Done") continue;
               courseEntry.status = "FAILED";
               courseEntry.credits = 0;
               courseEntry.grade = "F";
@@ -162,7 +162,7 @@ app.get("/api/degree/:rollNumber/ssh", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "NOT DONE",
+    status: "Not Done",
     credits: 0,
   };
 
@@ -179,7 +179,7 @@ app.get("/api/degree/:rollNumber/ssh", (req, res) => {
     }
   }
   if (credits >= 12) {
-    courseEntry.status = "DONE";
+    courseEntry.status = "Done";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -194,7 +194,7 @@ app.get("/api/degree/:rollNumber/cw", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "NOT DONE",
+    status: "Not Done",
     credits: 0,
   };
 
@@ -206,7 +206,7 @@ app.get("/api/degree/:rollNumber/cw", (req, res) => {
     }
   }
   if (credits >= 2) {
-    courseEntry.status = "DONE";
+    courseEntry.status = "Done";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -222,7 +222,7 @@ app.get("/api/degree/:rollNumber/sg", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "NOT DONE",
+    status: "Not Done",
     credits: 0,
   };
 
@@ -234,7 +234,7 @@ app.get("/api/degree/:rollNumber/sg", (req, res) => {
     }
   }
   if (credits >= 2) {
-    courseEntry.status = "DONE";
+    courseEntry.status = "Done";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);

@@ -1,28 +1,33 @@
-/* Add styling to the Graduation Checklist table */
+/* graduation-checklist.component.css (or your appropriate file) */
+
+/* Apply the same container styling */
 .mat-card {
-  margin: 20px;
+  margin: 20px auto;
+  max-width: 800px;
   background-color: #f4f4f4;
   border-radius: 10px;
+  padding: 20px;
 }
 
 h2 {
   font-size: 24px;
-  margin: 20px 0; /* Add margin to the top and bottom of headings */
+  margin: 20px 0;
   color: #333;
 }
 
-/* Style the tables */
+/* Apply the same table styling */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 10px 0; /* Add margin to the top and bottom of tables */
+  margin: 10px auto;
+  max-width: 600px;
 }
 
 th,
 td {
   border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
+  padding: 8px;
+  text-align: center;
 }
 
 th {
@@ -37,3 +42,9 @@ tr:nth-child(even) {
 tr:hover {
   background-color: #ddd;
 }
+
+.red-row {
+  background-color: rgb(246, 104, 104);
+  color: white;
+}
+

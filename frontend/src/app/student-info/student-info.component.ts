@@ -10,6 +10,7 @@ export class StudentInfoComponent implements OnInit {
   @Input() rollNumber: number = 0;
   studentName: string = ""; // Initialize with an empty string
   branch: string = "";
+  gradStatus = ""
 
   constructor(private studentService: StudentServiceService) {}
 
@@ -27,5 +28,13 @@ export class StudentInfoComponent implements OnInit {
         this.studentName = data.studentName;
         this.branch = data.branch;
       });
+  }
+
+  showSummary(){
+
+  }
+
+  showSemesterWiseCGPA(){
+    
   }
 }

@@ -1,7 +1,15 @@
 <mat-card>
   <mat-card-content>
-    <h2>Mandatory Courses</h2>
-    <table mat-table [dataSource]="dataSource">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Mandatory Courses</h2>
+        </mat-panel-title>
+        <mat-panel-description>
+
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+    <table *ngIf="isTable1Expanded" mat-table [dataSource]="dataSource">
       <!-- Define your table columns here -->
       <ng-container matColumnDef="course">
         <th mat-header-cell *matHeaderCellDef>Course</th>
@@ -24,15 +32,24 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'red-row': row.status === 'Not Done'}"></tr>
     </table>
+  </mat-expansion-panel>
   </mat-card-content>
 </mat-card>
 
 <mat-card *ngFor="let tableData of tablesData; let i = index">
   <mat-card-content>
-    <h2>Mandatory Bucket {{ i+1 }}</h2>
-    <table mat-table [dataSource]="tableData">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h2>Mandatory Bucket {{i + 1}}</h2>
+        </mat-panel-title>
+        <mat-panel-description>
+
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+    <table *ngIf="isTable2Expanded[i]" mat-table [dataSource]="tableData">
       <!-- Define your table columns here -->
       <ng-container matColumnDef="course">
         <th mat-header-cell *matHeaderCellDef>Course</th>
@@ -57,6 +74,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+  </mat-expansion-panel>
   </mat-card-content>
 </mat-card>
 
