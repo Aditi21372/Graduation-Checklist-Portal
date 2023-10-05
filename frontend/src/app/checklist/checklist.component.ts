@@ -11,9 +11,11 @@ export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
   branch: string = "";
   displayedColumns: string[] = ["course", "status", "credits", "grade"];
+  displayedColumn: string[] = ["rule", "status", "credits"];
   dataSource: MatTableDataSource<any>;
   isChecklistVisible = false;
   tablesData: MatTableDataSource<any>[] = [];
+  rules: any[] = [];
 
   constructor(private studentService: StudentServiceService) {
     this.dataSource = new MatTableDataSource();
@@ -25,19 +27,22 @@ export class ChecklistComponent implements OnInit {
       .getStudentData(this.rollNumber.toString())
       .subscribe((data: any) => {
         this.branch = data.branch;
-        this.populateTable();
+        this.populateMandatory();
         this.populateBuckets();
+        this.populateSSH();
+        this.populateCW();
+        this.populateSG();
       });
   }
 
-  populateTable() {
+  populateMandatory() {
     this.branch = this.branch.slice(
       this.branch.lastIndexOf("/") + 1,
       this.branch.length
     );
 
     this.studentService
-      .getMandatoryCourses(this.branch, 2019107)
+      .getMandatoryCourses(this.branch, this.rollNumber)
       .subscribe((data: any) => {
         this.dataSource = new MatTableDataSource();
         let courseDetails = data;
@@ -59,7 +64,7 @@ export class ChecklistComponent implements OnInit {
 
   populateBuckets() {
     this.studentService
-      .getBucketCourses(this.branch, 2019107)
+      .getBucketCourses(this.branch, this.rollNumber)
       .subscribe((data: any) => {
         let courseBucketDetails = data;
 
@@ -77,5 +82,48 @@ export class ChecklistComponent implements OnInit {
           this.tablesData.push(new MatTableDataSource(newData));
         }
       });
+  }
+
+  populateSSH() {
+    this.studentService.getSSHcourses(this.rollNumber).subscribe((data: any) => {
+      let courseBucketDetails = data;
+
+      const newData = [];
+      newData.push({
+        rule: "12 credits of SSH courses",
+        status: courseBucketDetails.status,
+        credits: courseBucketDetails.credits,
+      });
+      this.rules.push(newData);
+    });
+  }
+
+  populateCW() {
+    this.studentService.getCWcourses(this.rollNumber).subscribe((data: any) => {
+      let courseBucketDetails = data;
+
+      const newData = [];
+      newData.push({
+        rule: "2 credits of Comunity Work",
+        status: courseBucketDetails.status,
+        credits: courseBucketDetails.credits,
+      });
+      this.rules.push(newData);
+    });
+  }
+
+  populateSG() {
+    this.studentService.getSGcourses(this.rollNumber).subscribe((data: any) => {
+      let courseBucketDetails = data;
+
+      const newData = [];
+      newData.push({
+        rule: "2 credits of Self Growth",
+        status: courseBucketDetails.status,
+        credits: courseBucketDetails.credits,
+      });
+      this.rules.push(newData);
+      console.log("hi", courseBucketDetails);
+    });
   }
 }

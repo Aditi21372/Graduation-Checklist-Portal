@@ -25,4 +25,16 @@ export class StudentServiceService {
       this.apiUrl + "degree/" + branch + "/" + String(rollNumber) + "/bucket"
     );
   }
+
+  getSSHcourses(rollNumber: number): Observable<any> {
+    return this.http.get(this.apiUrl + "degree/" + String(rollNumber) + "/ssh");
+  }
+
+  getCWcourses(rollNumber: number): Observable<any> {
+    return this.http.get(this.apiUrl + "degree/" + String(rollNumber) + "/cw");
+  }
+
+  getSGcourses(rollNumber: number): Observable<any> {
+    return this.http.get(this.apiUrl + "degree/" + String(rollNumber) + "/sg");
+  }
 }

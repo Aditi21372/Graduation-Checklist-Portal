@@ -122,25 +122,26 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
         };
 
         for (const studentCourse of studentCourses) {
-          if (studentCourse["courseCode"] === courseCode){
-            if(!disallowedGrades.includes(studentCourse["grade"])){
+          if (studentCourse["courseCode"] === courseCode) {
+            if (!disallowedGrades.includes(studentCourse["grade"])) {
               courseEntry.status = "DONE";
               courseEntry.credits = studentCourse["credit"];
-              const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
+              const currentGradeIndex = gradeHierarchy.indexOf(
+                courseEntry.grade
+              );
               const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
               if (gradeIndex < currentGradeIndex) {
                 courseEntry.grade = studentCourse["grade"];
               }
-            }
-            else {
+            } else {
               if (courseEntry.status == "DONE") continue;
               courseEntry.status = "FAILED";
               courseEntry.credits = 0;
               courseEntry.grade = "F";
             }
           }
-        } 
-        mandateBucket.push(courseEntry); 
+        }
+        mandateBucket.push(courseEntry);
       }
       studentBucketCourse.push(mandateBucket);
     }
@@ -149,6 +150,94 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
+});
+
+app.get("/api/degree/:rollNumber/ssh", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const sshCourses = courseDatabase["SSH Courses"];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let coursesTaken = new Map<string, number>();
+  let credits = 0;
+
+  let courseEntry = {
+    status: "NOT DONE",
+    credits: 0,
+  };
+
+  for (const course of studentCourses) {
+    for (const courseCode of sshCourses) {
+      if (
+        course["courseCode"] === courseCode &&
+        !disallowedGrades.includes(course["grade"]) &&
+        !coursesTaken.has(course["courseCode"])
+      ) {
+        coursesTaken.set(course["courseCode"], 1);
+        credits += course["credit"];
+      }
+    }
+  }
+  if (credits >= 12) {
+    courseEntry.status = "DONE";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/cw", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const cwCourses = courseDatabase["CW Course"];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let credits = 0;
+
+  let courseEntry = {
+    status: "NOT DONE",
+    credits: 0,
+  };
+
+  for (const courseCode of cwCourses) {
+    for (const course of studentCourses) {
+      if (course["courseCode"] === courseCode && course["grade"] == "S") {
+        credits += course["credit"];
+      }
+    }
+  }
+  if (credits >= 2) {
+    courseEntry.status = "DONE";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/sg", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+  const sgCourses = courseDatabase["SG Course"];
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let coursesTaken = new Map<string, number>();
+  let credits = 0;
+
+  let courseEntry = {
+    status: "NOT DONE",
+    credits: 0,
+  };
+
+  for (const courseCode of sgCourses) {
+    for (const course of studentCourses) {
+      if (course["courseCode"] === courseCode && course["grade"] == "S") {
+        credits += course["credit"];
+      }
+    }
+  }
+  if (credits >= 2) {
+    courseEntry.status = "DONE";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
 });
 
 app.listen(port, () => {
