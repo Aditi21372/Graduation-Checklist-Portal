@@ -14,6 +14,8 @@ import { StudentServiceService } from "./student-service.service";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { DashboardComponent } from "./dashboard/dashboard.component";
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon'; 
 
 @NgModule({
   declarations: [
@@ -33,6 +35,8 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
     MatCardModule,
     HttpClientModule,
     FormsModule,
+    MatExpansionModule,
+    MatIconModule,
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],

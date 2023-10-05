@@ -1,8 +1,16 @@
-<mat-card>
+<!-- Your component's HTML file -->
+
+<mat-card class="center-card">
   <mat-card-content>
     <h2>Student Information</h2>
     <p>Roll Number: {{ rollNumber }}</p>
     <p>Name: {{ studentName }}</p>
     <p>Program: {{ branch }}</p>
+    <p>Graduation Status: {{ gradStatus }}</p>
+
+    <!-- Buttons -->
+    <button mat-raised-button color="primary" (click)="showSummary()">Show Summary</button>
+    
+    <button mat-raised-button color="accent" (click)="showSemesterWiseCGPA()">Show Semester Wise CGPA</button>
   </mat-card-content>
 </mat-card>

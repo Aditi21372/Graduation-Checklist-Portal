@@ -1,12 +1,12 @@
 /* student-form.component.css */
 .container {
   text-align: center;
-  padding: 20px;
+  padding: 60px;
 }
 
 h1 {
   font-size: 24px;
-  color: #333;
+  color: #58585A; /* Match the text color from the header */
 }
 
 p {
@@ -21,7 +21,7 @@ p {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  background-color: #f9f9f9;
+  background-color: #f2f2f2; /* Match the background color from the header */
 }
 
 .form-group {
@@ -32,7 +32,7 @@ p {
 label {
   font-size: 16px;
   font-weight: bold;
-  color: #333;
+  color: #58585A; /* Match the text color from the header */
 }
 
 input[type="number"] {
@@ -45,18 +45,23 @@ input[type="number"] {
 }
 
 button {
-  display: block;
-  width: 100%;
-  padding: 10px;
+  display: inline-block;
+  padding: 10px 20px;
   font-size: 18px;
-  background-color: #007bff;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44B3AD;
   color: #fff;
-  border: none;
+  border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
 }
+

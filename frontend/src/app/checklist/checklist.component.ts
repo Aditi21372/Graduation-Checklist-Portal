@@ -12,6 +12,7 @@ export class ChecklistComponent implements OnInit {
   branch: string = "";
   displayedColumns: string[] = ["course", "status", "credits", "grade"];
   displayedColumn: string[] = ["rule", "status", "credits"];
+ 
   dataSource: MatTableDataSource<any>;
   isChecklistVisible = false;
   tablesData: MatTableDataSource<any>[] = [];
@@ -33,6 +34,22 @@ export class ChecklistComponent implements OnInit {
         this.populateCW();
         this.populateSG();
       });
+  }
+
+  // Variables to control the expansion state of panels
+  isTable1Expanded = true;
+  isTable2Expanded = [true, true, true, true, true];
+
+  // Toggle function to expand/collapse panels
+  toggleTable(tableNumber: number, i: number) {
+    switch (tableNumber) {
+      case 1:
+        this.isTable1Expanded = !this.isTable1Expanded;
+        break;
+      case 2:
+        this.isTable2Expanded[i] = !this.isTable2Expanded[i];
+        break;
+    }
   }
 
   populateMandatory() {

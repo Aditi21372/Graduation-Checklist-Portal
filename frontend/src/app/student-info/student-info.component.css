@@ -1,27 +1,55 @@
-/* Add this CSS to your component's CSS file */
-mat-card {
-  width: 300px; /* Set the width to your desired value */
-  margin: 20px;
-  padding: 15px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+/* Your component's CSS file */
+
+.center-card {
+  width: 400px; /* Adjust the width as needed */
+  margin: 50px auto; /* Adjust the margin for vertical centering */
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
 mat-card-content {
-  text-align: left;
+  text-align: center; /* Center text content horizontally */
+  padding: 20px; /* Add padding to mat-card-content */
 }
+
+/* Rest of your existing styles */
+
 
 h2 {
   font-size: 24px;
-  font-weight: bold; /* Make the heading bold */
-  margin-bottom: 15px; /* Add some space below the heading */
+  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 p {
   font-size: 16px;
-  margin: 5px 0; /* Add some vertical spacing between paragraphs */
+  margin: 5px 0;
 }
 
 /* Style specific paragraphs if needed */
 p:nth-child(2) {
-  font-weight: bold; /* Make the second paragraph bold */
+  font-weight: bold;
+}
+
+button {
+  margin: 10px 10px; /* Add margin for space between buttons */
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44B3AD;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
 }
