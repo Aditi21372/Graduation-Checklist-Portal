@@ -1,25 +1,31 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
-import { StudentServiceService } from "../student-service.service";
+import { Component, OnInit, Input } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { StudentServiceService } from '../student-service.service';
 
 @Component({
-  selector: "app-checklist",
-  templateUrl: "./checklist.component.html",
-  styleUrls: ["./checklist.component.css"],
+  selector: 'app-checklist',
+  templateUrl: './checklist.component.html',
+  styleUrls: ['./checklist.component.css'],
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
-  branch: string = "";
-  displayedColumns: string[] = ["course", "status", "credits", "grade"];
-  displayedColumn: string[] = ["rule", "status", "credits"];
- 
+  branch: string = '';
+  displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
+  displayedColumn: string[] = ['rule', 'status', 'credits'];
+  isTable1Expanded = true;
+  isTable2Expanded = [true, true, true, true, true];
+  completedMandatory = true;
+  completedBuckets = [true, true, true, true, true];
+
   dataSource: MatTableDataSource<any>;
+  dataSourceTwo: MatTableDataSource<any>;
   isChecklistVisible = false;
   tablesData: MatTableDataSource<any>[] = [];
   rules: any[] = [];
 
   constructor(private studentService: StudentServiceService) {
     this.dataSource = new MatTableDataSource();
+    this.dataSourceTwo = new MatTableDataSource();
   }
 
   ngOnInit() {
@@ -33,12 +39,13 @@ export class ChecklistComponent implements OnInit {
         this.populateSSH();
         this.populateCW();
         this.populateSG();
+        this.populateBTP();
+        this.populateTwoXXCredits();
+        this.populateIPCredits();
+        this.populateOnlineCourseCredits();
+        this.populate32Credits();
       });
   }
-
-  // Variables to control the expansion state of panels
-  isTable1Expanded = true;
-  isTable2Expanded = [true, true, true, true, true];
 
   // Toggle function to expand/collapse panels
   toggleTable(tableNumber: number, i: number) {
@@ -54,7 +61,7 @@ export class ChecklistComponent implements OnInit {
 
   populateMandatory() {
     this.branch = this.branch.slice(
-      this.branch.lastIndexOf("/") + 1,
+      this.branch.lastIndexOf('/') + 1,
       this.branch.length
     );
 
@@ -73,6 +80,9 @@ export class ChecklistComponent implements OnInit {
             credits: courseDetails[i].credits,
             grade: courseDetails[i].grade,
           });
+          if (courseDetails[i].status !== 'Done') {
+            this.completedMandatory = false;
+          }
         }
 
         this.dataSource.data = [...this.dataSource.data, ...newData];
@@ -87,6 +97,7 @@ export class ChecklistComponent implements OnInit {
 
         for (let i = 0; i < courseBucketDetails.length; i++) {
           const newData = [];
+          let atleastOne = false;
 
           for (let j = 0; j < courseBucketDetails[i].length; j++) {
             newData.push({
@@ -95,6 +106,13 @@ export class ChecklistComponent implements OnInit {
               credits: courseBucketDetails[i][j].credits,
               grade: courseBucketDetails[i][j].grade,
             });
+
+            if (courseBucketDetails[i][j].status === 'Done') {
+              atleastOne = true;
+            }
+          }
+          if(!atleastOne){
+            this.completedBuckets[i] = false;
           }
           this.tablesData.push(new MatTableDataSource(newData));
         }
@@ -109,11 +127,12 @@ export class ChecklistComponent implements OnInit {
 
         const newData = [];
         newData.push({
-          rule: "12 credits of SSH courses",
+          rule: '12 credits of SSH courses',
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
         });
         this.rules.push(newData);
+        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
   }
 
@@ -123,11 +142,12 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: "2 credits of Comunity Work",
+        rule: '2 credits of Comunity Work',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
       });
       this.rules.push(newData);
+      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
 
@@ -137,12 +157,93 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: "2 credits of Self Growth",
+        rule: '2 credits of Self Growth',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
       });
       this.rules.push(newData);
-      console.log("hi", courseBucketDetails);
+      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+    });
+  }
+
+  populateBTP() {
+    this.studentService
+      .getBTPCredits(this.rollNumber)
+      .subscribe((data: any) => {
+        let courseBucketDetails = data;
+
+        const newData = [];
+        newData.push({
+          rule: 'BTP',
+          status: courseBucketDetails.status,
+          credits: courseBucketDetails.credits,
+        });
+        this.rules.push(newData);
+        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+      });
+  }
+
+  populateTwoXXCredits() {
+    this.studentService
+      .getTwoXXCredits(this.rollNumber)
+      .subscribe((data: any) => {
+        let courseBucketDetails = data;
+
+        const newData = [];
+        newData.push({
+          rule: 'Atmost two 2xx level courses',
+          status: courseBucketDetails.status,
+          credits: courseBucketDetails.credits,
+        });
+        this.rules.push(newData);
+        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+      });
+  }
+
+  populateIPCredits() {
+    this.studentService.getIPCredits(this.rollNumber).subscribe((data: any) => {
+      let courseBucketDetails = data;
+
+      const newData = [];
+      newData.push({
+        rule: 'Atmost 8 credits of IP/IS/UR',
+        status: courseBucketDetails.status,
+        credits: courseBucketDetails.credits,
+      });
+      this.rules.push(newData);
+      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+    });
+  }
+
+  populateOnlineCourseCredits() {
+    this.studentService
+      .getOnlineCourseCredits(this.rollNumber)
+      .subscribe((data: any) => {
+        let courseBucketDetails = data;
+
+        const newData = [];
+        newData.push({
+          rule: 'Atmost 8 credits of online courses',
+          status: courseBucketDetails.status,
+          credits: courseBucketDetails.credits,
+        });
+        this.rules.push(newData);
+        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+      });
+  }
+
+  populate32Credits() {
+    this.studentService.get32Credits(this.rollNumber).subscribe((data: any) => {
+      let courseBucketDetails = data;
+
+      const newData = [];
+      newData.push({
+        rule: '32 Credits of CSE Courses',
+        status: courseBucketDetails.status,
+        credits: courseBucketDetails.credits,
+      });
+      this.rules.push(newData);
+      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
 }

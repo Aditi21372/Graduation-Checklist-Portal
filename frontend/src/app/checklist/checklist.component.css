@@ -39,12 +39,16 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-tr:hover {
-  background-color: #ddd;
-}
-
 .red-row {
   background-color: rgb(246, 104, 104);
   color: white;
 }
 
+/* Your component.css */
+.green-text {
+  color: green;
+}
+
+.red-text {
+  color: red;
+}
