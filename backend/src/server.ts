@@ -16,7 +16,22 @@ const app = express();
 const port = 3000;
 
 let disallowedGrades = ["I", "S", "W", "F", "X"];
-const gradeHierarchy = ["A+", "A", "A-", "B", "B-", "C", "C-", "D", ""];
+const gradeHierarchy = [
+  "A+",
+  "A",
+  "A-",
+  "B",
+  "B-",
+  "C",
+  "C-",
+  "D",
+  "I",
+  "S",
+  "W",
+  "F",
+  "X",
+  "",
+];
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
