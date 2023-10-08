@@ -6,7 +6,7 @@
 
 h1 {
   font-size: 24px;
-  color: #58585A; /* Match the text color from the header */
+  color: #58585a; /* Match the text color from the header */
 }
 
 p {
@@ -32,7 +32,7 @@ p {
 label {
   font-size: 16px;
   font-weight: bold;
-  color: #58585A; /* Match the text color from the header */
+  color: #58585a; /* Match the text color from the header */
 }
 
 input[type="number"] {
@@ -51,12 +51,13 @@ button {
   font-weight: bold;
   text-align: center;
   text-decoration: none;
-  background-color: #44B3AD;
+  background-color: #44b3ad;
   color: #fff;
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 button:hover {
@@ -65,3 +66,10 @@ button:hover {
   color: #fff;
 }
 
+/* New styles for showMessage */
+.error-message {
+  font-size: 14px;
+  color: rgb(0, 0, 0);
+  margin-top: 5px;
+  margin-bottom: 15px;
+}

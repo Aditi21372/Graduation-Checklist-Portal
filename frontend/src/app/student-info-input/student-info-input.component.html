@@ -12,7 +12,9 @@
         required
       />
     </div>
-
+    <div *ngIf="showMessage" class="error-message">
+      {{ showMessage }}
+    </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
