@@ -11,6 +11,6 @@
     <!-- Buttons -->
     <button mat-raised-button color="primary" (click)="showSummary()">Show Summary</button>
     
-    <button mat-raised-button color="accent" (click)="showSemesterWiseCGPA()">Show Semester Wise CGPA</button>
+    <button mat-raised-button color="accent" [routerLink]="['/cgpa-page']">Show Semester Wise CGPA</button>
   </mat-card-content>
 </mat-card>
