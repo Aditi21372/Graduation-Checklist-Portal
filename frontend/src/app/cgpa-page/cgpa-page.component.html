@@ -1,0 +1,19 @@
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <!-- Semester Column -->
+  <ng-container matColumnDef="semester">
+    <mat-header-cell *matHeaderCellDef>Semester</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row.semester }}</mat-cell>
+  </ng-container>
+
+  <!-- CGPA Column -->
+  <ng-container matColumnDef="cgpa">
+    <mat-header-cell *matHeaderCellDef>CGPA</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row.cgpa }}</mat-cell>
+  </ng-container>
+
+  <!-- Header Row -->
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+  <!-- Data Rows -->
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+</mat-table>
