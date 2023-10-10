@@ -15,7 +15,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon';
+import { CgpaPageComponent } from './cgpa-page/cgpa-page.component'; 
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
     StudentInfoComponent,
     StudentInfoInputComponent,
     DashboardComponent,
+    CgpaPageComponent,
   ],
   imports: [
     BrowserModule,

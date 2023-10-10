@@ -1,4 +1,11 @@
-import { DatabaseMap, getStudentDatabase, StudentInfo } from "./database";
+import { calculateCGPA } from "./cgpa";
+import {
+  DatabaseMap,
+  getStudentDatabase,
+  StudentInfo,
+  CourseMap,
+  getCourseDatabase,
+} from "./database";
 import { CSEDegree } from "./degree";
 import {
   SSHRule,
@@ -13,10 +20,33 @@ import {
   ThirtyTwoCreditRule,
 } from "./rule";
 
-// Path to the excel sheet containing student records.
-const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
-const rollNumber = 2019032;
-const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
+export const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
+export const courseListFilePath = "src/data/Course_Codes.xlsm";
+
+export const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
+export const studentDatabase: DatabaseMap = getStudentDatabase(
+  studentRecordsFilePath
+);
+
+export const gradeHierarchy = [
+  "A+",
+  "A",
+  "A-",
+  "B",
+  "B-",
+  "C",
+  "C-",
+  "D",
+  "I",
+  "S",
+  "W",
+  "F",
+  "X",
+  "",
+];
+
+export const disallowedGrades = ["I", "S", "W", "F", "X"];
+export const rollNumber = 2019032;
 
 function checkGraduation(rollNumber: number): Boolean {
   // Simple example for 1 rule in CSE
@@ -59,5 +89,13 @@ function checkGraduation(rollNumber: number): Boolean {
     return false;
   }
 }
+
+export function findCGPA(rollNumber: number) {
+  const student: StudentInfo = studentDatabase[rollNumber];
+  console.log(calculateCGPA(rollNumber, student));
+}
+
+
+findCGPA(2019150);
 
 // checkGraduation(rollNumber);

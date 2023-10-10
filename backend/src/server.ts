@@ -1,37 +1,15 @@
 import express from "express";
-import {
-  DatabaseMap,
-  getStudentDatabase,
-  CourseMap,
-  getCourseDatabase,
-  StudentInfo,
-} from "./database";
+import { StudentInfo } from "./database";
 
-const courseListFilePath = "src/data/Course_Codes.xlsm";
-const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
-const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
-const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
+import {
+  gradeHierarchy,
+  disallowedGrades,
+  studentDatabase,
+  courseDatabase,
+} from "./index";
 
 const app = express();
 const port = 3000;
-
-let disallowedGrades = ["I", "S", "W", "F", "X"];
-const gradeHierarchy = [
-  "A+",
-  "A",
-  "A-",
-  "B",
-  "B-",
-  "C",
-  "C-",
-  "D",
-  "I",
-  "S",
-  "W",
-  "F",
-  "X",
-  "",
-];
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -453,6 +431,34 @@ app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
+});
+
+app.get("/api/degree/:rollNumber/semester-wise-cgpa", (req, res) => {
+  // Get the rollNumber parameter from the request URL.
+  const { rollNumber } = req.params;
+
+  // Check if the roll number exists in the database.
+  if (studentDatabase.hasOwnProperty(rollNumber)) {
+    // Replace this with your logic to fetch semester-wise CGPA data.
+    // You can calculate it from the student's course grades and credits.
+    // For demonstration purposes, let's assume you have a function to calculate CGPA.
+    // const semesterWiseCGPA = calculateSemesterWiseCGPA(rollNumber);
+
+    // Return the semester-wise CGPA data.
+    res.json([
+      { semester: "Semester 1", cgpa: 3.75 },
+      { semester: "Semester 2", cgpa: 3.82 },
+      { semester: "Semester 3", cgpa: 3.96 },
+      { semester: "Semester 4", cgpa: 3.89 },
+      { semester: "Semester 5", cgpa: 3.91 },
+      { semester: "Semester 6", cgpa: 4.0 },
+      { semester: "Semester 7", cgpa: 3.98 },
+      { semester: "Semester 8", cgpa: 4.0 },
+    ]);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
 });
 
 app.listen(port, () => {

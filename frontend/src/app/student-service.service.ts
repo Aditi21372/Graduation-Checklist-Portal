@@ -59,4 +59,8 @@ export class StudentServiceService {
   get32Credits(rollNumber: number): Observable<any> {
     return this.http.get(this.apiUrl + 'degree/' + String(rollNumber) + '/thirtytwocredits');
   }
+
+  getSemWiseCGPA(rollNumber: number): Observable<any> {
+    return this.http.get(this.apiUrl + 'degree/' + String(rollNumber) + '/semester-wise-cgpa');
+  }
 }
