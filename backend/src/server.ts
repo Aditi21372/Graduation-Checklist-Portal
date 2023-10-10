@@ -1,37 +1,15 @@
 import express from "express";
-import {
-  DatabaseMap,
-  getStudentDatabase,
-  CourseMap,
-  getCourseDatabase,
-  StudentInfo,
-} from "./database";
+import { StudentInfo } from "./database";
 
-const courseListFilePath = "src/data/Course_Codes.xlsm";
-const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
-const studentDatabase: DatabaseMap = getStudentDatabase(studentRecordsFilePath);
-const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
+import {
+  gradeHierarchy,
+  disallowedGrades,
+  studentDatabase,
+  courseDatabase,
+} from "./index";
 
 const app = express();
 const port = 3000;
-
-let disallowedGrades = ["I", "S", "W", "F", "X"];
-const gradeHierarchy = [
-  "A+",
-  "A",
-  "A-",
-  "B",
-  "B-",
-  "C",
-  "C-",
-  "D",
-  "I",
-  "S",
-  "W",
-  "F",
-  "X",
-  "",
-];
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");

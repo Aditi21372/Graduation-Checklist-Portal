@@ -1,9 +1,6 @@
-import { StudentInfo, CourseMap, getCourseDatabase } from "./database";
+import { StudentInfo} from "./database";
+import { courseDatabase, disallowedGrades } from "./index";
 
-// Path to the excel sheet containing courses and their course codes.
-const courseListFilePath = "src/data/Course_Codes.xlsm";
-const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
-let disallowedGrades = ["I", "S", "W", "F", "X"];
 
 export interface IRule {
   ruleId: number;
@@ -241,13 +238,13 @@ export class RequiredCreditRule implements IRule {
 
   checkRule(rollNumber: number, studentInfo: StudentInfo): Boolean {
     const studentCourses = studentInfo["courses"];
-    disallowedGrades = ["I", "W", "F", "X"];
+    let disallowedGradesTemp = ["I", "W", "F", "X"];
     let credits = 0;
     let coursesTaken = new Map<string, number>();
 
     for (const course of studentCourses) {
       if (
-        !disallowedGrades.includes(course["grade"]) &&
+        !disallowedGradesTemp.includes(course["grade"]) &&
         !coursesTaken.has(course["courseCode"])
       ) {
         credits += course["credit"];
