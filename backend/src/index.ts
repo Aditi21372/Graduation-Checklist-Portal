@@ -92,10 +92,7 @@ function checkGraduation(rollNumber: number): Boolean {
 
 export function findCGPA(rollNumber: number) {
   const student: StudentInfo = studentDatabase[rollNumber];
-  console.log(calculateCGPA(rollNumber, student));
+  return calculateCGPA(student);
 }
-
-
-findCGPA(2019150);
 
 // checkGraduation(rollNumber);

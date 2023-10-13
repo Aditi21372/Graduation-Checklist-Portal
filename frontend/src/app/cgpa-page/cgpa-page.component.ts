@@ -1,29 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { StudentServiceService } from '../student-service.service'; // Import your service here
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { StudentServiceService } from "../student-service.service"; // Import your service here
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
-  selector: 'app-cgpa-page',
-  templateUrl: './cgpa-page.component.html',
-  styleUrls: ['./cgpa-page.component.css'],
+  selector: "app-cgpa-page",
+  templateUrl: "./cgpa-page.component.html",
+  styleUrls: ["./cgpa-page.component.css"],
 })
 export class CgpaPageComponent implements OnInit {
-  displayedColumns: string[] = ['semester', 'cgpa'];
+  displayedColumns: string[] = ["semester", "sgpa", "cgpa"];
   dataSource: MatTableDataSource<any>;
 
   constructor(
     private route: ActivatedRoute,
-    private studentService: StudentServiceService
+    private studentService: StudentServiceService,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource();
+  }
+
+  goBack() {
+    this.router.navigate(["/student-info-input"]);
   }
 
   ngOnInit() {
     // Get the 'rollNumber' parameter from the route
     this.route.params.subscribe((params) => {
       // Check if 'rollNumber' is a valid number
-      const rollNumber = +params['rollNumber'];
+      const rollNumber = +params["rollNumber"];
 
       if (!isNaN(rollNumber)) {
         // Fetch CGPA data using the retrieved 'rollNumber'
@@ -35,6 +40,7 @@ export class CgpaPageComponent implements OnInit {
             // Map the data to match the table structure
             const cgpaData = data.map((item: any) => ({
               semester: item.semester,
+              sgpa: item.sgpa,
               cgpa: item.cgpa,
             }));
 
@@ -43,7 +49,7 @@ export class CgpaPageComponent implements OnInit {
           });
       } else {
         // Handle the case where 'rollNumber' is not a valid number
-        console.error('Invalid rollNumber:', params['rollNumber']);
+        console.error("Invalid rollNumber:", params["rollNumber"]);
       }
     });
   }

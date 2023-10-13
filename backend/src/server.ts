@@ -6,6 +6,7 @@ import {
   disallowedGrades,
   studentDatabase,
   courseDatabase,
+  findCGPA,
 } from "./index";
 
 const app = express();
@@ -442,19 +443,10 @@ app.get("/api/degree/:rollNumber/semester-wise-cgpa", (req, res) => {
     // Replace this with your logic to fetch semester-wise CGPA data.
     // You can calculate it from the student's course grades and credits.
     // For demonstration purposes, let's assume you have a function to calculate CGPA.
-    // const semesterWiseCGPA = calculateSemesterWiseCGPA(rollNumber);
+    const semesterWiseCGPA = findCGPA(Number(rollNumber));
 
     // Return the semester-wise CGPA data.
-    res.json([
-      { semester: "Semester 1", cgpa: 3.75 },
-      { semester: "Semester 2", cgpa: 3.82 },
-      { semester: "Semester 3", cgpa: 3.96 },
-      { semester: "Semester 4", cgpa: 3.89 },
-      { semester: "Semester 5", cgpa: 3.91 },
-      { semester: "Semester 6", cgpa: 4.0 },
-      { semester: "Semester 7", cgpa: 3.98 },
-      { semester: "Semester 8", cgpa: 4.0 },
-    ]);
+    res.json(semesterWiseCGPA);
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
