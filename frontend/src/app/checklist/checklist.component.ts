@@ -1,4 +1,10 @@
-import { Component, OnInit, Input, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
@@ -10,7 +16,8 @@ import { StudentServiceService } from '../student-service.service';
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
-  @ViewChild('coreCoursesDialogContent') coreCoursesDialogContent!: TemplateRef<any>;
+  @ViewChild('coreCoursesDialogContent')
+  coreCoursesDialogContent!: TemplateRef<any>;
   branch: string = '';
   displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
   displayedColumn: string[] = ['rule', 'status', 'credits'];
@@ -27,7 +34,10 @@ export class ChecklistComponent implements OnInit {
   tablesData: MatTableDataSource<any>[] = [];
   rules: any[] = [];
 
-  constructor(private studentService: StudentServiceService, private dialog: MatDialog) {
+  constructor(
+    private studentService: StudentServiceService,
+    private dialog: MatDialog
+  ) {
     this.dataSource = new MatTableDataSource();
     this.dataSourceTwo = new MatTableDataSource();
   }
@@ -53,7 +63,7 @@ export class ChecklistComponent implements OnInit {
 
   openCoreCoursesDialog(): void {
     const dialogRef = this.dialog.open(this.coreCoursesDialogContent, {
-      width: '800px', // Set the width as per your requirement
+      width: '1000px', // Set the width as per your requirement
     });
 
     dialogRef.afterClosed().subscribe(() => {
