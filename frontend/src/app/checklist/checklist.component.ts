@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
 
@@ -9,6 +10,7 @@ import { StudentServiceService } from '../student-service.service';
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
+  @ViewChild('coreCoursesDialogContent') coreCoursesDialogContent!: TemplateRef<any>;
   branch: string = '';
   displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
   displayedColumn: string[] = ['rule', 'status', 'credits'];
@@ -16,6 +18,8 @@ export class ChecklistComponent implements OnInit {
   isTable2Expanded = [true, true, true, true, true];
   completedMandatory = true;
   completedBuckets = [true, true, true, true, true];
+  completedCoreCourses = true;
+  isCoreCoursesExpanded = true;
 
   dataSource: MatTableDataSource<any>;
   dataSourceTwo: MatTableDataSource<any>;
@@ -23,7 +27,7 @@ export class ChecklistComponent implements OnInit {
   tablesData: MatTableDataSource<any>[] = [];
   rules: any[] = [];
 
-  constructor(private studentService: StudentServiceService) {
+  constructor(private studentService: StudentServiceService, private dialog: MatDialog) {
     this.dataSource = new MatTableDataSource();
     this.dataSourceTwo = new MatTableDataSource();
   }
@@ -39,12 +43,26 @@ export class ChecklistComponent implements OnInit {
         this.populateSSH();
         this.populateCW();
         this.populateSG();
-        this.populateBTP();
-        this.populateTwoXXCredits();
+        this.populate32Credits();
         this.populateIPCredits();
         this.populateOnlineCourseCredits();
-        this.populate32Credits();
+        this.populateTwoXXCredits();
+        this.populateBTP();
       });
+  }
+
+  openCoreCoursesDialog(): void {
+    const dialogRef = this.dialog.open(this.coreCoursesDialogContent, {
+      width: '800px', // Set the width as per your requirement
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      // Handle close event if needed
+    });
+  }
+
+  closeDialog(): void {
+    this.dialog.closeAll();
   }
 
   // Toggle function to expand/collapse panels
@@ -59,6 +77,14 @@ export class ChecklistComponent implements OnInit {
     }
   }
 
+  toggleMandatoryTable(row: any) {
+    // Check if the clicked row is the "Core Courses" row.
+    if (row.rule === 'Core Courses') {
+      // Toggle the visibility of the Mandatory Courses table.
+      this.isChecklistVisible = !this.isChecklistVisible;
+    }
+  }
+
   populateMandatory() {
     this.branch = this.branch.slice(
       this.branch.lastIndexOf('/') + 1,
@@ -70,6 +96,7 @@ export class ChecklistComponent implements OnInit {
       .subscribe((data: any) => {
         this.dataSource = new MatTableDataSource();
         let courseDetails = data;
+        let credits = 0;
 
         const newData = [];
 
@@ -80,10 +107,28 @@ export class ChecklistComponent implements OnInit {
             credits: courseDetails[i].credits,
             grade: courseDetails[i].grade,
           });
+
           if (courseDetails[i].status !== 'Done') {
             this.completedMandatory = false;
+          } else {
+            credits += courseDetails[i].credits;
           }
         }
+
+        let status = 'Not Done';
+
+        if (this.completedMandatory) {
+          status = 'Done';
+        }
+
+        const tempData = [];
+        tempData.push({
+          rule: 'Core Courses',
+          status: status,
+          credits: credits,
+        });
+        this.rules.push(tempData);
+        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
 
         this.dataSource.data = [...this.dataSource.data, ...newData];
       });
@@ -111,7 +156,7 @@ export class ChecklistComponent implements OnInit {
               atleastOne = true;
             }
           }
-          if(!atleastOne){
+          if (!atleastOne) {
             this.completedBuckets[i] = false;
           }
           this.tablesData.push(new MatTableDataSource(newData));
@@ -142,7 +187,7 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: '2 credits of Comunity Work',
+        rule: '2 credits of Community Work',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
       });

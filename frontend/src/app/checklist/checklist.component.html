@@ -27,24 +27,25 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card>
-  <mat-card-content>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <!-- Your component.html -->
-          <h2
-            [ngClass]="{
-              'green-text': completedMandatory,
-              'red-text': !completedMandatory
-            }"
-          >
-            Mandatory Courses
-          </h2>
-        </mat-panel-title>
-        <mat-panel-description> </mat-panel-description>
-      </mat-expansion-panel-header>
-      <table *ngIf="isTable1Expanded" mat-table [dataSource]="dataSource">
+<!-- Add this button below the first table -->
+<!-- Center the button vertically and horizontally -->
+<div class="center-button">
+  <button mat-raised-button (click)="openCoreCoursesDialog()">
+    View Core Courses
+  </button>
+</div>
+
+
+<ng-template #coreCoursesDialogContent>
+  <mat-card>
+    <mat-card-actions>
+      <button mat-button (click)="closeDialog()">Close</button>
+    </mat-card-actions>
+    <mat-card-content class="scrollable-content">
+      <div class="center-horizontally">
+        <h2><b>Core Courses</b></h2>
+      </div>
+      <table mat-table [dataSource]="dataSource">
         <!-- Define your table columns here -->
         <ng-container matColumnDef="course">
           <th mat-header-cell *matHeaderCellDef>Course</th>
@@ -67,15 +68,12 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          [ngClass]="{ 'red-row': row.status !== 'Done' }"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" [ngClass]="{ 'red-row': row.status !== 'Done' }"></tr>
       </table>
-    </mat-expansion-panel>
-  </mat-card-content>
-</mat-card>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
 
 <mat-card *ngFor="let tableData of tablesData; let i = index">
   <mat-card-content>

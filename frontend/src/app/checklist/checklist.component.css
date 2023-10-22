@@ -6,6 +6,10 @@ table .red-row {
   color: white;
 }
 
+body {
+  overflow: auto;
+}
+
 
 .mat-card {
   margin: 20px auto;
@@ -52,4 +56,43 @@ tr:nth-child(even) {
 
 .red-text {
   color: red;
+}
+
+button {
+  margin: 10px 10px; /* Add margin for space between buttons */
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44B3AD;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+/* Center the button vertically and horizontally */
+.center-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Adjust the margin as needed */
+}
+
+.scrollable-content {
+  max-height: 400px; /* Set the maximum height for scrolling */
+  overflow-y: auto;  /* Enable vertical scrolling */
+}
+
+.center-horizontally {
+  display: flex;
+  justify-content: center;
 }
