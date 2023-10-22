@@ -1,19 +1,36 @@
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  <!-- Semester Column -->
-  <ng-container matColumnDef="semester">
-    <mat-header-cell *matHeaderCellDef>Semester</mat-header-cell>
-    <mat-cell *matCellDef="let row">{{ row.semester }}</mat-cell>
-  </ng-container>
+<div>
+  <div class="container">
+    <button (click)="goBack()">← Go Back</button>
+  </div>
 
-  <!-- CGPA Column -->
-  <ng-container matColumnDef="cgpa">
-    <mat-header-cell *matHeaderCellDef>CGPA</mat-header-cell>
-    <mat-cell *matCellDef="let row">{{ row.cgpa }}</mat-cell>
-  </ng-container>
+  <mat-card>
+    <mat-card-content>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Semester Column -->
+        <ng-container matColumnDef="semester">
+          <th mat-header-cell *matHeaderCellDef>Semester</th>
+          <td mat-cell *matCellDef="let row">{{ row.semester }}</td>
+        </ng-container>
 
-  <!-- Header Row -->
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <!-- SGPA Column -->
+        <ng-container matColumnDef="sgpa">
+          <th mat-header-cell *matHeaderCellDef>SGPA</th>
+          <td mat-cell *matCellDef="let row">{{ row.sgpa }}</td>
+        </ng-container>
 
-  <!-- Data Rows -->
-  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-</mat-table>
+        <!-- CGPA Column -->
+        <ng-container matColumnDef="cgpa">
+          <th mat-header-cell *matHeaderCellDef>CGPA</th>
+          <td mat-cell *matCellDef="let row">{{ row.cgpa }}</td>
+        </ng-container>
+
+        <!-- Header Row -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <!-- Data Rows -->
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <!-- </mat-table> -->
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>
