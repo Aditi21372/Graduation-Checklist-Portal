@@ -8,7 +8,7 @@ import { StudentServiceService } from '../student-service.service';
   styleUrls: ['./student-info-input.component.css'],
 })
 export class StudentInfoInputComponent {
-  studentRollNumber: number = 0;
+  studentRollNumber: string = '';
   showContent: boolean = true;
   rollNumberExists: boolean = false;
   showMessage: string = '';
@@ -23,20 +23,18 @@ export class StudentInfoInputComponent {
   }
 
   onSubmit() {
-    this.studentService
-      .getStudentData(this.studentRollNumber.toString())
-      .subscribe(
-        (data) => {
-          this.rollNumberExists = true;
-          this.showContent = false;
-          this.showMessage = '';
-          this.router.navigate(['/dashboard', this.studentRollNumber]);
-        },
-        (error) => {
-          this.showMessage = '';
-          this.rollNumberExists = false;
-          this.showMessage = "Roll number doesn't exist in the database!";
-        }
-      );
+    this.studentService.getStudentData(this.studentRollNumber).subscribe(
+      (data) => {
+        this.rollNumberExists = true;
+        this.showContent = false;
+        this.showMessage = '';
+        this.router.navigate(['/dashboard', this.studentRollNumber]);
+      },
+      (error) => {
+        this.showMessage = '';
+        this.rollNumberExists = false;
+        this.showMessage = "Roll number doesn't exist in the database!";
+      }
+    );
   }
 }

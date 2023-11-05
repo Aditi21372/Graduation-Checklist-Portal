@@ -56,7 +56,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
     for (const courseCode of coreCourses) {
       let courseEntry = {
         course: courseCode,
-        status: "Not Done",
+        status: "Incomplete",
         credits: 0,
         grade: "",
       };
@@ -64,7 +64,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
       for (const studentCourse of studentCourses) {
         if (studentCourse["courseCode"] === courseCode) {
           if (!disallowedGrades.includes(studentCourse["grade"])) {
-            courseEntry.status = "Done";
+            courseEntry.status = "Complete";
             courseEntry.credits = studentCourse["credit"];
             const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
             const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
@@ -72,7 +72,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
               courseEntry.grade = studentCourse["grade"];
             }
           } else {
-            if (courseEntry.status == "Done") continue;
+            if (courseEntry.status == "Complete") continue;
             courseEntry.status = "FAILED";
             courseEntry.credits = 0;
             courseEntry.grade = "F";
@@ -110,7 +110,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
       for (const courseCode of courseBucket) {
         let courseEntry = {
           course: courseCode,
-          status: "Not Done",
+          status: "Incomplete",
           credits: 0,
           grade: "",
         };
@@ -118,7 +118,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
         for (const studentCourse of studentCourses) {
           if (studentCourse["courseCode"] === courseCode) {
             if (!disallowedGrades.includes(studentCourse["grade"])) {
-              courseEntry.status = "Done";
+              courseEntry.status = "Complete";
               courseEntry.credits = studentCourse["credit"];
               const currentGradeIndex = gradeHierarchy.indexOf(
                 courseEntry.grade
@@ -128,7 +128,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
                 courseEntry.grade = studentCourse["grade"];
               }
             } else {
-              if (courseEntry.status == "Done") continue;
+              if (courseEntry.status == "Complete") continue;
               courseEntry.status = "FAILED";
               courseEntry.credits = 0;
               courseEntry.grade = "F";
@@ -156,7 +156,7 @@ app.get("/api/degree/:rollNumber/ssh", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -173,7 +173,7 @@ app.get("/api/degree/:rollNumber/ssh", (req, res) => {
     }
   }
   if (credits >= 12) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -188,7 +188,7 @@ app.get("/api/degree/:rollNumber/cw", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -200,7 +200,7 @@ app.get("/api/degree/:rollNumber/cw", (req, res) => {
     }
   }
   if (credits >= 2) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -216,7 +216,7 @@ app.get("/api/degree/:rollNumber/sg", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -228,7 +228,7 @@ app.get("/api/degree/:rollNumber/sg", (req, res) => {
     }
   }
   if (credits >= 2) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -243,7 +243,7 @@ app.get("/api/degree/:rollNumber/btp", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -273,11 +273,11 @@ app.get("/api/degree/:rollNumber/btp", (req, res) => {
     }
     for (const pairDiff of pairDifferences) {
       if (pairDiff == 1) {
-        courseEntry.status = "Done";
+        courseEntry.status = "Complete";
       }
     }
   } else if (credits == 0) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   } else {
     courseEntry.status = "Doesn't fulfill BTP requirements";
   }
@@ -295,7 +295,7 @@ app.get("/api/degree/:rollNumber/twoxxcourses", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -327,7 +327,7 @@ app.get("/api/degree/:rollNumber/twoxxcourses", (req, res) => {
   }
 
   if (courses <= 2) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
@@ -342,7 +342,7 @@ app.get("/api/degree/:rollNumber/ip", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -359,7 +359,7 @@ app.get("/api/degree/:rollNumber/ip", (req, res) => {
   }
 
   if (credits <= 8) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   } else {
     courseEntry.status = "Doesn't fulfill IP/IS/UR requirements";
   }
@@ -376,7 +376,7 @@ app.get("/api/degree/:rollNumber/onlinecourses", (req, res) => {
   let credits = 0;
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
@@ -389,7 +389,7 @@ app.get("/api/degree/:rollNumber/onlinecourses", (req, res) => {
   }
 
   if (credits <= 8) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   } else {
     courseEntry.status = "Doesn't fulfill Online Course requirements";
   }
@@ -406,13 +406,13 @@ app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
   let coursesTaken = new Map<string, number>();
 
   let courseEntry = {
-    status: "Not Done",
+    status: "Incomplete",
     credits: 0,
   };
 
   for (const course of studentCourses) {
     // Doesn't check for a 2xx course.
-    // Doesn't check for courses that were not done in the last four semesters.
+    // Doesn't check for courses that were Incomplete in the last four semesters.
     if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5") {
       continue;
     }
@@ -428,7 +428,7 @@ app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
   }
 
   if (credits >= 32) {
-    courseEntry.status = "Done";
+    courseEntry.status = "Complete";
   }
   courseEntry.credits = credits;
   res.json(courseEntry);
