@@ -1,16 +1,46 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { DashboardComponent } from "./dashboard/dashboard.component";
-import { StudentInfoInputComponent } from "./student-info-input/student-info-input.component";
-import { ChecklistComponent } from "./checklist/checklist.component";
-import { CgpaPageComponent
- } from "./cgpa-page/cgpa-page.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { StudentInfoInputComponent } from './student-info-input/student-info-input.component';
+import { ChecklistComponent } from './checklist/checklist.component';
+import { CgpaPageComponent } from './cgpa-page/cgpa-page.component';
+import { CoreCoursesListComponent } from './core-courses-list/core-courses-list.component';
+import { SshCoursesListComponent } from './ssh-courses-list/ssh-courses-list.component';
+import { OnlineCoursesListComponent } from './online-courses-list/online-courses-list.component';
+import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
+import { BtpDetailsComponent } from './btp-details/btp-details.component';
+import { IpDetailsComponent } from './ip-details/ip-details.component';
+import { CwDetailsComponent } from './cw-details/cw-details.component';
+import { SgDetailsComponent } from './sg-details/sg-details.component';
+import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
+
 const routes: Routes = [
   { path: '', redirectTo: '/student-info-input', pathMatch: 'full' },
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
-  { path: "cgpa-page/:rollNumber", component: CgpaPageComponent },
+  { path: 'cgpa-page/:rollNumber', component: CgpaPageComponent },
+  {
+    path: 'core-courses-list/:rollNumber',
+    component: CoreCoursesListComponent,
+  },
+  { path: 'ssh-courses-list/:rollNumber', component: SshCoursesListComponent },
+  { path: 'btp-details/:rollNumber', component: BtpDetailsComponent },
+  { path: 'ip-details/:rollNumber', component: IpDetailsComponent },
+  { path: 'cw-details/:rollNumber', component: CwDetailsComponent },
+  { path: 'sg-details/:rollNumber', component: SgDetailsComponent },
+  {
+    path: 'online-courses-list/:rollNumber',
+    component: OnlineCoursesListComponent,
+  },
+  {
+    path: 'twoxx-courses-list/:rollNumber',
+    component: TwoxxCoursesListComponent,
+  },
+  {
+    path: 'branch-courses-list/:rollNumber',
+    component: BranchCoursesListComponent,
+  },
 ];
 
 @NgModule({

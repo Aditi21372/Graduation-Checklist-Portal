@@ -8,6 +8,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-checklist',
@@ -16,11 +17,9 @@ import { StudentServiceService } from '../student-service.service';
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
-  @ViewChild('coreCoursesDialogContent')
-  coreCoursesDialogContent!: TemplateRef<any>;
   branch: string = '';
   displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
-  displayedColumn: string[] = ['rule', 'status', 'credits'];
+  displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
   isTable1Expanded = true;
   isTable2Expanded = [true, true, true, true, true];
   completedMandatory = true;
@@ -36,7 +35,8 @@ export class ChecklistComponent implements OnInit {
 
   constructor(
     private studentService: StudentServiceService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource();
     this.dataSourceTwo = new MatTableDataSource();
@@ -59,40 +59,6 @@ export class ChecklistComponent implements OnInit {
         this.populateTwoXXCredits();
         this.populateBTP();
       });
-  }
-
-  openCoreCoursesDialog(): void {
-    const dialogRef = this.dialog.open(this.coreCoursesDialogContent, {
-      width: '1000px', // Set the width as per your requirement
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      // Handle close event if needed
-    });
-  }
-
-  closeDialog(): void {
-    this.dialog.closeAll();
-  }
-
-  // Toggle function to expand/collapse panels
-  toggleTable(tableNumber: number, i: number) {
-    switch (tableNumber) {
-      case 1:
-        this.isTable1Expanded = !this.isTable1Expanded;
-        break;
-      case 2:
-        this.isTable2Expanded[i] = !this.isTable2Expanded[i];
-        break;
-    }
-  }
-
-  toggleMandatoryTable(row: any) {
-    // Check if the clicked row is the "Core Courses" row.
-    if (row.rule === 'Core Courses') {
-      // Toggle the visibility of the Mandatory Courses table.
-      this.isChecklistVisible = !this.isChecklistVisible;
-    }
   }
 
   populateMandatory() {
@@ -118,17 +84,17 @@ export class ChecklistComponent implements OnInit {
             grade: courseDetails[i].grade,
           });
 
-          if (courseDetails[i].status !== 'Done') {
+          if (courseDetails[i].status !== 'Complete') {
             this.completedMandatory = false;
           } else {
             credits += courseDetails[i].credits;
           }
         }
 
-        let status = 'Not Done';
+        let status = 'Incomplete';
 
         if (this.completedMandatory) {
-          status = 'Done';
+          status = 'Complete';
         }
 
         const tempData = [];
@@ -136,6 +102,7 @@ export class ChecklistComponent implements OnInit {
           rule: 'Core Courses',
           status: status,
           credits: credits,
+          button_text: 'View Core Courses',
         });
         this.rules.push(tempData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
@@ -162,7 +129,7 @@ export class ChecklistComponent implements OnInit {
               grade: courseBucketDetails[i][j].grade,
             });
 
-            if (courseBucketDetails[i][j].status === 'Done') {
+            if (courseBucketDetails[i][j].status === 'Complete') {
               atleastOne = true;
             }
           }
@@ -185,6 +152,7 @@ export class ChecklistComponent implements OnInit {
           rule: '12 credits of SSH courses',
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
+          button_text: 'View SSH Courses',
         });
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -200,6 +168,7 @@ export class ChecklistComponent implements OnInit {
         rule: '2 credits of Community Work',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
+        button_text: 'View Details',
       });
       this.rules.push(newData);
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -215,6 +184,7 @@ export class ChecklistComponent implements OnInit {
         rule: '2 credits of Self Growth',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
+        button_text: 'View Details',
       });
       this.rules.push(newData);
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -232,6 +202,7 @@ export class ChecklistComponent implements OnInit {
           rule: 'BTP',
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
+          button_text: 'View Details',
         });
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -249,6 +220,7 @@ export class ChecklistComponent implements OnInit {
           rule: 'Atmost two 2xx level courses',
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
+          button_text: 'View Courses',
         });
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -264,6 +236,7 @@ export class ChecklistComponent implements OnInit {
         rule: 'Atmost 8 credits of IP/IS/UR',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
+        button_text: 'View Details',
       });
       this.rules.push(newData);
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -281,6 +254,7 @@ export class ChecklistComponent implements OnInit {
           rule: 'Atmost 8 credits of online courses',
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
+          button_text: 'View Online Courses',
         });
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
@@ -296,9 +270,44 @@ export class ChecklistComponent implements OnInit {
         rule: '32 Credits of CSE Courses',
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
+        button_text: 'View CSE Courses',
       });
       this.rules.push(newData);
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
+  }
+
+  // Add this function to navigate to different pages based on the row data
+  navigateToPage(element: any): void {
+    // Example: Navigate to a page based on the 'rule' property
+    switch (element.rule) {
+      case 'Core Courses':
+        this.router.navigate(['/core-courses-list', this.rollNumber]);
+        break;
+      case '12 credits of SSH courses':
+        this.router.navigate(['/ssh-courses-list', this.rollNumber]);
+        break;
+      case '2 credits of Community Work':
+        this.router.navigate(['/cw-details', this.rollNumber]);
+        break;
+      case '2 credits of Self Growth':
+        this.router.navigate(['/sg-details', this.rollNumber]);
+        break;
+      case 'BTP':
+        this.router.navigate(['/btp-details', this.rollNumber]);
+        break;
+      case 'Atmost two 2xx level courses':
+        this.router.navigate(['/twoxx-courses-list', this.rollNumber]);
+        break;
+      case 'Atmost 8 credits of IP/IS/UR':
+        this.router.navigate(['/ip-details', this.rollNumber]);
+        break;
+      case '32 Credits of CSE Courses':
+        this.router.navigate(['/branch-courses-list', this.rollNumber]);
+        break;
+      case 'Atmost 8 credits of online courses':
+        this.router.navigate(['/online-courses-list', this.rollNumber]);
+        break;
+    }
   }
 }

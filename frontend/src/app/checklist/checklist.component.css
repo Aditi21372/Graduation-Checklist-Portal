@@ -12,7 +12,7 @@ body {
 
 .mat-card {
   margin: 20px auto;
-  max-width: 800px;
+  max-width: 600px; /* Decreased max-width for the mat-card */
   background-color: #f4f4f4;
   border-radius: 10px;
   padding: 20px;
@@ -29,7 +29,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 10px auto;
-  max-width: 600px;
+  max-width: 400px; /* Decreased max-width for the table */
 }
 
 th,
@@ -57,13 +57,13 @@ tr:nth-child(even) {
   color: red;
 }
 
-button {
-  margin: 10px 10px; /* Add margin for space between buttons */
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
+/* Adjust the button styles within the table cell */
+td button {
+  margin: 5px; /* Adjust margin for space around the button */
+  padding: 4px 8px; /* Adjust padding to make the button smaller */
+  font-size: 14px; /* Adjust font size */
+  font-weight: normal; /* Use normal font weight */
+  text-align: center; /* Center the button within the cell */
   text-decoration: none;
   background-color: #44b3ad;
   color: #fff;
@@ -72,12 +72,20 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
+  width: 100%; /* Make the button occupy the full width of the cell */
+  max-width: 150px; /* Set a maximum width for the button */
 }
 
-button:hover {
+td button:hover {
   background-color: #367976;
   border-color: #367976;
   color: #fff;
+}
+
+/* Adjust the minimum width for the button column only */
+th.mat-header-cell.button-column,
+td.mat-cell.button-column {
+  width: 1%; /* Set a minimum width for the button column */
 }
 
 /* Center the button vertically and horizontally */

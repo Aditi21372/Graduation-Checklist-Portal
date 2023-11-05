@@ -18,6 +18,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { CgpaPageComponent } from './cgpa-page/cgpa-page.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { CoreCoursesListComponent } from './core-courses-list/core-courses-list.component';
+import { SshCoursesListComponent } from './ssh-courses-list/ssh-courses-list.component';
+import { IpDetailsComponent } from './ip-details/ip-details.component';
+import { BtpDetailsComponent } from './btp-details/btp-details.component';
+import { SgDetailsComponent } from './sg-details/sg-details.component';
+import { CwDetailsComponent } from './cw-details/cw-details.component';
+import { OnlineCoursesListComponent } from './online-courses-list/online-courses-list.component';
+import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
+import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +37,15 @@ import { MatDialogModule } from '@angular/material/dialog';
     StudentInfoInputComponent,
     DashboardComponent,
     CgpaPageComponent,
+    CoreCoursesListComponent,
+    SshCoursesListComponent,
+    IpDetailsComponent,
+    BtpDetailsComponent,
+    SgDetailsComponent,
+    CwDetailsComponent,
+    OnlineCoursesListComponent,
+    TwoxxCoursesListComponent,
+    BranchCoursesListComponent,
   ],
   imports: [
     BrowserModule,
