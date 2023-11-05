@@ -1,10 +1,12 @@
+import { gradeHierarchy } from "./index";
 import { StudentInfo } from "./database";
-import { disallowedGrades } from "./index";
 
 type Grade = { semester: string; sgpa: number; cgpa: number };
-
+type Course = {
+  grade: number;
+  credit: number;
+};
 type GradeMap = { [grade: string]: number };
-
 const gradeMap: GradeMap = {
   "A+": 10,
   A: 10,
@@ -16,6 +18,7 @@ const gradeMap: GradeMap = {
   D: 4,
   F: 2,
 };
+const disallowedGrades = ["I", "W", "X"];
 
 export function calculateCGPA(studentInfo: StudentInfo): Grade[] {
   let maxSem = 8;
@@ -36,35 +39,96 @@ export function calculateCGPA(studentInfo: StudentInfo): Grade[] {
   return calculateSGPA(studentInfo, semesters);
 }
 
+function calculateWorseGradeSum(
+  coursesTaken: Map<string, Course>,
+  worseCreds: number
+): Number {
+  let worseGradeSum = 0;
+
+  const creditGroups = new Map<number, number[]>();
+  for (const [courseCode, course] of coursesTaken) {
+    const { grade, credit } = course;
+    if (creditGroups.has(credit)) {
+      creditGroups.get(credit)!.push(grade);
+    } else {
+      creditGroups.set(credit, [grade]);
+    }
+  }
+
+  creditGroups.forEach((courses, credit) => {
+    courses.sort((a, b) => a - b);
+  });
+
+  for (const course of coursesTaken.keys()) {
+    if (worseCreds <= 0) break;
+  }
+  return worseGradeSum;
+}
+
 function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
   let semwiseGpa = [];
   let cumulativeGradeSum = 0;
   let cumulativeCreditSum = 0;
   let cgpa = 0;
+  let onlineCreds = 0;
+  let coursesTaken = new Map<string, Course>();
   for (let i = 0; i < semesters.length; i++) {
     let creditSum = 0;
     let gradeSum = 0;
+    let failCredits = 0;
     let semesterGpa: Grade = { semester: "", sgpa: 0, cgpa: 0 };
     for (let course of studentInfo.courses) {
       if (String(course.semester) === semesters[i]) {
-        if (course.grade === "F") {
-          gradeSum += 2 * course.credit;
-          creditSum += course.credit;
-        }
         if (disallowedGrades.includes(course.grade)) continue;
 
-        // Calculate the grade points for the course
-        let gradePoint = gradeMap[course.grade];
+        if (coursesTaken.has(course.courseCode)) {
+          const prevGrade = coursesTaken.get(course.courseCode)?.grade;
+          if (prevGrade && prevGrade < gradeMap[course.grade]) {
+            const courseGrade: Course = {
+              grade: gradeMap[course.grade],
+              credit: course.credit,
+            };
+            coursesTaken.set(course.courseCode, courseGrade);
+            cumulativeGradeSum -= prevGrade * course.credit;
+          } else continue;
+        } else {
+          if (course.grade === "F") {
+            gradeSum += 2 * course.credit;
+            creditSum += course.credit;
+            failCredits += course.credit;
+            const courseGrade: Course = {
+              grade: gradeMap[course.grade],
+              credit: course.credit,
+            };
+            coursesTaken.set(course.courseCode, courseGrade);
+          }
+          if (course.grade === "S") {
+            if (course.courseCode.startsWith("MSC")) continue;
+            else {
+              onlineCreds += course.credit;
+            }
+          }
+          continue;
+        }
+        const courseGrade: Course = {
+          grade: gradeMap[course.grade],
+          credit: course.credit,
+        };
+        coursesTaken.set(course.courseCode, courseGrade);
         creditSum += course.credit;
-        // Update the CGPA
-        gradeSum += gradePoint * course.credit;
+        gradeSum += gradeMap[course.grade] * course.credit;
       }
     }
-    cumulativeCreditSum += creditSum;
-    cumulativeGradeSum += gradeSum;
+    cumulativeCreditSum += creditSum - failCredits;
+    cumulativeGradeSum += gradeSum - 2 * failCredits;
+
+    if (Number(semesters[i]) == 6 && cumulativeCreditSum + onlineCreds > 116) {
+      const worseCreds = Math.min(8, cumulativeCreditSum + onlineCreds - 116);
+      const worseGrades = calculateWorseGradeSum(coursesTaken, worseCreds);
+    }
 
     let sgpa = 0;
-    if (creditSum != 0) {
+    if (creditSum !== 0) {
       sgpa = gradeSum / creditSum;
     }
     cgpa = cumulativeGradeSum / cumulativeCreditSum;
