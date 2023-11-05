@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class DashboardComponent {
   rollNumber: number = 0;
+  gradStatus: string = ''; // Define gradStatus property
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
@@ -16,6 +17,11 @@ export class DashboardComponent {
     this.route.params.subscribe((params) => {
       this.rollNumber = params['rollNumber'];
     });
+  }
+
+  // Adjust the method to handle a boolean and convert it to a string if necessary
+  onGraduationStatusChanged(status: boolean): void {
+    this.gradStatus = status.toString();
   }
 
   goBack() {

@@ -434,6 +434,34 @@ app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
   res.json(courseEntry);
 });
 
+app.get("/api/degree/:rollNumber/required-credits", (req, res) => {
+  const { rollNumber } = req.params;
+  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+  const studentCourses = studentInfo["courses"];
+  let courseEntry = {
+    status: "Incomplete",
+    credits: 0,
+  };
+  let disallowedGradesTemp = ["I", "W", "F", "X"];
+  let credits = 0;
+  let coursesTaken = new Map<string, number>();
+
+  for (const course of studentCourses) {
+    if (
+      !disallowedGradesTemp.includes(course["grade"]) &&
+      !coursesTaken.has(course["courseCode"])
+    ) {
+      credits += course["credit"];
+      coursesTaken.set(course["courseCode"], course["credit"]);
+    }
+  }
+  if (credits >= 156) {
+    courseEntry.status = "Complete";
+  }
+  courseEntry.credits = credits;
+  res.json(courseEntry);
+});
+
 app.get("/api/degree/:rollNumber/semester-wise-cgpa", (req, res) => {
   // Get the rollNumber parameter from the request URL.
   const { rollNumber } = req.params;
