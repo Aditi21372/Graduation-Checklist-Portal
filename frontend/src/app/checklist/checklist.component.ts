@@ -1,14 +1,8 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-checklist',
@@ -17,6 +11,8 @@ import { Router } from '@angular/router';
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
+  @Output() graduationStatusChanged: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
   branch: string = '';
   displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
   displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
@@ -32,33 +28,50 @@ export class ChecklistComponent implements OnInit {
   isChecklistVisible = false;
   tablesData: MatTableDataSource<any>[] = [];
   rules: any[] = [];
+  hasGraduated: boolean[] = [];
+  graduationStatus: boolean = false;
 
   constructor(
     private studentService: StudentServiceService,
-    private dialog: MatDialog,
     private router: Router
   ) {
     this.dataSource = new MatTableDataSource();
     this.dataSourceTwo = new MatTableDataSource();
   }
 
-  ngOnInit() {
-    // // Call the service to fetch student data
-    this.studentService
+  async ngOnInit() {
+    // Call the service to fetch student data
+    const studentData = await this.studentService
       .getStudentData(this.rollNumber.toString())
-      .subscribe((data: any) => {
-        this.branch = data.branch;
-        this.populateMandatory();
-        this.populateBuckets();
-        this.populateSSH();
-        this.populateCW();
-        this.populateSG();
-        this.populate32Credits();
-        this.populateIPCredits();
-        this.populateOnlineCourseCredits();
-        this.populateTwoXXCredits();
-        this.populateBTP();
-      });
+      .toPromise();
+    this.branch = studentData.branch;
+
+    // Create an array of observables for all the asynchronous method calls
+    const observables = [
+      this.populateMandatory(),
+      this.populateBuckets(),
+      this.populateSSH(),
+      this.populateCW(),
+      this.populateSG(),
+      this.populate32Credits(),
+      this.populateIPCredits(),
+      this.populateOnlineCourseCredits(),
+      this.populateTwoXXCredits(),
+      this.populateBTP(),
+      this.required156Credits(),
+    ];
+
+    // Use forkJoin to wait for all observables to complete
+    forkJoin(observables).subscribe(() => {
+      // Now, all asynchronous calls have completed
+      // Call the setGraduationStatus method
+      this.setGraduationStatus(this.hasGraduated);
+    });
+  }
+
+  // Sleep function to introduce a delay
+  sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   populateMandatory() {
@@ -95,6 +108,9 @@ export class ChecklistComponent implements OnInit {
 
         if (this.completedMandatory) {
           status = 'Complete';
+          this.hasGraduated.push(true);
+        } else {
+          this.hasGraduated.push(false);
         }
 
         const tempData = [];
@@ -154,6 +170,12 @@ export class ChecklistComponent implements OnInit {
           credits: courseBucketDetails.credits,
           button_text: 'View SSH Courses',
         });
+
+        if (courseBucketDetails.status !== 'Complete') {
+          this.hasGraduated.push(false);
+        } else {
+          this.hasGraduated.push(true);
+        }
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
@@ -171,6 +193,11 @@ export class ChecklistComponent implements OnInit {
         button_text: 'View Details',
       });
       this.rules.push(newData);
+      if (courseBucketDetails.status !== 'Complete') {
+        this.hasGraduated.push(false);
+      } else {
+        this.hasGraduated.push(true);
+      }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
@@ -187,6 +214,11 @@ export class ChecklistComponent implements OnInit {
         button_text: 'View Details',
       });
       this.rules.push(newData);
+      if (courseBucketDetails.status !== 'Complete') {
+        this.hasGraduated.push(false);
+      } else {
+        this.hasGraduated.push(true);
+      }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
@@ -205,6 +237,11 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Details',
         });
         this.rules.push(newData);
+        if (courseBucketDetails.status !== 'Complete') {
+          this.hasGraduated.push(false);
+        } else {
+          this.hasGraduated.push(true);
+        }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
   }
@@ -223,6 +260,11 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Courses',
         });
         this.rules.push(newData);
+        if (courseBucketDetails.status !== 'Complete') {
+          this.hasGraduated.push(false);
+        } else {
+          this.hasGraduated.push(true);
+        }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
   }
@@ -239,6 +281,11 @@ export class ChecklistComponent implements OnInit {
         button_text: 'View Details',
       });
       this.rules.push(newData);
+      if (courseBucketDetails.status !== 'Complete') {
+        this.hasGraduated.push(false);
+      } else {
+        this.hasGraduated.push(true);
+      }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
@@ -257,6 +304,11 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Online Courses',
         });
         this.rules.push(newData);
+        if (courseBucketDetails.status !== 'Complete') {
+          this.hasGraduated.push(false);
+        } else {
+          this.hasGraduated.push(true);
+        }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
   }
@@ -273,8 +325,41 @@ export class ChecklistComponent implements OnInit {
         button_text: 'View CSE Courses',
       });
       this.rules.push(newData);
+      if (courseBucketDetails.status !== 'Complete') {
+        this.hasGraduated.push(false);
+      } else {
+        this.hasGraduated.push(true);
+      }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
+  }
+
+  required156Credits() {
+    this.studentService
+      .getRequiredCredits(this.rollNumber)
+      .subscribe((data: any) => {
+        let completedCredits = data;
+
+        if (completedCredits.status !== 'Complete') {
+          this.hasGraduated.push(false);
+        } else {
+          this.hasGraduated.push(true);
+        }
+      });
+  }
+
+  setGraduationStatus(hasGraduated: boolean[]): void {
+    this.graduationStatus = true; // Assume true initially
+
+    for (let i = 0; i < hasGraduated.length; i++) {
+      console.log('Inside loop');
+      if (!this.hasGraduated[i]) {
+        this.graduationStatus = false;
+        console.log('Hello');
+        break; // Break out of the loop if any element is false
+      }
+    }
+    this.graduationStatusChanged.emit(this.graduationStatus);
   }
 
   // Add this function to navigate to different pages based on the row data
