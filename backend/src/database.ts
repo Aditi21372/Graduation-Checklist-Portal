@@ -128,27 +128,3 @@ export function getCourseDatabase(filePath: string): CourseMap {
   return courseDatabase;
 }
 
-export function readCGPA(filePath: string, rollNumber: number): number {
-  // Load the Excel file
-  let workbook = xlsx.readFile(filePath);
-
-  // Select the sheet you want to work with
-  // const sheetName = "Transcript"; // Change this to your sheet's name
-  let sheet = workbook.Sheets[workbook.SheetNames[1]];
-  sheet["B1"] = { t: "n", v: rollNumber };
-  console.log(sheet["E1"].v);
-
-  xlsx.writeFile(workbook, filePath);
-
-  workbook = xlsx.readFile(filePath);
-  sheet = workbook.Sheets[workbook.SheetNames[1]];
-  console.log(sheet["E1"].v);
-
-  // const workbook2 = xlsx.readFile(filePath);
-  // const sheet2 = workbook2.Sheets[workbook2.SheetNames[1]];
-  // console.log(sheet2["E1"].v);
-
-  return Number(sheet["J1"].v);
-}
-
-readCGPA("src/data/Student_Transcript_2019.xls", 2019005);
