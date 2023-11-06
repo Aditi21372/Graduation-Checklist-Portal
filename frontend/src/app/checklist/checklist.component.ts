@@ -1,21 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { StudentServiceService } from '../student-service.service';
-import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { StudentServiceService } from "../student-service.service";
+import { Router } from "@angular/router";
+import { forkJoin } from "rxjs";
 
 @Component({
-  selector: 'app-checklist',
-  templateUrl: './checklist.component.html',
-  styleUrls: ['./checklist.component.css'],
+  selector: "app-checklist",
+  templateUrl: "./checklist.component.html",
+  styleUrls: ["./checklist.component.css"],
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
-  @Output() graduationStatusChanged: EventEmitter<boolean> =
-    new EventEmitter<boolean>();
-  branch: string = '';
-  displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
-  displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
+  @Output() graduationStatusChanged: EventEmitter<boolean> = new EventEmitter<
+    boolean
+  >();
+  branch: string = "";
+  displayedColumns: string[] = ["course", "status", "credits", "grade"];
+  displayedColumn: string[] = ["rule", "status", "credits", "actions"];
   isTable1Expanded = true;
   isTable2Expanded = [true, true, true, true, true];
   completedMandatory = true;
@@ -46,8 +47,8 @@ export class ChecklistComponent implements OnInit {
       .toPromise();
     this.branch = studentData.branch;
 
-    // Create an array of observables for all the asynchronous method calls
-    const observables = [
+    // Create an array of asynchronous method calls as Promises
+    const promises = [
       this.populateMandatory(),
       this.populateBuckets(),
       this.populateSSH(),
@@ -61,22 +62,18 @@ export class ChecklistComponent implements OnInit {
       this.required156Credits(),
     ];
 
-    // Use forkJoin to wait for all observables to complete
-    forkJoin(observables).subscribe(() => {
-      // Now, all asynchronous calls have completed
-      // Call the setGraduationStatus method
-      this.setGraduationStatus(this.hasGraduated);
-    });
-  }
+    // Use Promise.all to wait for all Promises to complete
+    await Promise.all(promises);
 
-  // Sleep function to introduce a delay
-  sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    // Now, all asynchronous calls have completed
+    // Call the setGraduationStatus method
+    console.log(this.hasGraduated.length);
+    this.setGraduationStatus(this.hasGraduated);
   }
 
   populateMandatory() {
     this.branch = this.branch.slice(
-      this.branch.lastIndexOf('/') + 1,
+      this.branch.lastIndexOf("/") + 1,
       this.branch.length
     );
 
@@ -86,7 +83,6 @@ export class ChecklistComponent implements OnInit {
         this.dataSource = new MatTableDataSource();
         let courseDetails = data;
         let credits = 0;
-
         const newData = [];
 
         for (let i = 0; i < courseDetails.length; i++) {
@@ -97,17 +93,17 @@ export class ChecklistComponent implements OnInit {
             grade: courseDetails[i].grade,
           });
 
-          if (courseDetails[i].status !== 'Complete') {
+          if (courseDetails[i].status !== "Complete") {
             this.completedMandatory = false;
           } else {
             credits += courseDetails[i].credits;
           }
         }
 
-        let status = 'Incomplete';
+        let status = "Incomplete";
 
         if (this.completedMandatory) {
-          status = 'Complete';
+          status = "Complete";
           this.hasGraduated.push(true);
         } else {
           this.hasGraduated.push(false);
@@ -115,10 +111,10 @@ export class ChecklistComponent implements OnInit {
 
         const tempData = [];
         tempData.push({
-          rule: 'Core Courses',
+          rule: "Core Courses",
           status: status,
           credits: credits,
-          button_text: 'View Core Courses',
+          button_text: "View Core Courses",
         });
         this.rules.push(tempData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
@@ -145,7 +141,7 @@ export class ChecklistComponent implements OnInit {
               grade: courseBucketDetails[i][j].grade,
             });
 
-            if (courseBucketDetails[i][j].status === 'Complete') {
+            if (courseBucketDetails[i][j].status === "Complete") {
               atleastOne = true;
             }
           }
@@ -165,13 +161,13 @@ export class ChecklistComponent implements OnInit {
 
         const newData = [];
         newData.push({
-          rule: '12 credits of SSH courses',
+          rule: "12 credits of SSH courses",
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
-          button_text: 'View SSH Courses',
+          button_text: "View SSH Courses",
         });
 
-        if (courseBucketDetails.status !== 'Complete') {
+        if (courseBucketDetails.status !== "Complete") {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -187,13 +183,13 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: '2 credits of Community Work',
+        rule: "2 credits of Community Work",
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
-        button_text: 'View Details',
+        button_text: "View Details",
       });
       this.rules.push(newData);
-      if (courseBucketDetails.status !== 'Complete') {
+      if (courseBucketDetails.status !== "Complete") {
         this.hasGraduated.push(false);
       } else {
         this.hasGraduated.push(true);
@@ -208,13 +204,13 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: '2 credits of Self Growth',
+        rule: "2 credits of Self Growth",
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
-        button_text: 'View Details',
+        button_text: "View Details",
       });
       this.rules.push(newData);
-      if (courseBucketDetails.status !== 'Complete') {
+      if (courseBucketDetails.status !== "Complete") {
         this.hasGraduated.push(false);
       } else {
         this.hasGraduated.push(true);
@@ -231,13 +227,13 @@ export class ChecklistComponent implements OnInit {
 
         const newData = [];
         newData.push({
-          rule: 'BTP',
+          rule: "BTP",
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
-          button_text: 'View Details',
+          button_text: "View Details",
         });
         this.rules.push(newData);
-        if (courseBucketDetails.status !== 'Complete') {
+        if (courseBucketDetails.status !== "Complete") {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -254,13 +250,13 @@ export class ChecklistComponent implements OnInit {
 
         const newData = [];
         newData.push({
-          rule: 'Atmost two 2xx level courses',
+          rule: "Atmost two 2xx level courses",
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
-          button_text: 'View Courses',
+          button_text: "View Courses",
         });
         this.rules.push(newData);
-        if (courseBucketDetails.status !== 'Complete') {
+        if (courseBucketDetails.status !== "Complete") {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -275,13 +271,13 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: 'Atmost 8 credits of IP/IS/UR',
+        rule: "Atmost 8 credits of IP/IS/UR",
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
-        button_text: 'View Details',
+        button_text: "View Details",
       });
       this.rules.push(newData);
-      if (courseBucketDetails.status !== 'Complete') {
+      if (courseBucketDetails.status !== "Complete") {
         this.hasGraduated.push(false);
       } else {
         this.hasGraduated.push(true);
@@ -298,13 +294,13 @@ export class ChecklistComponent implements OnInit {
 
         const newData = [];
         newData.push({
-          rule: 'Atmost 8 credits of online courses',
+          rule: "Atmost 8 credits of online courses",
           status: courseBucketDetails.status,
           credits: courseBucketDetails.credits,
-          button_text: 'View Online Courses',
+          button_text: "View Online Courses",
         });
         this.rules.push(newData);
-        if (courseBucketDetails.status !== 'Complete') {
+        if (courseBucketDetails.status !== "Complete") {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -319,13 +315,13 @@ export class ChecklistComponent implements OnInit {
 
       const newData = [];
       newData.push({
-        rule: '32 Credits of CSE Courses',
+        rule: "32 Credits of CSE Courses",
         status: courseBucketDetails.status,
         credits: courseBucketDetails.credits,
-        button_text: 'View CSE Courses',
+        button_text: "View CSE Courses",
       });
       this.rules.push(newData);
-      if (courseBucketDetails.status !== 'Complete') {
+      if (courseBucketDetails.status !== "Complete") {
         this.hasGraduated.push(false);
       } else {
         this.hasGraduated.push(true);
@@ -340,7 +336,7 @@ export class ChecklistComponent implements OnInit {
       .subscribe((data: any) => {
         let completedCredits = data;
 
-        if (completedCredits.status !== 'Complete') {
+        if (completedCredits.status !== "Complete") {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -350,12 +346,12 @@ export class ChecklistComponent implements OnInit {
 
   setGraduationStatus(hasGraduated: boolean[]): void {
     this.graduationStatus = true; // Assume true initially
-
-    for (let i = 0; i < hasGraduated.length; i++) {
-      console.log('Inside loop');
+    console.log(hasGraduated);
+    for (let i = 0; i < 10; i++) {
+      console.log("Inside loop");
       if (!this.hasGraduated[i]) {
         this.graduationStatus = false;
-        console.log('Hello');
+        console.log("Hello");
         break; // Break out of the loop if any element is false
       }
     }
@@ -366,32 +362,32 @@ export class ChecklistComponent implements OnInit {
   navigateToPage(element: any): void {
     // Example: Navigate to a page based on the 'rule' property
     switch (element.rule) {
-      case 'Core Courses':
-        this.router.navigate(['/core-courses-list', this.rollNumber]);
+      case "Core Courses":
+        this.router.navigate(["/core-courses-list", this.rollNumber]);
         break;
-      case '12 credits of SSH courses':
-        this.router.navigate(['/ssh-courses-list', this.rollNumber]);
+      case "12 credits of SSH courses":
+        this.router.navigate(["/ssh-courses-list", this.rollNumber]);
         break;
-      case '2 credits of Community Work':
-        this.router.navigate(['/cw-details', this.rollNumber]);
+      case "2 credits of Community Work":
+        this.router.navigate(["/cw-details", this.rollNumber]);
         break;
-      case '2 credits of Self Growth':
-        this.router.navigate(['/sg-details', this.rollNumber]);
+      case "2 credits of Self Growth":
+        this.router.navigate(["/sg-details", this.rollNumber]);
         break;
-      case 'BTP':
-        this.router.navigate(['/btp-details', this.rollNumber]);
+      case "BTP":
+        this.router.navigate(["/btp-details", this.rollNumber]);
         break;
-      case 'Atmost two 2xx level courses':
-        this.router.navigate(['/twoxx-courses-list', this.rollNumber]);
+      case "Atmost two 2xx level courses":
+        this.router.navigate(["/twoxx-courses-list", this.rollNumber]);
         break;
-      case 'Atmost 8 credits of IP/IS/UR':
-        this.router.navigate(['/ip-details', this.rollNumber]);
+      case "Atmost 8 credits of IP/IS/UR":
+        this.router.navigate(["/ip-details", this.rollNumber]);
         break;
-      case '32 Credits of CSE Courses':
-        this.router.navigate(['/branch-courses-list', this.rollNumber]);
+      case "32 Credits of CSE Courses":
+        this.router.navigate(["/branch-courses-list", this.rollNumber]);
         break;
-      case 'Atmost 8 credits of online courses':
-        this.router.navigate(['/online-courses-list', this.rollNumber]);
+      case "Atmost 8 credits of online courses":
+        this.router.navigate(["/online-courses-list", this.rollNumber]);
         break;
     }
   }
