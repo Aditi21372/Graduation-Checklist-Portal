@@ -6,6 +6,7 @@
     <p>Roll Number: {{ rollNumber }}</p>
     <p>Name: {{ studentName }}</p>
     <p>Program: {{ branch }}</p>
+
     <p [ngClass]="{ 'graduated': gradStatus === 'true', 'incomplete': gradStatus !== 'true' }"> <strong>
       Graduation Status:
       <ng-container *ngIf="gradStatus === 'true'; else incompleteStatus">
