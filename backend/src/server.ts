@@ -73,7 +73,7 @@ app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
             }
           } else {
             if (courseEntry.status == "Complete") continue;
-            courseEntry.status = "FAILED";
+            courseEntry.status = "Failed";
             courseEntry.credits = 0;
             courseEntry.grade = "F";
           }
@@ -129,7 +129,7 @@ app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
               }
             } else {
               if (courseEntry.status == "Complete") continue;
-              courseEntry.status = "FAILED";
+              courseEntry.status = "Failed";
               courseEntry.credits = 0;
               courseEntry.grade = "F";
             }

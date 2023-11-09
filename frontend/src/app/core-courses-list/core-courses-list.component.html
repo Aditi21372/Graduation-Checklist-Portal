@@ -1,1 +1,73 @@
-<p>core-courses-list works!</p>
+
+  <mat-card>
+      <div class="center-horizontally">
+        <h1><b>Core Courses</b></h1>
+      </div>
+      <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="course">
+          <th mat-header-cell *matHeaderCellDef>Course</th>
+          <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="credits">
+          <th mat-header-cell *matHeaderCellDef>Credits</th>
+          <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="grade">
+          <th mat-header-cell *matHeaderCellDef>Grade</th>
+          <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [ngClass]="{ 'red-row': row.status !== 'Complete' }"
+        ></tr>
+      </table>
+      <mat-card-content *ngFor="let tableData of tablesData; let i = index">
+        <div class="vertical-spacer"></div>
+        <h1
+          [ngClass]="{
+            'green-text': completedBuckets[i],
+            'red-text': !completedBuckets[i]
+          }"
+        >
+          Any One (Mandatory Bucket {{ i + 1 }})
+        </h1>
+        <table mat-table [dataSource]="tableData">
+          <ng-container matColumnDef="course">
+            <th mat-header-cell *matHeaderCellDef>Course</th>
+            <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="credits">
+            <th mat-header-cell *matHeaderCellDef>Credits</th>
+            <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="grade">
+            <th mat-header-cell *matHeaderCellDef>Grade</th>
+            <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+    mat-row
+    *matRowDef="let row; columns: displayedColumns"
+    [ngClass]="{ 'red-row': !completedBuckets[i] }"
+  ></tr>
+        </table>
+      </mat-card-content>
+  </mat-card>
