@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { MatTableDataSource } from "@angular/material/table";
-import { StudentServiceService } from "../student-service.service";
-import { Router } from "@angular/router";
-import { forkJoin } from "rxjs";
+
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { StudentServiceService } from '../student-service.service';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: "app-checklist",
@@ -11,12 +12,11 @@ import { forkJoin } from "rxjs";
 })
 export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
-  @Output() graduationStatusChanged: EventEmitter<boolean> = new EventEmitter<
-    boolean
-  >();
-  branch: string = "";
-  displayedColumns: string[] = ["course", "status", "credits", "grade"];
-  displayedColumn: string[] = ["rule", "status", "credits", "actions"];
+  @Output() graduationStatusChanged: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
+  branch: string = '';
+  displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
+  displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
   isTable1Expanded = true;
   isTable2Expanded = [true, true, true, true, true];
   completedMandatory = true;
@@ -40,35 +40,29 @@ export class ChecklistComponent implements OnInit {
     this.dataSourceTwo = new MatTableDataSource();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Call the service to fetch student data
-    const studentData = await this.studentService
+    this.studentService
       .getStudentData(this.rollNumber.toString())
-      .toPromise();
-    this.branch = studentData.branch;
+      .subscribe((studentData) => {
+        this.branch = studentData.branch;
 
-    // Create an array of asynchronous method calls as Promises
-    const promises = [
-      this.populateMandatory(),
-      this.populateBuckets(),
-      this.populateSSH(),
-      this.populateCW(),
-      this.populateSG(),
-      this.populate32Credits(),
-      this.populateIPCredits(),
-      this.populateOnlineCourseCredits(),
-      this.populateTwoXXCredits(),
-      this.populateBTP(),
-      this.required156Credits(),
-    ];
+  
+          this.populateMandatory(),
+          this.populateBuckets(),
+          this.populateSSH(),
+          this.populateCW(),
+          this.populateSG(),
+          this.populate32Credits(),
+          this.populateIPCredits(),
+          this.populateOnlineCourseCredits(),
+          this.populateTwoXXCredits(),
+          this.populateBTP(),
+          this.required156Credits(),
+        
 
-    // Use Promise.all to wait for all Promises to complete
-    await Promise.all(promises);
-
-    // Now, all asynchronous calls have completed
-    // Call the setGraduationStatus method
-    console.log(this.hasGraduated.length);
-    this.setGraduationStatus(this.hasGraduated);
+        this.setGraduationStatus(this.hasGraduated)
+      });
   }
 
   populateMandatory() {
@@ -103,7 +97,7 @@ export class ChecklistComponent implements OnInit {
         let status = "Incomplete";
 
         if (this.completedMandatory) {
-          status = "Complete";
+          status = 'Complete';
           this.hasGraduated.push(true);
         } else {
           this.hasGraduated.push(false);
@@ -167,7 +161,7 @@ export class ChecklistComponent implements OnInit {
           button_text: "View SSH Courses",
         });
 
-        if (courseBucketDetails.status !== "Complete") {
+        if (courseBucketDetails.status !== 'Complete') {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -256,7 +250,7 @@ export class ChecklistComponent implements OnInit {
           button_text: "View Courses",
         });
         this.rules.push(newData);
-        if (courseBucketDetails.status !== "Complete") {
+        if (courseBucketDetails.status !== 'Complete') {
           this.hasGraduated.push(false);
         } else {
           this.hasGraduated.push(true);
@@ -346,12 +340,9 @@ export class ChecklistComponent implements OnInit {
 
   setGraduationStatus(hasGraduated: boolean[]): void {
     this.graduationStatus = true; // Assume true initially
-    console.log(hasGraduated);
-    for (let i = 0; i < 10; i++) {
-      console.log("Inside loop");
-      if (!this.hasGraduated[i]) {
+    for (const index in hasGraduated) {
+      if (!index) {
         this.graduationStatus = false;
-        console.log("Hello");
         break; // Break out of the loop if any element is false
       }
     }

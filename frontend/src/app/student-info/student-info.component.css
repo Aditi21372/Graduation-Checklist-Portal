@@ -1,4 +1,82 @@
-/* Your component's CSS file */
+/* Merged Styles */
+
+.container {
+  text-align: center;
+  padding: 60px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #1c1e21; /* Updated to match title color */
+}
+
+p {
+  font-size: 18px;
+  color: #666;
+}
+
+.form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #dddfe2; /* Updated to match input border color */
+  border-radius: 6px; /* Updated to match input border radius */
+  box-shadow: 0 5px 6px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+  background-color: #fff; /* Updated to match login form background color */
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1c1e21; /* Updated to match title color */
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+input[type="number"] {
+  width: 330px; /* Updated to match input width */
+  padding: 14px 16px 16px 14px; /* Updated to match input padding */
+  font-size: 17px; /* Updated to match input font size */
+  border: 1px solid #dddfe2; /* Updated to match input border color */
+  border-radius: 6px; /* Updated to match input border radius */
+  background-color: #fff; /* Updated to match input background color */
+}
+
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #39AEA8; /* Updated to match login button background color */
+  color: #fff;
+  border: none; /* Updated to remove border */
+  border-radius: 6px; /* Updated to match login button border radius */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  color: #fff;
+}
+
+/* New styles for showMessage */
+
+.error-message {
+  font-size: 14px;
+  color: #1d2129; /* Updated to match input text color */
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+/* Styles for the center-card class */
 
 .center-card {
   width: 400px; /* Adjust the width as needed */
@@ -14,7 +92,6 @@ mat-card-content {
 }
 
 /* Rest of your existing styles */
-
 
 h2 {
   font-size: 24px;
@@ -52,4 +129,16 @@ button:hover {
   background-color: #367976;
   border-color: #367976;
   color: #fff;
+}
+
+/* Your component's CSS file */
+
+/* Add this style for the graduated class */
+.graduated {
+  color: green;
+}
+
+/* Add this style for the incomplete class */
+.incomplete {
+  color: red;
 }

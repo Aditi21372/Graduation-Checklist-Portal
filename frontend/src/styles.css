@@ -26,4 +26,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     font-size: 24px;
     padding: 10px;
   }
+
+  /* styles.css */
+
+/* Global background */
+body {
+  background-color: #F0F2F5;
+}
+
+/* Global font styles */
+body {
+  font-family: 'SFProDisplay-Regular', Helvetica, Arial, sans-serif; /* Set your desired font-family */
+}
+
   
