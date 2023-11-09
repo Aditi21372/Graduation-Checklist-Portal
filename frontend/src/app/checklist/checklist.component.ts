@@ -39,39 +39,29 @@ export class ChecklistComponent implements OnInit {
     this.dataSourceTwo = new MatTableDataSource();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Call the service to fetch student data
-    const studentData = await this.studentService
+    this.studentService
       .getStudentData(this.rollNumber.toString())
-      .toPromise();
-    this.branch = studentData.branch;
+      .subscribe((studentData) => {
+        this.branch = studentData.branch;
 
-    // Create an array of observables for all the asynchronous method calls
-    const observables = [
-      this.populateMandatory(),
-      this.populateBuckets(),
-      this.populateSSH(),
-      this.populateCW(),
-      this.populateSG(),
-      this.populate32Credits(),
-      this.populateIPCredits(),
-      this.populateOnlineCourseCredits(),
-      this.populateTwoXXCredits(),
-      this.populateBTP(),
-      this.required156Credits(),
-    ];
+  
+          this.populateMandatory(),
+          this.populateBuckets(),
+          this.populateSSH(),
+          this.populateCW(),
+          this.populateSG(),
+          this.populate32Credits(),
+          this.populateIPCredits(),
+          this.populateOnlineCourseCredits(),
+          this.populateTwoXXCredits(),
+          this.populateBTP(),
+          this.required156Credits(),
+        
 
-    // Use forkJoin to wait for all observables to complete
-    forkJoin(observables).subscribe(() => {
-      // Now, all asynchronous calls have completed
-      // Call the setGraduationStatus method
-      this.setGraduationStatus(this.hasGraduated);
-    });
-  }
-
-  // Sleep function to introduce a delay
-  sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+        this.setGraduationStatus(this.hasGraduated)
+      });
   }
 
   populateMandatory() {
@@ -350,12 +340,9 @@ export class ChecklistComponent implements OnInit {
 
   setGraduationStatus(hasGraduated: boolean[]): void {
     this.graduationStatus = true; // Assume true initially
-
-    for (let i = 0; i < hasGraduated.length; i++) {
-      console.log('Inside loop');
-      if (!this.hasGraduated[i]) {
+    for (const index in hasGraduated) {
+      if (!index) {
         this.graduationStatus = false;
-        console.log('Hello');
         break; // Break out of the loop if any element is false
       }
     }
