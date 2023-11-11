@@ -40,6 +40,7 @@ export const sshRule: IRule = {
         ) {
           let courseEntry = {
             course: courseCode,
+            semester: course["semester"],
             status: "Complete",
             credits: course["credit"],
             grade: course["grade"],

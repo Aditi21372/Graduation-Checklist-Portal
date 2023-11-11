@@ -12,7 +12,7 @@ export class SshCoursesListComponent {
   rollNumber: number = 0;
   branch: string = '';
   courseData: any;
-  displayedColumns: string[] = ['course', 'status', 'credits', 'grade'];
+  displayedColumns: string[] = ['course', 'semester', 'status', 'credits', 'grade'];
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.dataSource = new MatTableDataSource();
@@ -34,6 +34,7 @@ export class SshCoursesListComponent {
         for (let i = 0; i < this.courseData.length; i++) {
           newData.push({
             course: this.courseData[i].course,
+            semester: this.courseData[i].semester,
             status: this.courseData[i].status,
             credits: this.courseData[i].credits,
             grade: this.courseData[i].grade,
