@@ -43,8 +43,7 @@ export class SummaryPageComponent implements OnInit {
         this.studentService.getSSHcourses(this.rollNumber),
         this.studentService.getBTPCredits(this.rollNumber),
         this.studentService.get32Credits(this.rollNumber),
-        this.studentService.getTwoXXCredits(this.rollNumber),
-        this.studentService.getOnlineCourseCredits(this.rollNumber),
+        this.studentService.getHonors(this.rollNumber),
       ];
 
       // Use forkJoin to wait for all observables to complete
@@ -59,7 +58,10 @@ export class SummaryPageComponent implements OnInit {
             sshCourses,
             btpCredits,
             credits32,
+            honors,
           ] = results;
+
+          console.log('Honors: ', honors);
 
           this.isGraduating = gradStatus ? 'Yes' : 'No';
           this.totalCreditsCompleted = requiredCredits.data;
@@ -95,7 +97,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Graduating with Honors',
-              status: 'No', // TODO
+              status: honors ? 'Yes' : 'No', // TODO
             },
             {
               requirement: 'Graduating with Minors',

@@ -16,6 +16,7 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
 } from "./rule";
+import { isHonors } from "./honors";
 
 const app = express();
 const port = 3000;
@@ -50,7 +51,6 @@ app.get("/api/:rollNumber/info", (req, res) => {
 });
 
 app.get("/api/:branch/:rollNumber/mandatory", (req, res) => {
-
   // Get the branch parameter from the request URL.
   const { branch, rollNumber } = req.params;
 
@@ -158,6 +158,14 @@ app.get("/api/:rollNumber/semester-wise-cgpa", (req, res) => {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
+});
+
+app.get("/api/:rollNumber/honors", (req, res) => {
+  // Get the rollNumber parameter from the request URL.
+  const { rollNumber } = req.params;
+
+  console.log("Is Honors Backend: ", isHonors(Number(rollNumber)));
+  res.json(isHonors(Number(rollNumber)));
 });
 
 app.listen(port, () => {
