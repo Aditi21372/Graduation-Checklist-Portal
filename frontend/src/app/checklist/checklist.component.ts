@@ -118,9 +118,11 @@ export class ChecklistComponent implements OnInit {
       newData.push({
         rule: '2 credits of Self Growth',
         status: ruleData.isComplete,
-        credits: ruleData.data,
+        credits: ruleData.data.totalCredits,
         button_text: 'View Details',
       });
+
+      this.courseData.set("SG_Details", ruleData.data.courses);
 
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
@@ -234,10 +236,10 @@ export class ChecklistComponent implements OnInit {
         ]);
         break;
       case '2 credits of Self Growth':
-        this.router.navigate([
-          '/sg-details',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let sgDetails = this.courseData.get("SG_Details");
+        this.router.navigate(['/sg-details'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sgDetails)},
+        });
         break;
       case 'BTP':
         this.router.navigate([
