@@ -2,11 +2,9 @@
 <div class="container">
   <app-student-info
     [rollNumber]="rollNumber"
-    [gradStatus]="gradStatus"
   ></app-student-info>
-  <app-checklist
+    <app-checklist
     [rollNumber]="rollNumber"
-    (graduationStatusChanged)="onGraduationStatusChanged($event)"
   ></app-checklist>
 
   <!-- Go Back button -->

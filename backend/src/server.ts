@@ -1,13 +1,21 @@
 import express from "express";
-import { StudentInfo } from "./database";
+
+import { studentDatabase, findCGPA } from "./index";
+import { getGraduationStatus } from "./degree";
 
 import {
-  gradeHierarchy,
-  disallowedGrades,
-  studentDatabase,
-  courseDatabase,
-  findCGPA,
-} from "./index";
+  sshRule,
+  cwRule,
+  sgRule,
+  btpRule,
+  mandatoryCoreRule,
+  mandatoryBucketRule,
+  twoxxRule,
+  required156CreditsRule,
+  ipRule,
+  onlineCoursesRule,
+  thirtyTwoCreditsRule,
+} from "./rule";
 
 const app = express();
 const port = 3000;
@@ -23,7 +31,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get("/api/student/:rollNumber", (req, res) => {
+app.get("/api/:rollNumber/info", (req, res) => {
   // Get the rollNumber parameter from the request URL.
   const { rollNumber } = req.params;
   // Check if the roll number exists in the database.
@@ -41,428 +49,99 @@ app.get("/api/student/:rollNumber", (req, res) => {
   }
 });
 
-app.get("/api/degree/:branch/:rollNumber/mandatory", (req, res) => {
+app.get("/api/:branch/:rollNumber/mandatory", (req, res) => {
+
   // Get the branch parameter from the request URL.
   const { branch, rollNumber } = req.params;
+
   if (branch === "CSE") {
-    // Path to the excel sheet containing courses and their course codes
-
-    const coreCourses = courseDatabase["CSE Core Courses "];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
-
-    let studentCoreCourse = [];
-
-    for (const courseCode of coreCourses) {
-      let courseEntry = {
-        course: courseCode,
-        status: "Incomplete",
-        credits: 0,
-        grade: "",
-      };
-
-      for (const studentCourse of studentCourses) {
-        if (studentCourse["courseCode"] === courseCode) {
-          if (!disallowedGrades.includes(studentCourse["grade"])) {
-            courseEntry.status = "Complete";
-            courseEntry.credits = studentCourse["credit"];
-            const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
-            const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
-            if (gradeIndex < currentGradeIndex) {
-              courseEntry.grade = studentCourse["grade"];
-            }
-          } else {
-            if (courseEntry.status == "Complete") continue;
-            courseEntry.status = "Failed";
-            courseEntry.credits = 0;
-            courseEntry.grade = "F";
-          }
-        }
-      }
-      studentCoreCourse.push(courseEntry);
-    }
-
-    res.json(studentCoreCourse);
+    res.json(mandatoryCoreRule.checkRule(Number(rollNumber), branch));
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
 });
 
-app.get("/api/degree/:branch/:rollNumber/bucket", (req, res) => {
+app.get("/api/:branch/:rollNumber/bucket", (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch, rollNumber } = req.params;
   if (branch === "CSE") {
-    // Path to the excel sheet containing courses and their course codes
-    const mandatoryBuckets = [];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
-    let studentBucketCourse = [];
-
-    for (const key of Object.keys(courseDatabase)) {
-      if (key.startsWith("Mandatory")) {
-        mandatoryBuckets.push(courseDatabase[key]);
-      }
-    }
-
-    for (const courseBucket of mandatoryBuckets) {
-      let mandateBucket = [];
-      for (const courseCode of courseBucket) {
-        let courseEntry = {
-          course: courseCode,
-          status: "Incomplete",
-          credits: 0,
-          grade: "",
-        };
-
-        for (const studentCourse of studentCourses) {
-          if (studentCourse["courseCode"] === courseCode) {
-            if (!disallowedGrades.includes(studentCourse["grade"])) {
-              courseEntry.status = "Complete";
-              courseEntry.credits = studentCourse["credit"];
-              const currentGradeIndex = gradeHierarchy.indexOf(
-                courseEntry.grade
-              );
-              const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
-              if (gradeIndex < currentGradeIndex) {
-                courseEntry.grade = studentCourse["grade"];
-              }
-            } else {
-              if (courseEntry.status == "Complete") continue;
-              courseEntry.status = "Failed";
-              courseEntry.credits = 0;
-              courseEntry.grade = "F";
-            }
-          }
-        }
-        mandateBucket.push(courseEntry);
-      }
-      studentBucketCourse.push(mandateBucket);
-    }
-    res.json(studentBucketCourse);
+    res.json(mandatoryBucketRule.checkRule(Number(rollNumber), branch));
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
 });
 
-app.get("/api/degree/:rollNumber/ssh", (req, res) => {
+app.get("/api/:rollNumber/ssh", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const sshCourses = courseDatabase["SSH Courses"];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let coursesTaken = new Map<string, number>();
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const course of studentCourses) {
-    for (const courseCode of sshCourses) {
-      if (
-        course["courseCode"] === courseCode &&
-        !disallowedGrades.includes(course["grade"]) &&
-        !coursesTaken.has(course["courseCode"])
-      ) {
-        coursesTaken.set(course["courseCode"], 1);
-        credits += course["credit"];
-      }
-    }
-  }
-  if (credits >= 12) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(sshRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/cw", (req, res) => {
+app.get("/api/:rollNumber/cw", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const cwCourses = courseDatabase["CW Course"];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const courseCode of cwCourses) {
-    for (const course of studentCourses) {
-      if (course["courseCode"] === courseCode && course["grade"] == "S") {
-        credits += course["credit"];
-      }
-    }
-  }
-  if (credits >= 2) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(cwRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/sg", (req, res) => {
+app.get("/api/:rollNumber/sg", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const sgCourses = courseDatabase["SG Course"];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let coursesTaken = new Map<string, number>();
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const courseCode of sgCourses) {
-    for (const course of studentCourses) {
-      if (course["courseCode"] === courseCode && course["grade"] == "S") {
-        credits += course["credit"];
-      }
-    }
-  }
-  if (credits >= 2) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(sgRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/btp", (req, res) => {
+app.get("/api/:rollNumber/btp", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let sem = [];
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const course of studentCourses) {
-    const courseCodebtp = course["courseCode"].substring(0, 3);
-    if (
-      courseCodebtp === "BTP" &&
-      !disallowedGrades.includes(course["grade"])
-    ) {
-      credits += course["credit"];
-      sem.push(course["semester"]);
-    }
-  }
-
-  if (credits >= 8 && credits <= 12) {
-    const pairDifferences = [];
-    for (let i = 0; i < sem.length; i++) {
-      for (let j = i + 1; j < sem.length; j++) {
-        const num1 = parseFloat(sem[i]); // Convert the string to a number
-        const num2 = parseFloat(sem[j]); // Convert the string to a number
-
-        if (!isNaN(num1) && !isNaN(num2)) {
-          const difference = Math.abs(num1 - num2); // Calculate the absolute difference
-          pairDifferences.push(difference);
-        }
-      }
-    }
-    for (const pairDiff of pairDifferences) {
-      if (pairDiff == 1) {
-        courseEntry.status = "Complete";
-      }
-    }
-  } else if (credits == 0) {
-    courseEntry.status = "Complete";
-  } else {
-    courseEntry.status = "Doesn't fulfill BTP requirements";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(btpRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/twoxxcourses", (req, res) => {
+app.get("/api/:rollNumber/twoxxcourses", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const coreCourses = courseDatabase["CSE Core Courses "];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let courses = 0;
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  const mandatoryBuckets = [];
-  for (const key of Object.keys(courseDatabase)) {
-    if (key.startsWith("Mandatory")) {
-      mandatoryBuckets.push(courseDatabase[key]);
-    }
-  }
-
-  const mandatoryBucketCourses = [];
-  for (const courseBucket of mandatoryBuckets) {
-    for (const course of courseBucket) {
-      mandatoryBucketCourses.push(course);
-    }
-  }
-
-  for (const course of studentCourses) {
-    if (
-      course["courseCode"].substring(3, 4) === "2" &&
-      !disallowedGrades.includes(course["grade"]) &&
-      (course["semester"] >= "5" || course["semester"] >= "Summer Term 3") &&
-      !courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
-      !coreCourses.includes(course["courseCode"]) &&
-      !mandatoryBucketCourses.includes(course["courseCode"])
-    ) {
-      courses += 1;
-    }
-  }
-
-  if (courses <= 2) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(twoxxRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/ip", (req, res) => {
+app.get("/api/:rollNumber/ip", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const ipCourses = courseDatabase["IP/IS/UR"];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const course of studentCourses) {
-    const courseCodeIp = course["courseCode"].substring(0, 3);
-    for (const courseCode of ipCourses) {
-      if (
-        courseCodeIp === courseCode &&
-        !disallowedGrades.includes(course["grade"])
-      ) {
-        credits += course["credit"];
-      }
-    }
-  }
-
-  if (credits <= 8) {
-    courseEntry.status = "Complete";
-  } else {
-    courseEntry.status = "Doesn't fulfill IP/IS/UR requirements";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(ipRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/onlinecourses", (req, res) => {
+app.get("/api/:rollNumber/onlinecourses", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const onlineCourses = courseDatabase["Online course"];
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let credits = 0;
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const course of studentCourses) {
-    for (const courseCode of onlineCourses) {
-      if (course["courseCode"] === courseCode && course["grade"] == "S") {
-        credits += course["credit"];
-      }
-    }
-  }
-
-  if (credits <= 8) {
-    courseEntry.status = "Complete";
-  } else {
-    courseEntry.status = "Doesn't fulfill Online Course requirements";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(onlineCoursesRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/thirtytwocredits", (req, res) => {
+app.get("/api/:rollNumber/thirtytwocredits", (req, res) => {
   // Get the branch parameter from the request URL.
   const { rollNumber } = req.params;
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let credits = 0;
-  let coursesTaken = new Map<string, number>();
 
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-
-  for (const course of studentCourses) {
-    // Doesn't check for a 2xx course.
-    // Doesn't check for courses that were Incomplete in the last four semesters.
-    if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5") {
-      continue;
-    }
-    // Checks if the course has a valid grade against it and is a CSE course.
-    if (
-      !disallowedGrades.includes(course["grade"]) &&
-      !coursesTaken.has(course["courseCode"]) &&
-      course["courseCode"].startsWith("CSE")
-    ) {
-      credits += course["credit"];
-      coursesTaken.set(course["courseCode"], course["credit"]);
-    }
-  }
-
-  if (credits >= 32) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(thirtyTwoCreditsRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/required-credits", (req, res) => {
+app.get("/api/:rollNumber/required-credits", (req, res) => {
   const { rollNumber } = req.params;
-  const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-  const studentCourses = studentInfo["courses"];
-  let courseEntry = {
-    status: "Incomplete",
-    credits: 0,
-  };
-  let disallowedGradesTemp = ["I", "W", "F", "X"];
-  let credits = 0;
-  let coursesTaken = new Map<string, number>();
 
-  for (const course of studentCourses) {
-    if (
-      !disallowedGradesTemp.includes(course["grade"]) &&
-      !coursesTaken.has(course["courseCode"])
-    ) {
-      credits += course["credit"];
-      coursesTaken.set(course["courseCode"], course["credit"]);
-    }
-  }
-  if (credits >= 156) {
-    courseEntry.status = "Complete";
-  }
-  courseEntry.credits = credits;
-  res.json(courseEntry);
+  res.json(required156CreditsRule.checkRule(Number(rollNumber), null));
 });
 
-app.get("/api/degree/:rollNumber/semester-wise-cgpa", (req, res) => {
+app.get("/api/:rollNumber/graduation-check", (req, res) => {
+  const { rollNumber } = req.params;
+
+  res.json(getGraduationStatus(Number(rollNumber), "CSE"));
+});
+
+app.get("/api/:rollNumber/semester-wise-cgpa", (req, res) => {
   // Get the rollNumber parameter from the request URL.
   const { rollNumber } = req.params;
 
