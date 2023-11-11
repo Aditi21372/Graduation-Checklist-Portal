@@ -16,12 +16,14 @@ export class ChecklistComponent implements OnInit {
   displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
   bucketsRuleCompleted = false;
   dataSourceTwo: MatTableDataSource<any>;
+  courseData: Map<string, any>;
 
   constructor(
     private studentService: StudentServiceService,
     private router: Router
   ) {
     this.dataSourceTwo = new MatTableDataSource();
+    this.courseData = new Map<string, any>();
   }
 
   ngOnInit() {
@@ -84,9 +86,10 @@ export class ChecklistComponent implements OnInit {
         newData.push({
           rule: '12 credits of SSH courses',
           status: ruleData.isComplete,
-          credits: ruleData.data,
+          credits: ruleData.data.totalCredits,
           button_text: 'View SSH Courses',
         });
+        this.courseData.set("SSH_Courses", ruleData.data.courses);
 
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
@@ -215,14 +218,14 @@ export class ChecklistComponent implements OnInit {
     switch (element.rule) {
       case 'Core Courses':
         this.router.navigate(['/core-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch },
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch},
         });
         break;
       case '12 credits of SSH courses':
-        this.router.navigate([
-          '/ssh-courses-list',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let sshCourses = this.courseData.get("SSH_Courses");
+        this.router.navigate(['/ssh-courses-list'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sshCourses)},
+        });
         break;
       case '2 credits of Community Work':
         this.router.navigate([
