@@ -30,9 +30,8 @@
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumn"
-        [ngClass]="{ 'red-row': row.status !== 'Complete' }"
+        [ngClass]="{ 'red-row': row.status === false }"
       ></tr>
     </table>
   </mat-card-content>
 </mat-card>
-

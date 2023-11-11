@@ -4,7 +4,6 @@ import {
   disallowedGrades,
   studentDatabase,
   courseDatabase,
-  findCGPA,
 } from "./index";
 
 export interface RuleData {
@@ -214,7 +213,7 @@ export const mandatoryCoreRule: IRule = {
       if (studentCoreCourse[i].status !== "Complete") {
         returnData.isComplete = false;
       } else {
-        returnData.data.credits += studentCoreCourse[i].credits;
+        returnData.data.totalCredits += studentCoreCourse[i].credits;
       }
     }
     returnData.data.coreCourses = studentCoreCourse;
@@ -223,13 +222,15 @@ export const mandatoryCoreRule: IRule = {
   },
 };
 
-// TODO: @diksha please update the final rule according to the frontend.
 export const mandatoryBucketRule: IRule = {
   ruleId: 5,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        studentBucketCourses: [],
+        completedBuckets: [],
+      },
     };
 
     let studentBucketCourse = [];
@@ -283,6 +284,26 @@ export const mandatoryBucketRule: IRule = {
         studentBucketCourse.push(mandateBucket);
       }
     }
+
+    let completedBuckets = [true, true, true, true, true];
+
+    returnData.isComplete = true;
+    for (let i = 0; i < studentBucketCourse.length; i++) {
+      let atleastOne = false;
+
+      for (let j = 0; j < studentBucketCourse[i].length; j++) {
+        if (studentBucketCourse[i][j].status === "Complete") {
+          atleastOne = true;
+        }
+      }
+      if (!atleastOne) {
+        returnData.isComplete = false;
+        completedBuckets[i] = false;
+      }
+    }
+
+    returnData.data.studentBucketCourses = studentBucketCourse;
+    returnData.data.completedBuckets = completedBuckets;
 
     return returnData;
   },

@@ -11,7 +11,7 @@ export class StudentServiceService {
   constructor(private http: HttpClient) {}
 
   getStudentData(rollNumber: string): Observable<any> {
-    return this.http.get(this.apiUrl + 'student/' + rollNumber);
+    return this.http.get(this.apiUrl + String(rollNumber) + '/info');
   }
 
   getMandatoryCourses(branch: string, rollNumber: number): Observable<any> {
@@ -69,6 +69,12 @@ export class StudentServiceService {
   getRequiredCredits(rollNumber: number): Observable<any> {
     return this.http.get(
       this.apiUrl + String(rollNumber) + '/required-credits'
+    );
+  }
+
+  getGraduationStatus(rollNumber: number): Observable<any> {
+    return this.http.get(
+      this.apiUrl + String(rollNumber) + '/graduation-check'
     );
   }
 }

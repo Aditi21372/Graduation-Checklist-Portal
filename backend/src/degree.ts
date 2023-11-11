@@ -1,11 +1,9 @@
-import { IRule } from "./rule";
-
+import { allRules } from "./index";
 export interface IDegree {
   name: string;
   degreeType: "BTECH" | "MTECH" | "PHD";
   minors: string[];
-  graduationRules: IRule[];
-  addRule(rule: IRule): void;
+  graduationRules: number[];
 }
 
 export type StudentCourse = {
@@ -28,13 +26,28 @@ export type StudentCourse = {
   credit: 1 | 2 | 4 | 8 | 12;
 };
 
-export class CSEDegree implements IDegree {
-  name: string = "CSE";
-  degreeType: "BTECH" = "BTECH";
-  minors: string[] = ["ECO", "ENT"]; // To be added
-  graduationRules: IRule[] = [];
+export const CSEDegree: IDegree = {
+  name: "CSE",
+  degreeType: "BTECH",
+  minors: ["ECO", "ENT"], // To be added
+  graduationRules: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+};
 
-  addRule(rule: IRule) {
-    this.graduationRules.push(rule);
+export function getGraduationStatus(
+  rollNumber: number,
+  branch: string
+): Boolean {
+  let isGraduated: Boolean = true;
+  if (branch === "CSE") {
+    let cseRules = CSEDegree.graduationRules;
+
+    for (let rule of allRules) {
+      if (rule.ruleId in cseRules) {
+        if (!rule.checkRule(rollNumber, branch).isComplete) {
+          isGraduated = false;
+        }
+      }
+    }
   }
+  return isGraduated;
 }
