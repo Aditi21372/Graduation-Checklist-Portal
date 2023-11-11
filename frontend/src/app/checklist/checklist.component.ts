@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-checklist',
@@ -15,8 +15,6 @@ export class ChecklistComponent implements OnInit {
     new EventEmitter<boolean>();
   branch: string = '';
   displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
-  isTable1Expanded = true;
-  isTable2Expanded = [true, true, true, true, true];
   completedMandatory = true;
   completedBuckets = [true, true, true, true, true];
   completedCoreCourses = true;
@@ -24,14 +22,14 @@ export class ChecklistComponent implements OnInit {
   dataSourceTwo: MatTableDataSource<any>;
   isChecklistVisible = false;
   rules: any[] = [];
-  hasGraduated: boolean[] = [];
-  graduationStatus: boolean = false;
+  hasGraduated: boolean;
 
   constructor(
     private studentService: StudentServiceService,
     private router: Router
   ) {
     this.dataSourceTwo = new MatTableDataSource();
+    this.hasGraduated = true;
   }
 
   ngOnInit() {
@@ -40,10 +38,14 @@ export class ChecklistComponent implements OnInit {
       .getStudentData(this.rollNumber.toString())
       .subscribe((studentData) => {
         this.branch = studentData.branch;
-
+        this.branch = this.branch.slice(
+          this.branch.lastIndexOf('/') + 1,
+          this.branch.length
+        );
   
-          this.populateMandatory(),
+        forkJoin([
           this.populateBuckets(),
+          this.populateMandatory(),
           this.populateSSH(),
           this.populateCW(),
           this.populateSG(),
@@ -52,22 +54,18 @@ export class ChecklistComponent implements OnInit {
           this.populateOnlineCourseCredits(),
           this.populateTwoXXCredits(),
           this.populateBTP(),
-          this.required156Credits(),
-        
-
-        this.setGraduationStatus(this.hasGraduated)
+          this.required156Credits()
+        ]).subscribe(() => {
+          this.setGraduationStatus();
+        });
       });
   }
 
-  populateMandatory() {
-    this.branch = this.branch.slice(
-      this.branch.lastIndexOf('/') + 1,
-      this.branch.length
-    );
+  populateMandatory(): Observable<void> {
 
-    this.studentService
+    return this.studentService
       .getMandatoryCourses(this.branch, this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseDetails = data;
         let credits = 0;
 
@@ -81,12 +79,19 @@ export class ChecklistComponent implements OnInit {
         }
 
         let status = 'Incomplete';
+        let atleastOne = false;
 
-        if (this.completedMandatory) {
+        for(const bucket of this.completedBuckets){
+          if(!bucket){
+            atleastOne = true;
+            break;
+          }
+        }
+
+        if (this.completedMandatory && !atleastOne) {
           status = 'Complete';
-          this.hasGraduated.push(true);
         } else {
-          this.hasGraduated.push(false);
+          this.hasGraduated = false;
         }
 
         const tempData = [];
@@ -98,13 +103,13 @@ export class ChecklistComponent implements OnInit {
         });
         this.rules.push(tempData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
-      });
+      }));
   }
 
-  populateBuckets() {
-    this.studentService
+  populateBuckets(): Observable<void> {
+    return this.studentService
       .getBucketCourses(this.branch, this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseBucketDetails = data;
 
         for (let i = 0; i < courseBucketDetails.length; i++) {
@@ -121,13 +126,13 @@ export class ChecklistComponent implements OnInit {
             this.completedBuckets[i] = false;
           }
         }
-      });
+      }));
   }
 
-  populateSSH() {
-    this.studentService
+  populateSSH(): Observable<void> {
+    return this.studentService
       .getSSHcourses(this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseBucketDetails = data;
 
         const newData = [];
@@ -139,17 +144,15 @@ export class ChecklistComponent implements OnInit {
         });
 
         if (courseBucketDetails.status !== 'Complete') {
-          this.hasGraduated.push(false);
-        } else {
-          this.hasGraduated.push(true);
+          this.hasGraduated = false;
         }
         this.rules.push(newData);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-      });
+      }));
   }
 
-  populateCW() {
-    this.studentService.getCWcourses(this.rollNumber).subscribe((data: any) => {
+  populateCW(): Observable<void>  {
+    return this.studentService.getCWcourses(this.rollNumber).pipe(map((data: any) => {
       let courseBucketDetails = data;
 
       const newData = [];
@@ -161,16 +164,14 @@ export class ChecklistComponent implements OnInit {
       });
       this.rules.push(newData);
       if (courseBucketDetails.status !== 'Complete') {
-        this.hasGraduated.push(false);
-      } else {
-        this.hasGraduated.push(true);
+        this.hasGraduated = false;
       }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
+    }));
   }
 
-  populateSG() {
-    this.studentService.getSGcourses(this.rollNumber).subscribe((data: any) => {
+  populateSG(): Observable<void>  {
+    return this.studentService.getSGcourses(this.rollNumber).pipe(map((data: any) => {
       let courseBucketDetails = data;
 
       const newData = [];
@@ -182,18 +183,16 @@ export class ChecklistComponent implements OnInit {
       });
       this.rules.push(newData);
       if (courseBucketDetails.status !== 'Complete') {
-        this.hasGraduated.push(false);
-      } else {
-        this.hasGraduated.push(true);
+        this.hasGraduated = false;
       }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
+    }));
   }
 
-  populateBTP() {
-    this.studentService
+  populateBTP(): Observable<void>  {
+    return this.studentService
       .getBTPCredits(this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseBucketDetails = data;
 
         const newData = [];
@@ -205,18 +204,16 @@ export class ChecklistComponent implements OnInit {
         });
         this.rules.push(newData);
         if (courseBucketDetails.status !== 'Complete') {
-          this.hasGraduated.push(false);
-        } else {
-          this.hasGraduated.push(true);
+          this.hasGraduated = false;
         }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-      });
+      }));
   }
 
-  populateTwoXXCredits() {
-    this.studentService
+  populateTwoXXCredits(): Observable<void>  {
+    return this.studentService
       .getTwoXXCredits(this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseBucketDetails = data;
 
         const newData = [];
@@ -228,16 +225,14 @@ export class ChecklistComponent implements OnInit {
         });
         this.rules.push(newData);
         if (courseBucketDetails.status !== 'Complete') {
-          this.hasGraduated.push(false);
-        } else {
-          this.hasGraduated.push(true);
+          this.hasGraduated = false;
         }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-      });
+      }));
   }
 
-  populateIPCredits() {
-    this.studentService.getIPCredits(this.rollNumber).subscribe((data: any) => {
+  populateIPCredits(): Observable<void>  {
+    return this.studentService.getIPCredits(this.rollNumber).pipe(map((data: any) => {
       let courseBucketDetails = data;
 
       const newData = [];
@@ -249,18 +244,16 @@ export class ChecklistComponent implements OnInit {
       });
       this.rules.push(newData);
       if (courseBucketDetails.status !== 'Complete') {
-        this.hasGraduated.push(false);
-      } else {
-        this.hasGraduated.push(true);
+        this.hasGraduated = false;
       }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
+    }));
   }
 
-  populateOnlineCourseCredits() {
-    this.studentService
+  populateOnlineCourseCredits(): Observable<void>  {
+    return this.studentService
       .getOnlineCourseCredits(this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let courseBucketDetails = data;
 
         const newData = [];
@@ -272,16 +265,14 @@ export class ChecklistComponent implements OnInit {
         });
         this.rules.push(newData);
         if (courseBucketDetails.status !== 'Complete') {
-          this.hasGraduated.push(false);
-        } else {
-          this.hasGraduated.push(true);
+          this.hasGraduated = false;
         }
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-      });
+      }));
   }
 
-  populate32Credits() {
-    this.studentService.get32Credits(this.rollNumber).subscribe((data: any) => {
+  populate32Credits(): Observable<void>  {
+    return this.studentService.get32Credits(this.rollNumber).pipe(map((data: any) => {
       let courseBucketDetails = data;
 
       const newData = [];
@@ -293,39 +284,28 @@ export class ChecklistComponent implements OnInit {
       });
       this.rules.push(newData);
       if (courseBucketDetails.status !== 'Complete') {
-        this.hasGraduated.push(false);
-      } else {
-        this.hasGraduated.push(true);
+        this.hasGraduated = false;
       }
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
+    }));
   }
 
-  required156Credits() {
-    this.studentService
+  required156Credits(): Observable<void>  {
+    return this.studentService
       .getRequiredCredits(this.rollNumber)
-      .subscribe((data: any) => {
+      .pipe(map((data: any) => {
         let completedCredits = data;
 
         if (completedCredits.status !== 'Complete') {
-          this.hasGraduated.push(false);
-        } else {
-          this.hasGraduated.push(true);
+          this.hasGraduated = false;
         }
-      });
+      }));
   }
 
-  setGraduationStatus(hasGraduated: boolean[]): void {
-    this.graduationStatus = true; // Assume true initially
-    console.log(hasGraduated);
-    for (const index in hasGraduated) {
-      if (!index) {
-        this.graduationStatus = false;
-        break; // Break out of the loop if any element is false
-      }
-    }
-    this.graduationStatusChanged.emit(this.graduationStatus);
-  }
+  setGraduationStatus(): void {
+    this.graduationStatusChanged.emit(this.hasGraduated);
+}
+
 
   // Add this function to navigate to different pages based on the row data
   navigateToPage(element: any): void {
