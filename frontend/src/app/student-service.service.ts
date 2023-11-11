@@ -77,4 +77,8 @@ export class StudentServiceService {
       this.apiUrl + String(rollNumber) + '/graduation-check'
     );
   }
+
+  getHonors(rollNumber: number): Observable<any> {
+    return this.http.get(this.apiUrl + String(rollNumber) + '/honors');
+  }
 }

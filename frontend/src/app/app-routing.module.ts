@@ -13,6 +13,7 @@ import { IpDetailsComponent } from './ip-details/ip-details.component';
 import { CwDetailsComponent } from './cw-details/cw-details.component';
 import { SgDetailsComponent } from './sg-details/sg-details.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
+import { SummaryPageComponent } from './summary-page/summary-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/student-info-input', pathMatch: 'full' },
@@ -41,6 +42,7 @@ const routes: Routes = [
     path: 'branch-courses-list/:rollNumber',
     component: BranchCoursesListComponent,
   },
+  { path: 'summary-page/:rollNumber', component: SummaryPageComponent },
 ];
 
 @NgModule({
