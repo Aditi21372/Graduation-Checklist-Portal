@@ -10,16 +10,17 @@ export class StudentInfoComponent implements OnInit {
   @Input() rollNumber: number = 0;
   studentName: string = ''; // Initialize with an empty string
   branch: string = '';
-  @Input() gradStatus: string = '';
+  @Input() gradStatus: Boolean = false;
 
   constructor(private studentService: StudentServiceService) {}
 
   ngOnInit() {
     // Call the service to fetch student data
-    this.getStudentData();
+    this.setStudentData();
+    this.setGraduationStatus();
   }
 
-  getStudentData() {
+  setStudentData() {
     this.studentService
       .getStudentData(this.rollNumber.toString())
       .subscribe((data: any) => {
@@ -30,10 +31,12 @@ export class StudentInfoComponent implements OnInit {
       });
   }
 
-  // Listen for the graduationStatusChanged event
-  onGraduationStatusChanged(status: boolean): void {
-    // Update the gradStatus property
-    this.gradStatus = status ? 'Graduated' : 'Not Graduated';
+  setGraduationStatus() {
+    this.studentService
+      .getGraduationStatus(this.rollNumber)
+      .subscribe((data: any) => {
+        this.gradStatus = data;
+      });
   }
 
   showSummary() {}
