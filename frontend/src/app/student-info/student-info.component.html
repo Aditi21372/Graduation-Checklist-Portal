@@ -23,7 +23,11 @@
     </p>
 
     <!-- Buttons -->
-    <button mat-raised-button color="primary" (click)="showSummary()">
+    <button
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/summary-page', rollNumber]"
+    >
       Show Summary
     </button>
 

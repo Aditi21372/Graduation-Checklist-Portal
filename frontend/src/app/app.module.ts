@@ -27,6 +27,7 @@ import { CwDetailsComponent } from './cw-details/cw-details.component';
 import { OnlineCoursesListComponent } from './online-courses-list/online-courses-list.component';
 import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
+import { SummaryPageComponent } from './summary-page/summary-page.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { BranchCoursesListComponent } from './branch-courses-list/branch-courses
     OnlineCoursesListComponent,
     TwoxxCoursesListComponent,
     BranchCoursesListComponent,
+    SummaryPageComponent,
   ],
   imports: [
     BrowserModule,
