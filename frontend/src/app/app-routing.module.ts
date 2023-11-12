@@ -14,34 +14,24 @@ import { CwDetailsComponent } from './cw-details/cw-details.component';
 import { SgDetailsComponent } from './sg-details/sg-details.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
+import { LoginComponent} from './login/login.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/student-info-input', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  { path: 'login', component: LoginComponent},
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
   { path: 'cgpa-page', component: CgpaPageComponent },
-  {
-    path: 'core-courses-list',
-    component: CoreCoursesListComponent,
-  },
+  { path: 'core-courses-list', component: CoreCoursesListComponent},
   { path: 'ssh-courses-list', component: SshCoursesListComponent },
   { path: 'btp-details', component: BtpDetailsComponent },
   { path: 'ip-details', component: IpDetailsComponent },
   { path: 'cw-details', component: CwDetailsComponent },
   { path: 'sg-details', component: SgDetailsComponent },
-  {
-    path: 'online-courses-list',
-    component: OnlineCoursesListComponent,
-  },
-  {
-    path: 'twoxx-courses-list',
-    component: TwoxxCoursesListComponent,
-  },
-  {
-    path: 'branch-courses-list/:rollNumber',
-    component: BranchCoursesListComponent,
-  },
+  { path: 'online-courses-list', component: OnlineCoursesListComponent },
+  { path: 'twoxx-courses-list', component: TwoxxCoursesListComponent },
+  { path: 'branch-courses-list/:rollNumber', component: BranchCoursesListComponent },
   { path: 'summary-page/:rollNumber', component: SummaryPageComponent },
 ];
 

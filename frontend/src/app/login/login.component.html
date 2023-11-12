@@ -1,21 +1,43 @@
-<!-- login.component.html -->
-
 <div class="login-container">
-    <mat-card class="login-card">
-      <mat-card-header>
-        <mat-card-title>Login</mat-card-title>
-      </mat-card-header>
-      <form>
-        <mat-form-field class="full-width">
-          <input matInput placeholder="Username" name="username" [(ngModel)]="username" required>
-        </mat-form-field>
-  
-        <mat-form-field class="full-width">
-          <input matInput type="password" placeholder="Password" name="password" [(ngModel)]="password" required>
-        </mat-form-field>
-  
-        <button mat-raised-button color="primary" class="full-width" (click)="login()">Login</button>
-      </form>
-    </mat-card>
+  <img
+    src="https://erp.iiitd.edu.in/login/image/cloud-bg-2.jpg"
+    class="image1"
+  />
+  <img
+    src="https://erp.iiitd.edu.in/client/iiitd/images/client-login-iiitd-bg.png"
+    class="image2"
+  />
+  <div class="login-box">
+    <form>
+      <div>
+        <input
+          type="text"
+          class="form-group"
+          placeholder="Email address"
+          [(ngModel)]="username"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+      <div>
+        <input
+          type="password"
+          class="form-group"
+          placeholder="Password"
+          [(ngModel)]="password"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+
+      <button class="login-button" (click)="onLogin()">Log in</button>
+      <div class="response-message">
+        {{ responseMessage }}
+      </div>
+
+      <div class="forgot-password">
+        Forgotten password?
+      </div>
+      <hr class="line" />
+    </form>
+    <button class="create-account-button">Create New Account</button>
   </div>
-  
+</div>

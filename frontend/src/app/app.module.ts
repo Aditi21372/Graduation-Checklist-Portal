@@ -28,6 +28,8 @@ import { OnlineCoursesListComponent } from './online-courses-list/online-courses
 import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
+import { LoginComponent} from './login/login.component';
+
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { SummaryPageComponent } from './summary-page/summary-page.component';
     TwoxxCoursesListComponent,
     BranchCoursesListComponent,
     SummaryPageComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
