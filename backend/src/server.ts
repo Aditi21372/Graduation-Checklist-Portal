@@ -181,3 +181,5 @@ app.get("/api/login/:username/:password", (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// findCGPA(2019054);

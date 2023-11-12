@@ -24,7 +24,6 @@ export function calculateCGPA(studentInfo: StudentInfo): Grade[] {
   let maxSem = 8;
   let semesters: string[] = [];
 
-  // Iterate over all courses in studentInfo
   for (let course of studentInfo.courses) {
     if (Number(course.semester) > maxSem) maxSem = Number(course.semester);
   }
@@ -89,6 +88,7 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
               credit: course.credit,
             };
             coursesTaken.set(course.courseCode, courseGrade);
+            console.log("prevGrade: ", prevGrade, "courseGrade: ", courseGrade);
             cumulativeGradeSum -= prevGrade * course.credit;
           } else continue;
         } else {
@@ -101,14 +101,16 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
               credit: course.credit,
             };
             coursesTaken.set(course.courseCode, courseGrade);
+            continue;
           }
           if (course.grade === "S") {
             if (course.courseCode.startsWith("MSC")) continue;
             else {
               onlineCreds += course.credit;
             }
+            continue;
           }
-          continue;
+          
         }
         const courseGrade: Course = {
           grade: gradeMap[course.grade],
@@ -122,16 +124,17 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     cumulativeCreditSum += creditSum - failCredits;
     cumulativeGradeSum += gradeSum - 2 * failCredits;
 
-    if (Number(semesters[i]) == 6 && cumulativeCreditSum + onlineCreds > 116) {
-      const worseCreds = Math.min(8, cumulativeCreditSum + onlineCreds - 116);
-      const worseGrades = calculateWorseGradeSum(coursesTaken, worseCreds);
-    }
+    // if (Number(semesters[i]) == 6 && cumulativeCreditSum + onlineCreds > 116) {
+    //   const worseCreds = Math.min(8, cumulativeCreditSum + onlineCreds - 116);
+    //   const worseGrades = calculateWorseGradeSum(coursesTaken, worseCreds);
+    // }
 
     let sgpa = 0;
     if (creditSum !== 0) {
       sgpa = gradeSum / creditSum;
     }
     cgpa = cumulativeGradeSum / cumulativeCreditSum;
+    console.log(sgpa, cgpa);
 
     semesterGpa = {
       semester: semesters[i],

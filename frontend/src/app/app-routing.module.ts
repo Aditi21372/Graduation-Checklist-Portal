@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
-  { path: 'cgpa-page', component: CgpaPageComponent },
+  { path: 'cgpa-page/:rollNumber', component: CgpaPageComponent },
   { path: 'core-courses-list', component: CoreCoursesListComponent},
   { path: 'ssh-courses-list', component: SshCoursesListComponent },
   { path: 'btp-details', component: BtpDetailsComponent },

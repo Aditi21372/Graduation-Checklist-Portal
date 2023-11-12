@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StudentSummaryComponent } from './student-summary/student-summary.component';
 import { StudentInfoInputComponent } from './student-info-input/student-info-input.component';
 import { MatTableModule } from '@angular/material/table';
 import { ChecklistComponent } from './checklist/checklist.component';
@@ -34,7 +33,6 @@ import { LoginComponent} from './login/login.component';
 @NgModule({
   declarations: [
     AppComponent,
-    StudentSummaryComponent,
     ChecklistComponent,
     StudentInfoComponent,
     StudentInfoInputComponent,
