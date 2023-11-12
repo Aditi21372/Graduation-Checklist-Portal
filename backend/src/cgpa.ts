@@ -6,6 +6,8 @@ type Course = {
   grade: number;
   credit: number;
 };
+
+type creditGroups = { [key: number]: number };
 type GradeMap = { [grade: string]: number };
 const gradeMap: GradeMap = {
   "A+": 10,
@@ -18,32 +20,56 @@ const gradeMap: GradeMap = {
   D: 4,
   F: 2,
 };
-const disallowedGrades = ["I", "W", "X"];
+const disallowedGrades: string[] = ["I", "W", "X"];
+const possibleWorstCreditsPairs: creditGroups[] = [
+  { 8: 1 },
+  { 6: 1, 2: 1 },
+  { 4: 2 },
+  { 4: 1, 2: 2 },
+  { 2: 4 },
+  { 6: 1 },
+  { 4: 1, 2: 1 },
+  { 2: 3 },
+  { 4: 1 },
+  { 2: 2 },
+  { 2: 1 },
+];
 
+// Function to calculate CGPA
 export function calculateCGPA(studentInfo: StudentInfo): Grade[] {
+  const semesters = getSemesters(studentInfo);
+  return calculateSGPA(studentInfo, semesters);
+}
+
+// Function to get semesters
+function getSemesters(studentInfo: StudentInfo): string[] {
   let maxSem = 8;
   let semesters: string[] = [];
 
   for (let course of studentInfo.courses) {
     if (Number(course.semester) > maxSem) maxSem = Number(course.semester);
   }
+
   for (let i = 1; i <= maxSem; i++) {
     semesters.push(String(i));
-    if (i % 2 == 0) {
+
+    if (i % 2 === 0) {
       let summerSem = "Summer Term " + String(i / 2);
       semesters.push(summerSem);
     }
   }
 
-  return calculateSGPA(studentInfo, semesters);
+  semesters.splice(11, 1);
+
+  return semesters;
 }
 
-function calculateWorseGradeSum(
+function calculateBestCgpa(
+  cumulativeGradeSum: number,
+  cumulativeCreditSum: number,
   coursesTaken: Map<string, Course>,
   worseCreds: number
-): Number {
-  let worseGradeSum = 0;
-
+): number {
   const creditGroups = new Map<number, number[]>();
   for (const [courseCode, course] of coursesTaken) {
     const { grade, credit } = course;
@@ -58,10 +84,42 @@ function calculateWorseGradeSum(
     courses.sort((a, b) => a - b);
   });
 
-  for (const course of coursesTaken.keys()) {
-    if (worseCreds <= 0) break;
+  const gpaAfterRemoval = Array(possibleWorstCreditsPairs.length + 1).fill(0);
+  gpaAfterRemoval[11] = cumulativeGradeSum / cumulativeCreditSum;
+  let counter = 0;
+  for (const pairs of possibleWorstCreditsPairs) {
+    let worseGradeSum = 0;
+    let worstCreditSum = 0;
+    let flag = true;
+    let possibleWorstCredits = 0;
+    for (const credits of Object.keys(pairs)) {
+      const credit = Number(credits);
+      const count = pairs[credit];
+      possibleWorstCredits += credit;
+      if (
+        creditGroups.has(credit) &&
+        creditGroups.get(credit)!.length >= count &&
+        possibleWorstCredits <= worseCreds
+      ) {
+        const grades = creditGroups.get(credit)!;
+        for (let i = 0; i < count; i++) {
+          const grade = grades[i];
+          worseGradeSum += grade * credit;
+          worstCreditSum += credit;
+        }
+      } else {
+        flag = false;
+        break;
+      }
+    }
+    if (flag) {
+      gpaAfterRemoval[counter] =
+        (cumulativeGradeSum - worseGradeSum) /
+        (cumulativeCreditSum - worstCreditSum);
+    }
+    counter++;
   }
-  return worseGradeSum;
+  return Math.max(...gpaAfterRemoval);
 }
 
 function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
@@ -88,7 +146,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
               credit: course.credit,
             };
             coursesTaken.set(course.courseCode, courseGrade);
-            console.log("prevGrade: ", prevGrade, "courseGrade: ", courseGrade);
             cumulativeGradeSum -= prevGrade * course.credit;
           } else continue;
         } else {
@@ -110,7 +167,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
             }
             continue;
           }
-          
         }
         const courseGrade: Course = {
           grade: gradeMap[course.grade],
@@ -124,17 +180,38 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     cumulativeCreditSum += creditSum - failCredits;
     cumulativeGradeSum += gradeSum - 2 * failCredits;
 
-    // if (Number(semesters[i]) == 6 && cumulativeCreditSum + onlineCreds > 116) {
-    //   const worseCreds = Math.min(8, cumulativeCreditSum + onlineCreds - 116);
-    //   const worseGrades = calculateWorseGradeSum(coursesTaken, worseCreds);
-    // }
-
     let sgpa = 0;
     if (creditSum !== 0) {
       sgpa = gradeSum / creditSum;
     }
+
     cgpa = cumulativeGradeSum / cumulativeCreditSum;
-    console.log(sgpa, cgpa);
+
+    // console.log("Semester: ", semesters[i]);
+    // console.log("Cumulative Credit Sum: ", cumulativeCreditSum + onlineCreds);
+    // console.log("sgpa: ", sgpa);
+
+    if (
+      Number(semesters[i]) >= 6 &&
+      cumulativeCreditSum + onlineCreds > 116 + 20 * (Number(semesters[i]) - 6)
+    ) {
+      const extraCreds =
+        cumulativeCreditSum +
+        onlineCreds -
+        116 +
+        20 * (Number(semesters[i]) - 6);
+      const worseCreds = Math.min(8, extraCreds);
+      // console.log("Worse Creds: ", worseCreds);
+      // console.log("Previous CGPA: ", cgpa);
+      cgpa = calculateBestCgpa(
+        cumulativeGradeSum,
+        cumulativeCreditSum,
+        coursesTaken,
+        worseCreds
+      );
+    }
+
+    // console.log("cgpa:", cgpa);
 
     semesterGpa = {
       semester: semesters[i],
