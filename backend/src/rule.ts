@@ -96,20 +96,31 @@ export const sgRule: IRule = {
     let credits = 0;
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        courses: [],
+        totalCredits : 0
+      },
     };
 
     for (const courseCode of sgCourses) {
       for (const course of studentCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
+          let courseEntry = {
+            course: courseCode,
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
           credits += course["credit"];
+          returnData.data.courses.push(courseEntry);
         }
       }
     }
     if (credits >= 2) {
       returnData.isComplete = true;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
 
     return returnData;
   },
