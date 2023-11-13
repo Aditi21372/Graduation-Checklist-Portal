@@ -27,7 +27,7 @@ export const sshRule: IRule = {
       isComplete: false,
       data: {
         courses: [],
-        totalCredits: [],
+        totalCredits: 0,
       },
     };
 
@@ -68,20 +68,31 @@ export const cwRule: IRule = {
     let credits = 0;
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
     };
 
     for (const courseCode of cwCourses) {
       for (const course of studentCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
+          let courseEntry = {
+            course: courseCode,
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
           credits += course["credit"];
+          returnData.data.courses.push(courseEntry);
         }
       }
     }
     if (credits >= 2) {
       returnData.isComplete = true;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
     return returnData;
   },
 };

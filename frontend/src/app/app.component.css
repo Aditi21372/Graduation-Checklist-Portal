@@ -1,13 +1,17 @@
 .header-container {
-  /* border-left: 4px solid #6D6E71; /* Set the border on the left side */
-  /* border-right: 4px solid #6D6E71;  */
-  box-shadow: 0 5px 6px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);;
-  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+
 
 .header-content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .custom-toolbar {
@@ -19,6 +23,12 @@
   height: 48px; /* Match the height from the login button */
   margin-right: 16px; /* Add some margin for spacing */
 }
+
+.portal-image {
+  height: 44px; /* Match the height from the login button */
+  margin-left: 650px; /* Align the portal image to the right */
+}
+
 
 /* You can uncomment and modify the following if you want to style the toolbar title */
 
