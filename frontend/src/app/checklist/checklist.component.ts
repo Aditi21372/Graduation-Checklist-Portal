@@ -103,9 +103,11 @@ export class ChecklistComponent implements OnInit {
       newData.push({
         rule: '2 credits of Community Work',
         status: ruleData.isComplete,
-        credits: ruleData.data,
+        credits: ruleData.data.totalCredits,
         button_text: 'View Details',
       });
+
+      this.courseData.set("CW_Details", ruleData.data.courses);
 
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
@@ -230,10 +232,10 @@ export class ChecklistComponent implements OnInit {
         });
         break;
       case '2 credits of Community Work':
-        this.router.navigate([
-          '/cw-details',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let cwDetails = this.courseData.get("CW_Details");
+        this.router.navigate(['/cw-details'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(cwDetails)},
+        });
         break;
       case '2 credits of Self Growth':
         let sgDetails = this.courseData.get("SG_Details");

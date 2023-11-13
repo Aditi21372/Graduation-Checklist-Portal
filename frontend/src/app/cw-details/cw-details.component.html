@@ -1,1 +1,42 @@
-<p>cw-details works!</p>
+  <!-- Go Back button -->
+  <div>
+    <button (click)="goBack()">← Go Back</button>
+  </div>
+<mat-card>
+    <div class="center-horizontally">
+      <h1><b>Community Work Details</b></h1>
+    </div>
+    <table mat-table [dataSource]="dataSource">
+      <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef>Course</th>
+        <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="semester">
+        <th mat-header-cell *matHeaderCellDef>Semester</th>
+        <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="credits">
+        <th mat-header-cell *matHeaderCellDef>Credits</th>
+        <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="grade">
+        <th mat-header-cell *matHeaderCellDef>Grade</th>
+        <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{ 'red-row': row.status !== 'Complete' }"
+      ></tr>
+    </table>
+</mat-card>
