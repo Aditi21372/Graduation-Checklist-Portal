@@ -20,15 +20,11 @@ export class CgpaPageComponent implements OnInit {
     this.dataSource = new MatTableDataSource();
   }
 
-  goBack() {
-    this.router.navigate(["/student-info-input"]);
-  }
-
   ngOnInit() {
     // Get the 'rollNumber' parameter from the route
     this.route.params.subscribe((params) => {
       // Check if 'rollNumber' is a valid number
-      const rollNumber = +params["rollNumber"];
+      const rollNumber = params["rollNumber"];
 
       if (!isNaN(rollNumber)) {
         // Fetch CGPA data using the retrieved 'rollNumber'

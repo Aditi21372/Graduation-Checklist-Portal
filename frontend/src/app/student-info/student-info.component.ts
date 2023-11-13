@@ -39,7 +39,4 @@ export class StudentInfoComponent implements OnInit {
       });
   }
 
-  showSummary() {}
-
-  showSemesterWiseCGPA() {}
 }

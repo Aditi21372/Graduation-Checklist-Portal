@@ -5,7 +5,6 @@ import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StudentSummaryComponent } from './student-summary/student-summary.component';
 import { StudentInfoInputComponent } from './student-info-input/student-info-input.component';
 import { MatTableModule } from '@angular/material/table';
 import { ChecklistComponent } from './checklist/checklist.component';
@@ -28,11 +27,12 @@ import { OnlineCoursesListComponent } from './online-courses-list/online-courses
 import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
+import { LoginComponent} from './login/login.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    StudentSummaryComponent,
     ChecklistComponent,
     StudentInfoComponent,
     StudentInfoInputComponent,
@@ -48,6 +48,7 @@ import { SummaryPageComponent } from './summary-page/summary-page.component';
     TwoxxCoursesListComponent,
     BranchCoursesListComponent,
     SummaryPageComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

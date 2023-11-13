@@ -168,6 +168,16 @@ app.get("/api/:rollNumber/honors", (req, res) => {
   res.json(isHonors(Number(rollNumber)));
 });
 
+app.get("/api/login/:username/:password", (req, res) => {
+  const { username, password } = req.params;
+  if (username === "admin" && password === "admin") {
+    res.json(true);
+  }
+
+  res.status(404).json({ error: "User not found" });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
