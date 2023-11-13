@@ -28,6 +28,7 @@ import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-li
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
 import { LoginComponent} from './login/login.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import { LoginComponent} from './login/login.component';
     MatExpansionModule,
     MatIconModule,
     MatDialogModule,
+    MatFormFieldModule,
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],
