@@ -61,8 +61,6 @@ export class SummaryPageComponent implements OnInit {
             honors,
           ] = results;
 
-          console.log('Honors: ', honors);
-
           this.isGraduating = gradStatus ? 'Yes' : 'No';
           this.totalCreditsCompleted = requiredCredits.data;
           this.dataSourceTwo = [

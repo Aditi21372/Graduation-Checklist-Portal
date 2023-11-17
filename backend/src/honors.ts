@@ -27,11 +27,5 @@ export function isHonors(rollNumber: number): Boolean {
     return false;
   }
 
-  // Check if CGPA is greater than 8
-  // if (calculateCGPA(studentInfo)[-1].cgpa < 8) {
-  //   console.log("CGPA less than 8");
-  //   return false;
-  // }
-
   return true;
 }

@@ -1,4 +1,7 @@
-
+  <!-- Go Back button -->
+  <div>
+    <button (click)="goBack()">← Go Back</button>
+  </div>
   <mat-card>
       <div class="center-horizontally">
         <h1><b>Core Courses</b></h1>
@@ -7,6 +10,11 @@
         <ng-container matColumnDef="course">
           <th mat-header-cell *matHeaderCellDef>Course</th>
           <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="semester">
+          <th mat-header-cell *matHeaderCellDef>Semester</th>
+          <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
         </ng-container>
 
         <ng-container matColumnDef="status">
@@ -45,6 +53,11 @@
           <ng-container matColumnDef="course">
             <th mat-header-cell *matHeaderCellDef>Course</th>
             <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="semester">
+            <th mat-header-cell *matHeaderCellDef>Semester</th>
+            <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
           </ng-container>
 
           <ng-container matColumnDef="status">

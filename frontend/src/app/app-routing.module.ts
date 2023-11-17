@@ -31,7 +31,7 @@ const routes: Routes = [
   { path: 'sg-details', component: SgDetailsComponent },
   { path: 'online-courses-list', component: OnlineCoursesListComponent },
   { path: 'twoxx-courses-list', component: TwoxxCoursesListComponent },
-  { path: 'branch-courses-list/:rollNumber', component: BranchCoursesListComponent },
+  { path: 'branch-courses-list', component: BranchCoursesListComponent },
   { path: 'summary-page/:rollNumber', component: SummaryPageComponent },
 ];
 

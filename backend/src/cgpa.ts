@@ -187,10 +187,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
 
     cgpa = cumulativeGradeSum / cumulativeCreditSum;
 
-    // console.log("Semester: ", semesters[i]);
-    // console.log("Cumulative Credit Sum: ", cumulativeCreditSum + onlineCreds);
-    // console.log("sgpa: ", sgpa);
-
     if (
       Number(semesters[i]) >= 6 &&
       cumulativeCreditSum + onlineCreds > 116 + 20 * (Number(semesters[i]) - 6)
@@ -201,8 +197,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
         116 +
         20 * (Number(semesters[i]) - 6);
       const worseCreds = Math.min(8, extraCreds);
-      // console.log("Worse Creds: ", worseCreds);
-      // console.log("Previous CGPA: ", cgpa);
       cgpa = calculateBestCgpa(
         cumulativeGradeSum,
         cumulativeCreditSum,
@@ -210,8 +204,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
         worseCreds
       );
     }
-
-    // console.log("cgpa:", cgpa);
 
     semesterGpa = {
       semester: semesters[i],
