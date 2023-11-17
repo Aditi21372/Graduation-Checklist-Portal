@@ -22,7 +22,7 @@ const routes: Routes = [
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
-  { path: 'cgpa-page/:rollNumber', component: CgpaPageComponent },
+  { path: 'cgpa-page', component: CgpaPageComponent },
   { path: 'core-courses-list', component: CoreCoursesListComponent},
   { path: 'ssh-courses-list', component: SshCoursesListComponent },
   { path: 'btp-details', component: BtpDetailsComponent },
@@ -32,7 +32,7 @@ const routes: Routes = [
   { path: 'online-courses-list', component: OnlineCoursesListComponent },
   { path: 'twoxx-courses-list', component: TwoxxCoursesListComponent },
   { path: 'branch-courses-list', component: BranchCoursesListComponent },
-  { path: 'summary-page/:rollNumber', component: SummaryPageComponent },
+  { path: 'summary-page', component: SummaryPageComponent },
 ];
 
 @NgModule({

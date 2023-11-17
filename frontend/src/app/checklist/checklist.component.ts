@@ -13,6 +13,8 @@ export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
 
   branch: string = '';
+  program: string = '';
+  studentName: string = '';
   displayedColumn: string[] = ['rule', 'status', 'credits', 'actions'];
   bucketsRuleCompleted = false;
   dataSourceTwo: MatTableDataSource<any>;
@@ -32,10 +34,11 @@ export class ChecklistComponent implements OnInit {
     this.studentService
       .getStudentData(this.rollNumber.toString())
       .subscribe((studentData) => {
-        this.branch = studentData.branch;
-        this.branch = this.branch.slice(
-          this.branch.lastIndexOf('/') + 1,
-          this.branch.length
+        this.program = studentData.branch;
+        this.studentName = studentData.studentName;
+        this.branch = this.program.slice(
+          this.program.lastIndexOf('/') + 1,
+          this.program.length
         );
 
         this.populateBuckets();
@@ -68,7 +71,6 @@ export class ChecklistComponent implements OnInit {
         });
 
         this.courseData.set("Core_Courses", ruleData.data.coreCourses);
-
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
       });
   }
@@ -236,55 +238,55 @@ export class ChecklistComponent implements OnInit {
         let coreCourses = this.courseData.get("Core_Courses");
         let bucketCourses = this.courseData.get("Bucket_Courses");
         this.router.navigate(['/core-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, coreCourseData: JSON.stringify(coreCourses), bucketCourseData: JSON.stringify(bucketCourses), completedBuckets: JSON.stringify(this.completedBuckets)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, coreCourseData: JSON.stringify(coreCourses), bucketCourseData: JSON.stringify(bucketCourses), completedBuckets: JSON.stringify(this.completedBuckets), studentName: this.studentName, program: this.program},
         });
         break;
       case '12 credits of SSH courses':
         let sshCourses = this.courseData.get("SSH_Courses");
         this.router.navigate(['/ssh-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sshCourses)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sshCourses), studentName: this.studentName, program: this.program},
         });
         break;
       case '2 credits of Community Work':
         let cwDetails = this.courseData.get("CW_Details");
         this.router.navigate(['/cw-details'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(cwDetails)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(cwDetails), studentName: this.studentName, program: this.program},
         });
         break;
       case '2 credits of Self Growth':
         let sgDetails = this.courseData.get("SG_Details");
         this.router.navigate(['/sg-details'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sgDetails)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(sgDetails), studentName: this.studentName, program: this.program},
         });
         break;
       case 'BTP':
         let btpDetails = this.courseData.get("BTP_Details");
         this.router.navigate(['/btp-details'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(btpDetails)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(btpDetails), studentName: this.studentName, program: this.program},
         });
         break;
       case 'Atmost two 2xx level courses':
         let twoxxCourses = this.courseData.get("2XX_Courses");
         this.router.navigate(['/twoxx-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(twoxxCourses)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(twoxxCourses), studentName: this.studentName, program: this.program},
         });
         break;
       case 'Atmost 8 credits of IP/IS/UR':
         let ipDetails = this.courseData.get("IP_Details");
         this.router.navigate(['/ip-details'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(ipDetails)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(ipDetails), studentName: this.studentName, program: this.program},
         });
         break;
       case '32 Credits of CSE Courses':
         let thirtyCreditCourses = this.courseData.get("32Credits_Courses");
         this.router.navigate(['/branch-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(thirtyCreditCourses)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(thirtyCreditCourses), studentName: this.studentName, program: this.program},
         });
         break;
       case 'Atmost 8 credits of online courses':
         let onlineCourses = this.courseData.get("Online_Courses");
         this.router.navigate(['/online-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(onlineCourses)},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(onlineCourses), studentName: this.studentName, program: this.program},
         });
         break;
     }

@@ -22,6 +22,8 @@ export class SummaryPageComponent implements OnInit {
   graduatingWithHonors: string = 'No';
   graduatingWithMinors: string = 'No';
   minorsStream: string = 'None';
+  studentName: string = "";
+  program: string = "";
 
   constructor(
     private studentService: StudentServiceService,
@@ -31,8 +33,10 @@ export class SummaryPageComponent implements OnInit {
 
   ngOnInit(): void {
     // Get the rollNumber parameter from the route
-    this.route.params.subscribe((params) => {
-      this.rollNumber = params['rollNumber'];
+    this.route.queryParams.subscribe((params) => {
+      this.rollNumber = params["rollNumber"];
+      this.program = params["program"];
+      this.studentName = params["studentName"];
 
       // Create an array of observables for each API call
       const observables = [
@@ -112,5 +116,9 @@ export class SummaryPageComponent implements OnInit {
         }
       );
     });
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard', this.rollNumber]);
   }
 }
