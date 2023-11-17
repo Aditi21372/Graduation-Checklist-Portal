@@ -5,32 +5,30 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%; /* Ensure the container spans the full width */
 }
-
-
 
 .header-content {
   display: flex;
   justify-content: space-between;
+  width: 100%; /* Ensure the content spans the full width */
 }
 
 .custom-toolbar {
-  background-color: #fff; /* Match the background color from the login button */
-  border-radius: 6px; /* Match the border-radius from the login button */
+  background-color: #fff;
+  border-radius: 6px;
+  width: 100%; /* Ensure the toolbar spans the full width */
 }
 
 .header-image {
-  height: 48px; /* Match the height from the login button */
-  margin-right: 16px; /* Add some margin for spacing */
+  height: 48px;
+  margin-right: 16px;
 }
 
 .portal-image {
-  height: 44px; /* Match the height from the login button */
-  margin-left: 650px; /* Align the portal image to the right */
+  height: 44px;
+  margin-left: auto; /* Align the portal image to the right by pushing it to the end */
 }
-
-
-/* You can uncomment and modify the following if you want to style the toolbar title */
 
 .toolbar-title {
   font-family: SFProDisplay-Regular, Helvetica, Arial, sans-serif;
@@ -40,3 +38,7 @@
   line-height: 48px;
 }
 
+/* Add the following CSS rule to make sure the mat-toolbar spans the full width */
+.mat-toolbar {
+  width: 100%;
+}

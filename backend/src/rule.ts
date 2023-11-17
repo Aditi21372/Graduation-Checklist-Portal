@@ -212,6 +212,7 @@ export const mandatoryCoreRule: IRule = {
       for (const courseCode of coreCourses) {
         let courseEntry = {
           course: courseCode,
+          semester: "",
           status: "Incomplete",
           credits: 0,
           grade: "",
@@ -222,6 +223,7 @@ export const mandatoryCoreRule: IRule = {
             if (!disallowedGrades.includes(studentCourse["grade"])) {
               courseEntry.status = "Complete";
               courseEntry.credits = studentCourse["credit"];
+              courseEntry.semester = studentCourse["semester"];
               const currentGradeIndex = gradeHierarchy.indexOf(
                 courseEntry.grade
               );
@@ -232,6 +234,7 @@ export const mandatoryCoreRule: IRule = {
             } else {
               if (courseEntry.status == "Complete") continue;
               courseEntry.status = "Failed";
+              courseEntry.semester = studentCourse["semester"];
               courseEntry.credits = 0;
               courseEntry.grade = "F";
             }
@@ -285,6 +288,7 @@ export const mandatoryBucketRule: IRule = {
         for (const courseCode of courseBucket) {
           let courseEntry = {
             course: courseCode,
+            semester: "",
             status: "Incomplete",
             credits: 0,
             grade: "",
@@ -295,6 +299,7 @@ export const mandatoryBucketRule: IRule = {
               if (!disallowedGrades.includes(studentCourse["grade"])) {
                 courseEntry.status = "Complete";
                 courseEntry.credits = studentCourse["credit"];
+                courseEntry.semester = studentCourse["semester"];
                 const currentGradeIndex = gradeHierarchy.indexOf(
                   courseEntry.grade
                 );
@@ -309,6 +314,7 @@ export const mandatoryBucketRule: IRule = {
                 courseEntry.status = "Failed";
                 courseEntry.credits = 0;
                 courseEntry.grade = "F";
+                courseEntry.semester = studentCourse["semester"];
               }
             }
           }

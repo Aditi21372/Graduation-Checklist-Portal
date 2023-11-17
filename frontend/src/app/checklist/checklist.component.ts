@@ -17,6 +17,7 @@ export class ChecklistComponent implements OnInit {
   bucketsRuleCompleted = false;
   dataSourceTwo: MatTableDataSource<any>;
   courseData: Map<string, any>;
+  completedBuckets: any;
 
   constructor(
     private studentService: StudentServiceService,
@@ -66,6 +67,8 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Core Courses',
         });
 
+        this.courseData.set("Core_Courses", ruleData.data.coreCourses);
+
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
       });
   }
@@ -75,6 +78,8 @@ export class ChecklistComponent implements OnInit {
       .getBucketCourses(this.branch, this.rollNumber)
       .subscribe((ruleData: any) => {
         this.bucketsRuleCompleted = ruleData.isComplete;
+        this.courseData.set("Bucket_Courses", ruleData.data.studentBucketCourses)
+        this.completedBuckets = ruleData.data.completedBuckets;
       });
   }
 
@@ -221,8 +226,10 @@ export class ChecklistComponent implements OnInit {
     // Example: Navigate to a page based on the 'rule' property
     switch (element.rule) {
       case 'Core Courses':
+        let coreCourses = this.courseData.get("Core_Courses");
+        let bucketCourses = this.courseData.get("Bucket_Courses");
         this.router.navigate(['/core-courses-list'], {
-          queryParams: { rollNumber: this.rollNumber, branch: this.branch},
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, coreCourseData: JSON.stringify(coreCourses), bucketCourseData: JSON.stringify(bucketCourses), completedBuckets: JSON.stringify(this.completedBuckets)},
         });
         break;
       case '12 credits of SSH courses':
