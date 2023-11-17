@@ -493,7 +493,10 @@ export const onlineCoursesRule: IRule = {
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
     };
 
     const onlineCourses = courseDatabase["Online course"];
@@ -504,6 +507,14 @@ export const onlineCoursesRule: IRule = {
     for (const course of studentCourses) {
       for (const courseCode of onlineCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
+          let courseEntry = {
+            course: course["courseCode"],
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
+          returnData.data.courses.push(courseEntry);
           credits += course["credit"];
         }
       }
@@ -514,7 +525,7 @@ export const onlineCoursesRule: IRule = {
     } else {
       returnData.isComplete = false;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
 
     return returnData;
   },

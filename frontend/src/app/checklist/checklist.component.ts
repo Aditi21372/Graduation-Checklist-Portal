@@ -201,10 +201,10 @@ export class ChecklistComponent implements OnInit {
         newData.push({
           rule: 'Atmost 8 credits of online courses',
           status: ruleData.isComplete,
-          credits: ruleData.data,
+          credits: ruleData.data.totalCredits,
           button_text: 'View Online Courses',
         });
-
+        this.courseData.set("Online_Courses", ruleData.data.courses);
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
   }
@@ -280,10 +280,10 @@ export class ChecklistComponent implements OnInit {
         });
         break;
       case 'Atmost 8 credits of online courses':
-        this.router.navigate([
-          '/online-courses-list',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let onlineCourses = this.courseData.get("Online_Courses");
+        this.router.navigate(['/online-courses-list'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(onlineCourses)},
+        });
         break;
     }
   }
