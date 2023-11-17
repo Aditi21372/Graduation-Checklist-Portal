@@ -115,6 +115,7 @@ td.mat-cell.button-column {
     margin-bottom: 20px; /* Adjust the value to control the spacing */
 }
 
+
 button {
     margin: 10px 10px;
     display: inline-block;
@@ -135,4 +136,42 @@ button {
     background-color: #367976;
     border-color: #367976;
     color: #fff;
+  }
+  
+  .custom-toolbar {
+    background-color: #fff;
+    border-radius: 6px;
+    margin-top: 16px; /* Add some margin for spacing */
+    width: 100%;
+  }
+  
+  .center-horizontally {
+    padding-top: 10px;
+    text-align: center;
+  }
+  
+  
+.student-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 0 20px 20px 20px;
+    font-size: medium;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center; /* Center the container horizontally */
+    align-items: center; /* Center the container vertically */
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 16px;
+    width: 70%;
+    margin-left: auto; /* Add this to center the container */
+    margin-right: auto; /* Add this to center the container */
+  }
+  
+  .mat-card {
+    width: 48%; /* Adjust the width as needed */
   }

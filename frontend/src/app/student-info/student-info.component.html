@@ -24,18 +24,20 @@
 
     <!-- Buttons -->
     <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['/summary-page', rollNumber]"
-    >
+  mat-raised-button
+  color="primary"
+  [routerLink]="['/summary-page']"
+  [queryParams]="{ rollNumber: rollNumber, program: branch, studentName: studentName }"
+>
       Show Summary
     </button>
 
     <button
-      mat-raised-button
-      color="accent"
-      [routerLink]="['/cgpa-page', rollNumber]"
-    >
+  mat-raised-button
+  color="accent"
+  [routerLink]="['/cgpa-page']"
+  [queryParams]="{ rollNumber: rollNumber, program: branch, studentName: studentName }"
+>
       Show Semester Wise CGPA
     </button>
   </mat-card-content>

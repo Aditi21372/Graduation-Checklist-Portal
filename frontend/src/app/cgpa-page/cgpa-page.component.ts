@@ -11,6 +11,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 export class CgpaPageComponent implements OnInit {
   displayedColumns: string[] = ["semester", "sgpa", "cgpa"];
   dataSource: MatTableDataSource<any>;
+  rollNumber: number = 0;
+  studentName: string = "";
+  program: string = "";
 
   constructor(
     private route: ActivatedRoute,
@@ -22,14 +25,16 @@ export class CgpaPageComponent implements OnInit {
 
   ngOnInit() {
     // Get the 'rollNumber' parameter from the route
-    this.route.params.subscribe((params) => {
+    this.route.queryParams.subscribe((params) => {
       // Check if 'rollNumber' is a valid number
-      const rollNumber = params["rollNumber"];
+      this.rollNumber = params["rollNumber"];
+      this.program = params["program"];
+      this.studentName = params["studentName"];
 
-      if (!isNaN(rollNumber)) {
+      if (!isNaN(this.rollNumber)) {
         // Fetch CGPA data using the retrieved 'rollNumber'
         this.studentService
-          .getSemWiseCGPA(rollNumber)
+          .getSemWiseCGPA(this.rollNumber)
           .subscribe((data: any) => {
             // Assuming 'data' contains an array of objects with 'semester' and 'cgpa' properties
 
@@ -48,5 +53,9 @@ export class CgpaPageComponent implements OnInit {
         console.error("Invalid rollNumber:", params["rollNumber"]);
       }
     });
+  }
+
+  goBack() {
+    this.router.navigate(['/dashboard', this.rollNumber]);
   }
 }

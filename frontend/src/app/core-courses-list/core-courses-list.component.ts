@@ -10,6 +10,8 @@ import { MatTableDataSource } from '@angular/material/table';
 export class CoreCoursesListComponent implements OnInit {
   dataSource: MatTableDataSource<any>;
   rollNumber: number = 0;
+  studentName: string = '';
+  program: string = '';
   branch: string = '';
   tablesData: MatTableDataSource<any>[] = [];
   displayedColumns: string[] = ['course', 'semester', 'status', 'credits', 'grade'];
@@ -24,6 +26,8 @@ export class CoreCoursesListComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.rollNumber = params['rollNumber'];
+      this.studentName = params["studentName"];
+      this.program = params['program'];
       this.branch = params['branch'];
       this.coreCourseData = JSON.parse(params['coreCourseData'])
       this.bucketCourseData = JSON.parse(params['bucketCourseData'])

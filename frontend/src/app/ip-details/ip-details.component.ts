@@ -11,6 +11,8 @@ export class IpDetailsComponent {
   dataSource: MatTableDataSource<any>;
   rollNumber: number = 0;
   branch: string = '';
+  program: string = '';
+  studentName: string = '';
   courseData: any;
   displayedColumns: string[] = ['course', 'semester', 'status', 'credits', 'grade'];
 
@@ -20,6 +22,8 @@ export class IpDetailsComponent {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
+      this.studentName = params["studentName"];
+      this.program = params["program"];
       this.rollNumber = params['rollNumber'];
       this.branch = params['branch'];
       this.courseData = JSON.parse(params['courseData'])
