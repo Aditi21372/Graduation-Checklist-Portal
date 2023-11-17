@@ -364,7 +364,10 @@ export const twoxxRule: IRule = {
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
     };
 
     const coreCourses = courseDatabase["CSE Core Courses "];
@@ -396,6 +399,14 @@ export const twoxxRule: IRule = {
         !coreCourses.includes(course["courseCode"]) &&
         !mandatoryBucketCourses.includes(course["courseCode"])
       ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        returnData.data.courses.push(courseEntry);
         courses += 1;
       }
     }
@@ -403,7 +414,7 @@ export const twoxxRule: IRule = {
     if (courses <= 2) {
       returnData.isComplete = true;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
 
     return returnData;
   },

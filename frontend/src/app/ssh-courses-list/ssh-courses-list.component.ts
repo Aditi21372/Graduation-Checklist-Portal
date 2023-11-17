@@ -24,13 +24,11 @@ export class SshCoursesListComponent {
       this.branch = params['branch'];
       this.courseData = JSON.parse(params['courseData'])
       this.populateSSHCourses();
-      console.log(this.dataSource.data[0])
     });
   }
 
   populateSSHCourses() {
         const newData = [];
-        console.log(this.courseData[0])
         for (let i = 0; i < this.courseData.length; i++) {
           newData.push({
             course: this.courseData[i].course,

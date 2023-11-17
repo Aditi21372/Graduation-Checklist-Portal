@@ -24,7 +24,6 @@ export class LoginComponent {
       (error) => {
         // Handle any errors, e.g., display an error message
         this.responseMessage= "The password that you've entered is incorrect."
-        console.log("Login failed. Please check your credentials.");
 
       }
     );
