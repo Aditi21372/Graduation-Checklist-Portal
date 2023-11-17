@@ -213,10 +213,11 @@ export class ChecklistComponent implements OnInit {
       newData.push({
         rule: '32 Credits of CSE Courses',
         status: ruleData.isComplete,
-        credits: ruleData.data,
+        credits: ruleData.data.totalCredits,
         button_text: 'View CSE Courses',
       });
 
+      this.courseData.set("32Credits_Courses", ruleData.data.courseData);
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
   }
@@ -269,10 +270,10 @@ export class ChecklistComponent implements OnInit {
         ]);
         break;
       case '32 Credits of CSE Courses':
-        this.router.navigate([
-          '/branch-courses-list',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let thirtyCreditCourses = this.courseData.get("32Credits_Courses");
+        this.router.navigate(['/branch-courses-list'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(thirtyCreditCourses)},
+        });
         break;
       case 'Atmost 8 credits of online courses':
         this.router.navigate([

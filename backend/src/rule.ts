@@ -503,7 +503,10 @@ export const thirtyTwoCreditsRule: IRule = {
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        totalCredits : 0,
+        courseData: [],
+      },
     };
 
     const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
@@ -523,15 +526,23 @@ export const thirtyTwoCreditsRule: IRule = {
         !coursesTaken.has(course["courseCode"]) &&
         course["courseCode"].startsWith("CSE")
       ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
         credits += course["credit"];
         coursesTaken.set(course["courseCode"], course["credit"]);
+        returnData.data.courseData.push(courseEntry);
       }
     }
 
     if (credits >= 32) {
       returnData.isComplete = true;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
 
     return returnData;
   },
