@@ -181,9 +181,11 @@ export class ChecklistComponent implements OnInit {
       newData.push({
         rule: 'Atmost 8 credits of IP/IS/UR',
         status: ruleData.isComplete,
-        credits: ruleData.data,
+        credits: ruleData.data.totalCredits,
         button_text: 'View Details',
       });
+
+      this.courseData.set("IP_Details", ruleData.data.courses);
 
       this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
     });
@@ -266,10 +268,10 @@ export class ChecklistComponent implements OnInit {
         ]);
         break;
       case 'Atmost 8 credits of IP/IS/UR':
-        this.router.navigate([
-          '/ip-details',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let ipDetails = this.courseData.get("IP_Details");
+        this.router.navigate(['/ip-details'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(ipDetails)},
+        });
         break;
       case '32 Credits of CSE Courses':
         let thirtyCreditCourses = this.courseData.get("32Credits_Courses");
