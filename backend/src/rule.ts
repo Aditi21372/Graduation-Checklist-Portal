@@ -142,7 +142,10 @@ export const btpRule: IRule = {
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
       isComplete: false,
-      data: null,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
     };
     const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
     const studentCourses = studentInfo["courses"];
@@ -155,6 +158,14 @@ export const btpRule: IRule = {
         courseCodebtp === "BTP" &&
         !disallowedGrades.includes(course["grade"])
       ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        returnData.data.courses.push(courseEntry);
         credits += course["credit"];
         sem.push(course["semester"]);
       }
@@ -183,7 +194,7 @@ export const btpRule: IRule = {
     } else {
       returnData.isComplete = false;
     }
-    returnData.data = credits;
+    returnData.data.totalCredits = credits;
 
     return returnData;
   },

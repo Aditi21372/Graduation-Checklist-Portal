@@ -145,9 +145,11 @@ export class ChecklistComponent implements OnInit {
         newData.push({
           rule: 'BTP',
           status: ruleData.isComplete,
-          credits: ruleData.data,
+          credits: ruleData.data.totalCredits,
           button_text: 'View Details',
         });
+
+        this.courseData.set("BTP_Details", ruleData.data.courses);
 
         this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
       });
@@ -252,10 +254,10 @@ export class ChecklistComponent implements OnInit {
         });
         break;
       case 'BTP':
-        this.router.navigate([
-          '/btp-details',
-          { rollnumber: this.rollNumber, branch: this.branch },
-        ]);
+        let btpDetails = this.courseData.get("BTP_Details");
+        this.router.navigate(['/btp-details'], {
+          queryParams: { rollNumber: this.rollNumber, branch: this.branch, courseData: JSON.stringify(btpDetails)},
+        });
         break;
       case 'Atmost two 2xx level courses':
         this.router.navigate([
