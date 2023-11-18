@@ -17,9 +17,12 @@ import {
   thirtyTwoCreditsRule,
 } from "./rule";
 import { isHonors } from "./honors";
+import e from "express";
 
 const app = express();
 const port = 3000;
+
+export const sum = (a: number, b: number) => a + b;
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -177,7 +180,10 @@ app.get("/api/login/:username/:password", (req, res) => {
   res.status(404).json({ error: "User not found" });
 });
 
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+export default app;
