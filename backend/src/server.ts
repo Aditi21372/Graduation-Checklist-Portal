@@ -17,7 +17,6 @@ import {
   thirtyTwoCreditsRule,
 } from "./rule";
 import { isHonors } from "./honors";
-import e from "express";
 
 const app = express();
 const port = 3000;
