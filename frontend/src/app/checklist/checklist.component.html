@@ -9,7 +9,7 @@
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element">{{ element.status ? 'Complete' : 'Incomplete'}}</td>
+        <td mat-cell *matCellDef="let element">{{ element.status}}</td>
       </ng-container>
 
       <ng-container matColumnDef="credits">
@@ -30,7 +30,7 @@
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumn"
-        [ngClass]="{ 'red-row': row.status === false }"
+        [ngClass]="{ 'red-row': row.status !== 'Complete' && row.status !== 'Not Done' }"
       ></tr>
     </table>
   </mat-card-content>

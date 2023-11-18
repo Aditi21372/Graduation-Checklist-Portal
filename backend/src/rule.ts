@@ -1,3 +1,4 @@
+import { isFunction } from "util";
 import { StudentInfo } from "./database";
 import {
   gradeHierarchy,
@@ -7,7 +8,8 @@ import {
 } from "./index";
 
 export interface RuleData {
-  isComplete: Boolean;
+  isCompleteText: string;
+  isCompleteBool: boolean;
   data: any;
 }
 export interface IRule {
@@ -24,7 +26,8 @@ export const sshRule: IRule = {
     let coursesTaken = new Map<string, number>();
     let credits = 0;
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteText: "Incomplete",
+      isCompleteBool: false,
       data: {
         courses: [],
         totalCredits: 0,
@@ -52,7 +55,8 @@ export const sshRule: IRule = {
       }
     }
     if (credits >= 12) {
-      returnData.isComplete = true;
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
     }
     returnData.data.totalCredits = credits;
     return returnData;
@@ -67,7 +71,8 @@ export const cwRule: IRule = {
     const studentCourses = studentInfo["courses"];
     let credits = 0;
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: false,
+      isCompleteText: "Incomplete",
       data: {
         totalCredits: 0,
         courses: [],
@@ -89,8 +94,12 @@ export const cwRule: IRule = {
         }
       }
     }
-    if (credits >= 2) {
-      returnData.isComplete = true;
+    if (credits == 2) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    } else if (credits > 2) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
     return returnData;
@@ -106,10 +115,11 @@ export const sgRule: IRule = {
     let coursesTaken = new Map<string, number>();
     let credits = 0;
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteText: "Incomplete",
+      isCompleteBool: false,
       data: {
         courses: [],
-        totalCredits : 0
+        totalCredits: 0,
       },
     };
 
@@ -128,8 +138,12 @@ export const sgRule: IRule = {
         }
       }
     }
-    if (credits >= 2) {
-      returnData.isComplete = true;
+    if (credits == 2) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    } else if (credits > 2) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
 
@@ -141,7 +155,8 @@ export const btpRule: IRule = {
   ruleId: 3,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
       data: {
         totalCredits: 0,
         courses: [],
@@ -171,31 +186,47 @@ export const btpRule: IRule = {
       }
     }
 
-    if (credits >= 8 && credits <= 12) {
-      const pairDifferences = [];
+    if (credits == 0) {
+      returnData.isCompleteText = "Not Done";
+    } else if (credits > 0 && credits < 8) {
+      returnData.isCompleteText = "Incomplete";
+    } else if (credits >= 8) {
+      let semesters = [];
+      let pairDifferences = [];
       for (let i = 0; i < sem.length; i++) {
-        for (let j = i + 1; j < sem.length; j++) {
-          const num1 = parseFloat(sem[i]); // Convert the string to a number
-          const num2 = parseFloat(sem[j]); // Convert the string to a number
-
-          if (!isNaN(num1) && !isNaN(num2)) {
-            const difference = Math.abs(num1 - num2); // Calculate the absolute difference
-            pairDifferences.push(difference);
-          }
+        const num1 = parseFloat(sem[i]);
+        if (!isNaN(num1)) {
+          semesters.push(num1);
         }
       }
-      for (const pairDiff of pairDifferences) {
-        if (pairDiff == 1) {
-          returnData.isComplete = true;
+      semesters.sort();
+      if (semesters.length == 1) {
+        returnData.isCompleteText = "Incomplete";
+      }
+      for (let i = 0; i < semesters.length - 1; i++) {
+        const num1 = parseFloat(sem[i]); // Convert the string to a number
+        const num2 = parseFloat(sem[i + 1]);
+        const difference = Math.abs(num1 - num2); // Calculate the absolute difference
+        pairDifferences.push(difference);
+      }
+      const allOnes = pairDifferences.every((element) => element === 1);
+      if (allOnes) {
+        if(credits <= 12){
+          returnData.isCompleteText = "Complete";
+        }
+        else{
+          returnData.isCompleteText = "Done extra credits";
+        }
+        returnData.isCompleteBool = true;
+      } else {
+        if (semesters.length == 2) {
+          returnData.isCompleteText = "Incomplete";
+        } else {
+          returnData.isCompleteText = "Not Done Consecutively";
         }
       }
-    } else if (credits == 0) {
-      returnData.isComplete = true;
-    } else {
-      returnData.isComplete = false;
     }
     returnData.data.totalCredits = credits;
-
     return returnData;
   },
 };
@@ -204,7 +235,8 @@ export const mandatoryCoreRule: IRule = {
   ruleId: 4,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Complete",
       data: {
         coreCourses: [],
         totalCredits: 0,
@@ -216,7 +248,7 @@ export const mandatoryCoreRule: IRule = {
     if (context === "CSE") {
       // Path to the excel sheet containing courses and their course codes
 
-      const coreCourses = courseDatabase["CSE Core Courses "];
+      const coreCourses = courseDatabase["CSE"];
       const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
       const studentCourses = studentInfo["courses"];
 
@@ -255,10 +287,10 @@ export const mandatoryCoreRule: IRule = {
       }
     }
 
-    returnData.isComplete = true;
     for (let i = 0; i < studentCoreCourse.length; i++) {
       if (studentCoreCourse[i].status !== "Complete") {
-        returnData.isComplete = false;
+        returnData.isCompleteBool = false;
+        returnData.isCompleteText = "Incomplete";
       } else {
         returnData.data.totalCredits += studentCoreCourse[i].credits;
       }
@@ -273,7 +305,8 @@ export const mandatoryBucketRule: IRule = {
   ruleId: 5,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Complete",
       data: {
         studentBucketCourses: [],
         completedBuckets: [],
@@ -289,7 +322,7 @@ export const mandatoryBucketRule: IRule = {
       const studentCourses = studentInfo["courses"];
 
       for (const key of Object.keys(courseDatabase)) {
-        if (key.startsWith("Mandatory")) {
+        if (key.startsWith("CSE bucket")) {
           mandatoryBuckets.push(courseDatabase[key]);
         }
       }
@@ -337,7 +370,6 @@ export const mandatoryBucketRule: IRule = {
 
     let completedBuckets = [true, true, true, true, true];
 
-    returnData.isComplete = true;
     for (let i = 0; i < studentBucketCourse.length; i++) {
       let atleastOne = false;
 
@@ -347,7 +379,8 @@ export const mandatoryBucketRule: IRule = {
         }
       }
       if (!atleastOne) {
-        returnData.isComplete = false;
+        returnData.isCompleteBool = false;
+        returnData.isCompleteText = "Incomplete";
         completedBuckets[i] = false;
       }
     }
@@ -363,22 +396,22 @@ export const twoxxRule: IRule = {
   ruleId: 6,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
       data: {
         totalCredits: 0,
         courses: [],
       },
     };
 
-    const coreCourses = courseDatabase["CSE Core Courses "];
+    const coreCourses = courseDatabase["CSE"];
     const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
     const studentCourses = studentInfo["courses"];
-    let courses = 0;
     let credits = 0;
 
     const mandatoryBuckets = [];
     for (const key of Object.keys(courseDatabase)) {
-      if (key.startsWith("Mandatory")) {
+      if (key.startsWith("CSE bucket")) {
         mandatoryBuckets.push(courseDatabase[key]);
       }
     }
@@ -407,15 +440,20 @@ export const twoxxRule: IRule = {
           grade: course["grade"],
         };
         returnData.data.courses.push(courseEntry);
-        courses += 1;
+        credits += course["credit"];
       }
     }
 
-    if (courses <= 2) {
-      returnData.isComplete = true;
+    if (credits == 0) {
+      returnData.isCompleteText = "Not Done";
+    }
+    else if (credits <= 8) {
+      returnData.isCompleteText = "Complete";
+    }
+    else{
+      returnData.isCompleteText = "Done with extra credits";
     }
     returnData.data.totalCredits = credits;
-
     return returnData;
   },
 };
@@ -424,7 +462,8 @@ export const required156CreditsRule: IRule = {
   ruleId: 7,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: false,
+      isCompleteText: "Incomplete",
       data: null,
     };
 
@@ -444,7 +483,8 @@ export const required156CreditsRule: IRule = {
       }
     }
     if (credits >= 156) {
-      returnData.isComplete = true;
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
     }
     returnData.data = credits;
 
@@ -456,7 +496,8 @@ export const ipRule: IRule = {
   ruleId: 8,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
       data: {
         totalCredits: 0,
         courses: [],
@@ -488,10 +529,13 @@ export const ipRule: IRule = {
       }
     }
 
+    if(credits == 0){
+      returnData.isCompleteText = "Not Done";
+    }
     if (credits <= 8) {
-      returnData.isComplete = true;
+      returnData.isCompleteText = "Complete";
     } else {
-      returnData.isComplete = false;
+      returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
 
@@ -503,7 +547,8 @@ export const onlineCoursesRule: IRule = {
   ruleId: 9,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
       data: {
         totalCredits: 0,
         courses: [],
@@ -531,10 +576,13 @@ export const onlineCoursesRule: IRule = {
       }
     }
 
-    if (credits <= 8) {
-      returnData.isComplete = true;
+    if(credits == 0){
+      returnData.isCompleteText = "Not Done";
+    }
+    else if (credits <= 8) {
+      returnData.isCompleteText = "Complete";
     } else {
-      returnData.isComplete = false;
+      returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
 
@@ -546,9 +594,10 @@ export const thirtyTwoCreditsRule: IRule = {
   ruleId: 10,
   checkRule: (rollNumber: number, context: any): RuleData => {
     let returnData: RuleData = {
-      isComplete: false,
+      isCompleteBool: false,
+      isCompleteText: "Incomplete",
       data: {
-        totalCredits : 0,
+        totalCredits: 0,
         courseData: [],
       },
     };
@@ -584,7 +633,8 @@ export const thirtyTwoCreditsRule: IRule = {
     }
 
     if (credits >= 32) {
-      returnData.isComplete = true;
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
     }
     returnData.data.totalCredits = credits;
 
