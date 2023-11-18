@@ -641,3 +641,47 @@ export const thirtyTwoCreditsRule: IRule = {
     return returnData;
   },
 };
+
+
+export const incompleteGradeRule: IRule = {
+  ruleId: 11,
+  checkRule: (rollNumber: number, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Complete",
+      data: {
+        courseData: [],
+      },
+    };
+
+    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
+    const studentCourses = studentInfo["courses"];
+    let credits = 0;
+    let incompleteGradePresent = false;
+
+    for (const course of studentCourses) {
+      if (
+        course["grade"] == "I"
+      ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Incomplete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        credits += course["credit"];
+        returnData.data.courseData.push(courseEntry);
+        incompleteGradePresent = true;
+      }
+    }
+
+    if (incompleteGradePresent) {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Incomplete";
+    }
+    returnData.data.totalCredits = credits;
+
+    return returnData;
+  },
+};

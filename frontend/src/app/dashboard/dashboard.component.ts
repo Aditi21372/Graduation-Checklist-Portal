@@ -24,4 +24,8 @@ export class DashboardComponent implements OnInit {
   goBack() {
     this.router.navigate(['/student-info-input']);
   }
+
+  logout(){
+    this.router.navigate(['/login']);
+  }
 }
