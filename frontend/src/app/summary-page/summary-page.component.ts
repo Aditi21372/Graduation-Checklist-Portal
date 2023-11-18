@@ -42,6 +42,7 @@ export class SummaryPageComponent implements OnInit {
       const observables = [
         this.studentService.getGraduationStatus(this.rollNumber),
         this.studentService.getRequiredCredits(this.rollNumber),
+        this.studentService.getSemWiseCGPA(this.rollNumber),
         this.studentService.getSGcourses(this.rollNumber),
         this.studentService.getCWcourses(this.rollNumber),
         this.studentService.getSSHcourses(this.rollNumber),
@@ -57,6 +58,7 @@ export class SummaryPageComponent implements OnInit {
           const [
             gradStatus,
             requiredCredits,
+            gpa,
             sgCourses,
             cwCourses,
             sshCourses,
@@ -64,12 +66,11 @@ export class SummaryPageComponent implements OnInit {
             credits32,
             honors,
           ] = results;
-
           this.isGraduating = gradStatus ? 'Yes' : 'No';
           this.totalCreditsCompleted = requiredCredits.data;
           this.dataSourceTwo = [
             {
-              requirement: 'Is the student Graduating',
+              requirement: 'Is the student graduating',
               status: this.isGraduating,
             },
             {
@@ -78,24 +79,24 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Final CGPA',
-              status: 10, // TODO: @srishti add API call after complete
+              status: gpa["10"].cgpa, // TODO: @srishti add API call after complete
             },
             {
               requirement: 'Completed SG / CW Credits',
               status:
-                sgCourses.isComplete && cwCourses.isComplete ? 'Yes' : 'No',
+                sgCourses.isCompleteBool && cwCourses.isCompleteBool ? 'Yes' : 'No',
             },
             {
               requirement: 'Completed SSH Credits',
-              status: sshCourses.isComplete ? 'Yes' : 'No',
+              status: sshCourses.isCompleteBool ? 'Yes' : 'No',
             },
             {
               requirement: 'Completed BTP Credits',
-              status: btpCredits.isComplete ? 'Yes' : 'No',
+              status: btpCredits.isCompleteBool ? 'Yes' : 'No',
             },
             {
               requirement: 'Completed Departmental 32 Credits',
-              status: credits32.isComplete ? 'Yes' : 'No',
+              status: credits32.isCompleteBool ? 'Yes' : 'No',
             },
             {
               requirement: 'Graduating with Honors',
