@@ -173,6 +173,11 @@ export const btpRule: IRule = {
         courseCodebtp === "BTP" &&
         !disallowedGrades.includes(course["grade"])
       ) {
+        credits += course["credit"];
+        sem.push(course["semester"]);
+      }
+
+      if(courseCodebtp === "BTP"){
         let courseEntry = {
           course: course["courseCode"],
           semester: course["semester"],
@@ -181,8 +186,6 @@ export const btpRule: IRule = {
           grade: course["grade"],
         };
         returnData.data.courses.push(courseEntry);
-        credits += course["credit"];
-        sem.push(course["semester"]);
       }
     }
 
