@@ -50,6 +50,7 @@ export class ChecklistComponent implements OnInit {
         this.populateOnlineCourseCredits();
         this.populateTwoXXCredits();
         this.populateBTP();
+        this.populateIncompleteGrades();
       });
   }
 
@@ -246,6 +247,24 @@ export class ChecklistComponent implements OnInit {
     });
   }
 
+  populateIncompleteGrades(): void {
+    this.studentService.getIncompleteGrade(this.rollNumber).subscribe((data: any) => {
+      let ruleData = data;
+
+      const newData = [];
+      newData.push({
+        rule: 'Incomplete Grade on Transcript',
+        status: ruleData.isCompleteText,
+        statusBool: ruleData.isCompleteBool,
+        credits: ruleData.data.totalCredits,
+        button_text: 'View Details',
+      });
+
+      this.courseData.set('Incomplete_Grades', ruleData.data.courseData);
+      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
+    });
+  }
+
   // Add this function to navigate to different pages based on the row data
   navigateToPage(element: any): void {
     // Example: Navigate to a page based on the 'rule' property
@@ -361,6 +380,18 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
+        case 'Incomplete Grade on Transcript':
+          let incompleteGrades = this.courseData.get('Incomplete_Grades');
+          this.router.navigate(['/incomplete-grades-list'], {
+            queryParams: {
+              rollNumber: this.rollNumber,
+              branch: this.branch,
+              courseData: JSON.stringify(incompleteGrades),
+              studentName: this.studentName,
+              program: this.program,
+            },
+          });
+          break;
     }
   }
 }

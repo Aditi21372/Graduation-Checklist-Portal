@@ -70,11 +70,11 @@ export class SummaryPageComponent implements OnInit {
           this.totalCreditsCompleted = requiredCredits.data;
           this.dataSourceTwo = [
             {
-              requirement: 'Is the student graduating',
+              requirement: 'Is the student graduating?',
               status: this.isGraduating,
             },
             {
-              requirement: 'Total Credits Completed',
+              requirement: 'Total credits completed',
               status: this.totalCreditsCompleted,
             },
             {
@@ -82,16 +82,16 @@ export class SummaryPageComponent implements OnInit {
               status: gpa["10"].cgpa, // TODO: @srishti add API call after complete
             },
             {
-              requirement: 'Completed SG / CW Credits',
+              requirement: 'Completed SG / CW credits',
               status:
                 sgCourses.isCompleteBool && cwCourses.isCompleteBool ? 'Yes' : 'No',
             },
             {
-              requirement: 'Completed SSH Credits',
+              requirement: 'Completed SSH credits',
               status: sshCourses.isCompleteBool ? 'Yes' : 'No',
             },
             {
-              requirement: 'Completed BTP Credits',
+              requirement: 'Completed BTP credits',
               status: btpCredits.isCompleteBool ? 'Yes' : 'No',
             },
             {
@@ -107,7 +107,7 @@ export class SummaryPageComponent implements OnInit {
               status: 'No', // TODO
             },
             {
-              requirement: 'Mention the stream of  Minors',
+              requirement: 'Stream of Minors',
               status: 'None', // TODO
             },
           ];

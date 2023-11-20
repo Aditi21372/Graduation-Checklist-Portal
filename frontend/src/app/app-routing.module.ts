@@ -14,6 +14,7 @@ import { CwDetailsComponent } from './cw-details/cw-details.component';
 import { SgDetailsComponent } from './sg-details/sg-details.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
+import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
 import { LoginComponent} from './login/login.component';
 
 const routes: Routes = [
@@ -33,6 +34,7 @@ const routes: Routes = [
   { path: 'twoxx-courses-list', component: TwoxxCoursesListComponent },
   { path: 'branch-courses-list', component: BranchCoursesListComponent },
   { path: 'summary-page', component: SummaryPageComponent },
+  { path: 'incomplete-grades-list', component: IncompleteGradesListComponent },
 ];
 
 @NgModule({
