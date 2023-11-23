@@ -29,7 +29,7 @@ jobs:
       - name: Install Dependencies
         id: yarn-install
         run: cd backend && yarn install
-        
+
       - name: Test
         id: yarn-backend-tests
         run: cd backend && yarn run ci
@@ -56,7 +56,11 @@ jobs:
       - name: Install Dependencies
         id: yarn-install
         run: cd frontend && yarn install
-        
+
+      - name: Install Angular
+        id: angular-install
+        run: cd frontend && npm install -g @angular/cli && npm link @angular/cli
+
       - name: Test
         id: yarn-frontend-tests
         run: cd frontend && ng test
