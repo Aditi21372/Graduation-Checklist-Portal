@@ -35,11 +35,6 @@ describe("Graduation Algorithm tests", () => {
         return;
       }
 
-      if (!getGraduationStatus(student.rollNo, "CSE")) {
-        console.log(student.rollNo);
-      }
-
-      //   expect(getGraduationStatus(student.rollNo, "CSE")).toBe(true);
       expect(getGraduationStatus(student.rollNo, "CSE")).toBeTruthy;
     });
   });

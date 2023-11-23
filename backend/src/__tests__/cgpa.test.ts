@@ -23,28 +23,12 @@ describe("CGPA Algorithm tests", () => {
         return;
       }
 
-      // console.log("Student: ", student.rollNo);
-
       const expectedCGPA = calculateCGPA(studentDatabase[student.rollNo]);
-
-      // console.log(
-      //   "Expected CGPA: ",
-      //   expectedCGPA[expectedCGPA.length - 1].cgpa
-      // );
-
-      if (student.cgpa !== expectedCGPA[expectedCGPA.length - 1].cgpa) {
-        incorrect_cgpa.push(student.rollNo);
-      } else {
-        correct_cgpa.push(student.rollNo);
-      }
 
       // Assuming you have a property named 'cgpa' in your GraduatedStudent type
       expect(
         student.cgpa - expectedCGPA[expectedCGPA.length - 1].cgpa
       ).toBeLessThan(0.3);
     });
-
-    // console.log("Incorrect CGPA: ", incorrect_cgpa);
-    // console.log("Correct CGPA: ", correct_cgpa);
   });
 });
