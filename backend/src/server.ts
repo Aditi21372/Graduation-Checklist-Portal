@@ -180,7 +180,7 @@ app.get("/api/:rollNumber/honors", (req, res) => {
 
 app.get("/api/login/:username/:password", (req, res) => {
   const { username, password } = req.params;
-  if (username === "admin" && password === "admin") {
+  if (username === "iiitdadmin" && password === "Admin@2019") {
     res.json(true);
   }
 

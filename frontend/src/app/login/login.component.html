@@ -1,40 +1,32 @@
+<!-- app.component.html -->
 <div class="login-container">
   <img
-    src="/assets/images//cloud-bg-2.jpg"
-    class="image1"
-  />
-  <img
-    src="/assets/images/client-login-iiitd-bg.png"
-    class="image2"
+    src="/assets/images/IIITD.jpeg"
+    alt="IIITD Logo"
+    class="background-image"
   />
   <div class="login-box">
     <form>
-      <div>
+      <div class="form-group">
         <input
           type="text"
-          class="form-group"
-          placeholder="Email address"
+          placeholder="Username"
           [(ngModel)]="username"
-          [ngModelOptions]="{ standalone: true }"
+          name="username"
         />
       </div>
-      <div>
+      <div class="form-group">
         <input
           type="password"
-          class="form-group"
           placeholder="Password"
           [(ngModel)]="password"
-          [ngModelOptions]="{ standalone: true }"
+          name="password"
         />
       </div>
-
       <button class="login-button" (click)="onLogin()">Log in</button>
-      <div class="response-message">
-        {{ responseMessage }}
-      </div>
-
+      <div class="response-message">{{ responseMessage }}</div>
       <div class="forgot-password">
-        Forgotten password?
+        <a href="#">Forgotten password?</a>
       </div>
       <hr class="line" />
     </form>
