@@ -30,6 +30,7 @@ import { SummaryPageComponent } from './summary-page/summary-page.component';
 import { LoginComponent} from './login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -66,6 +67,7 @@ import { IncompleteGradesListComponent } from './incomplete-grades-list/incomple
     MatIconModule,
     MatDialogModule,
     MatFormFieldModule,
+    RouterModule,
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],
