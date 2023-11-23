@@ -501,7 +501,6 @@ export const required156CreditsRule: IRule = {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     }
-    console.log(returnData);
     return returnData;
   },
 };
@@ -691,6 +690,30 @@ export const incompleteGradeRule: IRule = {
     }
     returnData.data.totalCredits = credits;
 
+    return returnData;
+  },
+};
+
+export const onlineCoursesHonorsRule: IRule = {
+  ruleId: 12,
+  checkRule: (rollNumber: number, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    let onlineCourseData = onlineCoursesRule.checkRule(rollNumber, context);
+
+    context = context ? context : "CSE";
+    for (let course of onlineCourseData.data.courses) {
+      if ((course as any)["course"].startsWith(context as string)) {
+        returnData.data.totalCredits += (course as any)["credit"];
+      }
+    }
     return returnData;
   },
 };
