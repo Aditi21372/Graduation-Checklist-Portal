@@ -28,7 +28,7 @@ jobs:
 
       - name: Install Dependencies
         id: yarn-install
-        run: yarn install
+        run: cd backend && yarn install
         
       - name: Test
         id: yarn-backend-tests
