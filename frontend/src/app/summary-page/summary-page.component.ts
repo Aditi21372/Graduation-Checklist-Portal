@@ -41,6 +41,7 @@ export class SummaryPageComponent implements OnInit {
       // Create an array of observables for each API call
       const observables = [
         this.studentService.getGraduationStatus(this.rollNumber),
+        this.studentService.getGraduationDate(this.rollNumber),
         this.studentService.getRequiredCredits(this.rollNumber),
         this.studentService.getSemWiseCGPA(this.rollNumber),
         this.studentService.getSGcourses(this.rollNumber),
@@ -57,6 +58,7 @@ export class SummaryPageComponent implements OnInit {
           // Destructure the results and assign values to corresponding variables
           const [
             gradStatus,
+            gradDate,
             requiredCredits,
             gpa,
             sgCourses,
@@ -72,6 +74,10 @@ export class SummaryPageComponent implements OnInit {
             {
               requirement: 'Is the student graduating?',
               status: this.isGraduating,
+            },
+            {
+              requirement: 'Graduation Date',
+              status: gradDate,
             },
             {
               requirement: 'Total credits completed',

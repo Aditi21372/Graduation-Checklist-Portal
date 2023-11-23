@@ -1,26 +1,20 @@
-  <!-- Go Back button -->
+<!-- Go Back button -->
 
-  <div>
-    <button (click)="goBack()">← Go Back</button>
-  </div>
-  <div class="container">
-    <mat-card class="custom-toolbar">
-      <div class="center-horizontally">
-        <h2><b>Student Details</b></h2>
-      </div>
-      <div class="student-info">
-        <div>
-          <strong>Name:</strong> {{studentName}}
-        </div>
-        <div>
-          <strong>Program:</strong> {{program}}
-        </div>
-        <div>
-          <strong>Roll Number:</strong> {{ rollNumber }}
-        </div>
-      </div>
-    </mat-card>
-  </div>
+<div>
+  <button (click)="goBack()">← Go Back</button>
+</div>
+<div class="container">
+  <mat-card class="custom-toolbar">
+    <div class="center-horizontally">
+      <h2><b>Student Details</b></h2>
+    </div>
+    <div class="student-info">
+      <div><strong>Name:</strong> {{ studentName }}</div>
+      <div><strong>Program:</strong> {{ program }}</div>
+      <div><strong>Roll Number:</strong> {{ rollNumber }}</div>
+    </div>
+  </mat-card>
+</div>
 
 <mat-card>
   <mat-card-content>
@@ -37,10 +31,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </mat-card-content>
 </mat-card>

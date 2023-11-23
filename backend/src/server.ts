@@ -1,7 +1,7 @@
 import express from "express";
 
 import { studentDatabase, findCGPA } from "./index";
-import { getGraduationStatus } from "./degree";
+import { getGraduationStatus, getGraduationDate } from "./degree";
 
 import {
   sshRule,
@@ -149,6 +149,12 @@ app.get("/api/:rollNumber/graduation-check", (req, res) => {
   const { rollNumber } = req.params;
 
   res.json(getGraduationStatus(Number(rollNumber), "CSE"));
+});
+
+app.get("/api/:rollNumber/graduation-date", (req, res) => {
+  const { rollNumber } = req.params;
+
+  res.json(getGraduationDate(Number(rollNumber)));
 });
 
 app.get("/api/:rollNumber/semester-wise-cgpa", (req, res) => {

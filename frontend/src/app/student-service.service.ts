@@ -73,14 +73,18 @@ export class StudentServiceService {
   }
 
   getIncompleteGrade(rollNumber: number): Observable<any> {
-    return this.http.get(
-      this.apiUrl + String(rollNumber) + '/incompletegrade'
-    );
+    return this.http.get(this.apiUrl + String(rollNumber) + '/incompletegrade');
   }
 
   getGraduationStatus(rollNumber: number): Observable<any> {
     return this.http.get(
       this.apiUrl + String(rollNumber) + '/graduation-check'
+    );
+  }
+
+  getGraduationDate(rollNumber: number): Observable<any> {
+    return this.http.get(
+      this.apiUrl + String(rollNumber) + '/graduation-date'
     );
   }
 
@@ -90,6 +94,8 @@ export class StudentServiceService {
 
   login(username: string, password: string): Observable<any> {
     const credentials = { username, password };
-    return this.http.get(this.apiUrl + 'login' + '/' + username + '/' + password);
+    return this.http.get(
+      this.apiUrl + 'login' + '/' + username + '/' + password
+    );
   }
 }
