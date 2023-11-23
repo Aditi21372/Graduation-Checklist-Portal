@@ -142,7 +142,7 @@ app.get("/api/:rollNumber/incompletegrade", (req, res) => {
 app.get("/api/:rollNumber/required-credits", (req, res) => {
   const { rollNumber } = req.params;
 
-  res.json(required156CreditsRule.checkRule(Number(rollNumber), null));
+  res.json(required156CreditsRule.checkRule(Number(rollNumber), "CSE"));
 });
 
 app.get("/api/:rollNumber/graduation-check", (req, res) => {
