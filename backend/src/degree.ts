@@ -61,7 +61,7 @@ export function getGraduationStatus(
     for (let rule of allRules) {
       if (rule.ruleId in cseRules) {
         if (!rule.checkRule(rollNumber, branch).isCompleteBool) {
-          console.log("Rule not complete: ", rule.ruleId);
+          // console.log("Rule not complete: ", rule.ruleId);
           isGraduated = false;
         }
       }

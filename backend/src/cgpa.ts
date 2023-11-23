@@ -1,4 +1,3 @@
-import { gradeHierarchy } from "./index";
 import { StudentInfo } from "./database";
 
 type Grade = { semester: string; sgpa: number; cgpa: number };
@@ -60,7 +59,6 @@ function getSemesters(studentInfo: StudentInfo): string[] {
   }
 
   semesters.splice(11, 1);
-
   return semesters;
 }
 
@@ -128,6 +126,8 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
   let cumulativeCreditSum = 0;
   let cgpa = 0;
   let onlineCreds = 0;
+  let btpCount = 0;
+  let ipCount = 0;
   let coursesTaken = new Map<string, Course>();
   for (let i = 0; i < semesters.length; i++) {
     let creditSum = 0;
@@ -137,7 +137,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     for (let course of studentInfo.courses) {
       if (String(course.semester) === semesters[i]) {
         if (disallowedGrades.includes(course.grade)) continue;
-
         if (coursesTaken.has(course.courseCode)) {
           const prevGrade = coursesTaken.get(course.courseCode)?.grade;
           if (prevGrade && prevGrade < gradeMap[course.grade]) {
@@ -147,6 +146,8 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
             };
             coursesTaken.set(course.courseCode, courseGrade);
             cumulativeGradeSum -= prevGrade * course.credit;
+            gradeSum += gradeMap[course.grade] * course.credit;
+            continue;
           } else continue;
         } else {
           if (course.grade === "F") {
@@ -165,6 +166,35 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
             else {
               onlineCreds += course.credit;
             }
+            continue;
+          }
+          if (course.courseCode.startsWith("BTP")) {
+            btpCount += 1;
+            const courseGrade: Course = {
+              grade: gradeMap[course.grade],
+              credit: course.credit,
+            };
+            const btpName = course.courseCode + String(btpCount);
+            coursesTaken.set(btpName, courseGrade);
+            creditSum += course.credit;
+            gradeSum += gradeMap[course.grade] * course.credit;
+            continue;
+          }
+
+          if (
+            course.courseCode.startsWith("BIP") ||
+            course.courseCode.startsWith("BIS") ||
+            course.courseCode.startsWith("BUR")
+          ) {
+            ipCount += 1;
+            const courseGrade: Course = {
+              grade: gradeMap[course.grade],
+              credit: course.credit,
+            };
+            const ipName = course.courseCode + String(ipCount);
+            coursesTaken.set(ipName, courseGrade);
+            creditSum += course.credit;
+            gradeSum += gradeMap[course.grade] * course.credit;
             continue;
           }
         }
