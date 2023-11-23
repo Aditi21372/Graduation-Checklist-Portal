@@ -1,4 +1,5 @@
-import { allRules } from "./index";
+import { allRules, studentDatabase } from "./index";
+import { StudentInfo } from "./database";
 export interface IDegree {
   name: string;
   degreeType: "BTECH" | "MTECH" | "PHD";
@@ -26,6 +27,22 @@ export type StudentCourse = {
   credit: 1 | 2 | 4 | 8 | 12;
 };
 
+const semesters: string[] = [
+  "1",
+  "2",
+  "Summer Term 1",
+  "3",
+  "4",
+  "Summer Term 2",
+  "5",
+  "6",
+  "Summer Term 3",
+  "7",
+  "8",
+  "Summer Term 4",
+  "9",
+];
+
 export const CSEDegree: IDegree = {
   name: "CSE",
   degreeType: "BTECH",
@@ -51,4 +68,26 @@ export function getGraduationStatus(
     }
   }
   return isGraduated;
+}
+
+export function getGraduationDate(rollNumber: number): string {
+  const isGraduated = getGraduationStatus(rollNumber, "CSE");
+  const studentCourses = studentDatabase[Number(rollNumber)]["courses"];
+
+  let maxSem = 0;
+  for (let course of studentCourses) {
+    let semester = course["semester"].toString();
+    if (semesters.includes(semester)) {
+      const semesterIndex = semesters.indexOf(semester); // Add type assertion
+      if (semesterIndex > maxSem) {
+        maxSem = semesterIndex;
+      }
+    }
+  }
+  if (isGraduated) {
+    if (maxSem === 10) return "June 21, 2023";
+    else if (maxSem === 11) return "September 21, 2023";
+    else if (maxSem === 12) return "January 21, 2024";
+  }
+  return "Not Graduated";
 }
