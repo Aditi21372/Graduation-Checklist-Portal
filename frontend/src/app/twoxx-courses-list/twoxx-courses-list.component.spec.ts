@@ -44,4 +44,11 @@ describe('TwoxxCoursesListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should navigate back to dashboard on goBack()', () => {
+    component.goBack();
+    // Ensure that the navigate function is called with the correct arguments
+    const router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard', component.rollNumber]);
+  });
 });
