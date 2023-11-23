@@ -18,14 +18,14 @@ jobs:
 
       - name: Setup Node.js
         id: setup-node
-        uses: actions/setup-node@v4
+        uses: cd backend && actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: npm
 
       - name: Install Dependencies
         id: npm-install
-        run: cd backend && yarn install
+        run: yarn install
         
       - name: Test
         id: npm-backend-tests
