@@ -37,4 +37,8 @@ export class StudentInfoInputComponent {
       }
     );
   }
+
+  logout(){
+    this.router.navigate(['/login']);
+  }
 }

@@ -72,6 +72,12 @@ export class StudentServiceService {
     );
   }
 
+  getIncompleteGrade(rollNumber: number): Observable<any> {
+    return this.http.get(
+      this.apiUrl + String(rollNumber) + '/incompletegrade'
+    );
+  }
+
   getGraduationStatus(rollNumber: number): Observable<any> {
     return this.http.get(
       this.apiUrl + String(rollNumber) + '/graduation-check'

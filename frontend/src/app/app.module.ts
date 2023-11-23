@@ -29,6 +29,7 @@ import { BranchCoursesListComponent } from './branch-courses-list/branch-courses
 import { SummaryPageComponent } from './summary-page/summary-page.component';
 import { LoginComponent} from './login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     BranchCoursesListComponent,
     SummaryPageComponent,
     LoginComponent,
+    IncompleteGradesListComponent,
   ],
   imports: [
     BrowserModule,

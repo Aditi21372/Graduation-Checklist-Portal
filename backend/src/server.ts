@@ -15,6 +15,7 @@ import {
   ipRule,
   onlineCoursesRule,
   thirtyTwoCreditsRule,
+  incompleteGradeRule,
 } from "./rule";
 import { isHonors } from "./honors";
 
@@ -129,6 +130,13 @@ app.get("/api/:rollNumber/thirtytwocredits", (req, res) => {
   const { rollNumber } = req.params;
 
   res.json(thirtyTwoCreditsRule.checkRule(Number(rollNumber), null));
+});
+
+app.get("/api/:rollNumber/incompletegrade", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { rollNumber } = req.params;
+
+  res.json(incompleteGradeRule.checkRule(Number(rollNumber), null));
 });
 
 app.get("/api/:rollNumber/required-credits", (req, res) => {
