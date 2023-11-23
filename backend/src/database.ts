@@ -1,4 +1,5 @@
 import { StudentCourse } from "./degree";
+import { GraduatedStudent } from "./index";
 
 const xlsx = require("xlsx");
 
@@ -128,3 +129,32 @@ export function getCourseDatabase(filePath: string): CourseMap {
   return courseDatabase;
 }
 
+export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
+  const workbook = xlsx.readFile(filePath);
+  const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+  const range = xlsx.utils.decode_range(worksheet["!ref"]);
+  const graduatedStudents: GraduatedStudent[] = [];
+
+  for (let row = range.s.r + 1; row <= range.e.r; row++) {
+    const student: GraduatedStudent = {
+      sNo: worksheet[`A${row + 1}`]?.v,
+      programSeq: worksheet[`B${row + 1}`]?.v,
+      rollNo: worksheet[`C${row + 1}`]?.v,
+      name: worksheet[`D${row + 1}`]?.v,
+      program: worksheet[`E${row + 1}`]?.v,
+      graduationDate: worksheet[`F${row + 1}`]?.v,
+      honors: worksheet[`G${row + 1}`]?.v,
+      minorInCB: worksheet[`H${row + 1}`]?.v,
+      minorInEco: worksheet[`I${row + 1}`]?.v,
+      minorInENT: worksheet[`J${row + 1}`]?.v,
+      ecoMajor: worksheet[`K${row + 1}`]?.v,
+      btp: worksheet[`L${row + 1}`]?.v,
+      credits: worksheet[`M${row + 1}`]?.v,
+      cgpa: worksheet[`N${row + 1}`]?.v,
+    };
+
+    graduatedStudents.push(student);
+  }
+
+  return graduatedStudents;
+}

@@ -21,7 +21,6 @@ import {
   thirtyTwoCreditsRule,
 } from "./rule";
 
-
 export const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
 export const courseListFilePath = "src/data/Course_Codes.xlsm";
 
@@ -62,6 +61,23 @@ export const allRules = [
   onlineCoursesRule,
   thirtyTwoCreditsRule,
 ];
+
+export type GraduatedStudent = {
+  sNo: number;
+  programSeq: number;
+  rollNo: number;
+  name: string;
+  program: string;
+  graduationDate: string;
+  honors: string;
+  minorInCB: string;
+  minorInEco: string;
+  minorInENT: string;
+  ecoMajor: string;
+  btp: string;
+  credits: number;
+  cgpa: number;
+};
 
 export function findCGPA(rollNumber: number) {
   const student: StudentInfo = studentDatabase[rollNumber];

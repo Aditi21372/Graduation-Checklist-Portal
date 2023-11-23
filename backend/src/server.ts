@@ -22,8 +22,6 @@ import { isHonors } from "./honors";
 const app = express();
 const port = 3000;
 
-export const sum = (a: number, b: number) => a + b;
-
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
   res.header(
