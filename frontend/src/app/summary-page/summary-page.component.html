@@ -40,7 +40,6 @@
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumns"
-        [ngClass]="{ 'red-row': row.status === 'No' }"
       ></tr>
     </table>
   </mat-card-content>

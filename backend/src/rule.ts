@@ -1,4 +1,3 @@
-import { isFunction } from "util";
 import { StudentInfo } from "./database";
 import {
   gradeHierarchy,
@@ -98,7 +97,7 @@ export const cwRule: IRule = {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     } else if (credits > 2) {
-      returnData.isCompleteBool = true;
+      returnData.isCompleteBool = false;
       returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
@@ -142,7 +141,7 @@ export const sgRule: IRule = {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     } else if (credits > 2) {
-      returnData.isCompleteBool = true;
+      returnData.isCompleteBool = false;
       returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
@@ -177,7 +176,7 @@ export const btpRule: IRule = {
         sem.push(course["semester"]);
       }
 
-      if(courseCodebtp === "BTP"){
+      if (courseCodebtp === "BTP") {
         let courseEntry = {
           course: course["courseCode"],
           semester: course["semester"],
@@ -213,20 +212,12 @@ export const btpRule: IRule = {
         pairDifferences.push(difference);
       }
       const allOnes = pairDifferences.every((element) => element === 1);
-      if (allOnes) {
-        if(credits <= 12){
-          returnData.isCompleteText = "Complete";
-        }
-        else{
-          returnData.isCompleteText = "Done extra credits";
-        }
-        returnData.isCompleteBool = true;
-      } else {
-        if (semesters.length == 2) {
-          returnData.isCompleteText = "Incomplete";
-        } else {
-          returnData.isCompleteText = "Not Done Consecutively";
-        }
+      if (allOnes && credits <= 12) {
+        returnData.isCompleteText = "Complete";
+      } else if (credits >= 12) {
+        returnData.isCompleteText = "Done extra credits";
+      } else if (!allOnes) {
+        returnData.isCompleteText = "Incomplete";
       }
     }
     returnData.data.totalCredits = credits;
@@ -249,8 +240,6 @@ export const mandatoryCoreRule: IRule = {
     let studentCoreCourse = [];
 
     if (context === "CSE") {
-      // Path to the excel sheet containing courses and their course codes
-
       const coreCourses = courseDatabase["CSE"];
       const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
       const studentCourses = studentInfo["courses"];
@@ -313,6 +302,7 @@ export const mandatoryBucketRule: IRule = {
       data: {
         studentBucketCourses: [],
         completedBuckets: [],
+        totalCredits: 0,
       },
     };
 
@@ -378,6 +368,7 @@ export const mandatoryBucketRule: IRule = {
 
       for (let j = 0; j < studentBucketCourse[i].length; j++) {
         if (studentBucketCourse[i][j].status === "Complete") {
+          returnData.data.totalCredits += studentBucketCourse[i][j].credits;
           atleastOne = true;
         }
       }
@@ -449,11 +440,10 @@ export const twoxxRule: IRule = {
 
     if (credits == 0) {
       returnData.isCompleteText = "Not Done";
-    }
-    else if (credits <= 8) {
+    } else if (credits <= 8) {
       returnData.isCompleteText = "Complete";
-    }
-    else{
+    } else {
+      returnData.isCompleteBool = false;
       returnData.isCompleteText = "Done with extra credits";
     }
     returnData.data.totalCredits = credits;
@@ -467,30 +457,50 @@ export const required156CreditsRule: IRule = {
     let returnData: RuleData = {
       isCompleteBool: false,
       isCompleteText: "Incomplete",
-      data: null,
+      data: 0,
     };
 
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
-    let disallowedGradesTemp = ["I", "W", "F", "X"];
     let credits = 0;
-    let coursesTaken = new Map<string, number>();
-
-    for (const course of studentCourses) {
-      if (
-        !disallowedGradesTemp.includes(course["grade"]) &&
-        !coursesTaken.has(course["courseCode"])
-      ) {
-        credits += course["credit"];
-        coursesTaken.set(course["courseCode"], course["credit"]);
-      }
+    credits += sshRule.checkRule(rollNumber, context).data.totalCredits;
+    credits += Math.min(
+      cwRule.checkRule(rollNumber, context).data.totalCredits,
+      2
+    );
+    credits += Math.min(
+      sgRule.checkRule(rollNumber, context).data.totalCredits,
+      2
+    );
+    credits += mandatoryCoreRule.checkRule(rollNumber, context).data
+      .totalCredits;
+    credits += mandatoryBucketRule.checkRule(rollNumber, context).data
+      .totalCredits;
+    credits += Math.min(
+      twoxxRule.checkRule(rollNumber, context).data.totalCredits,
+      8
+    );
+    credits += Math.min(
+      ipRule.checkRule(rollNumber, context).data.totalCredits,
+      8
+    );
+    credits += Math.min(
+      onlineCoursesRule.checkRule(rollNumber, context).data.totalCredits,
+      8
+    );
+    credits += thirtyTwoCreditsRule.checkRule(rollNumber, context).data
+      .totalCredits;
+    const btpReturnData = btpRule.checkRule(rollNumber, context);
+    if (
+      btpReturnData.isCompleteText === "Complete" ||
+      btpReturnData.isCompleteText === "Done extra credits"
+    ) {
+      credits += Math.min(btpReturnData.data.totalCredits, 12);
     }
+
+    returnData.data = credits;
     if (credits >= 156) {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     }
-    returnData.data = credits;
-
     return returnData;
   },
 };
@@ -532,7 +542,7 @@ export const ipRule: IRule = {
       }
     }
 
-    if(credits == 0){
+    if (credits == 0) {
       returnData.isCompleteText = "Not Done";
     }
     if (credits <= 8) {
@@ -579,16 +589,15 @@ export const onlineCoursesRule: IRule = {
       }
     }
 
-    if(credits == 0){
+    if (credits == 0) {
       returnData.isCompleteText = "Not Done";
-    }
-    else if (credits <= 8) {
+    } else if (credits <= 8) {
       returnData.isCompleteText = "Complete";
     } else {
+      returnData.isCompleteBool = false;
       returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
-
     return returnData;
   },
 };
@@ -640,11 +649,9 @@ export const thirtyTwoCreditsRule: IRule = {
       returnData.isCompleteText = "Complete";
     }
     returnData.data.totalCredits = credits;
-
     return returnData;
   },
 };
-
 
 export const incompleteGradeRule: IRule = {
   ruleId: 11,
@@ -663,9 +670,7 @@ export const incompleteGradeRule: IRule = {
     let incompleteGradePresent = false;
 
     for (const course of studentCourses) {
-      if (
-        course["grade"] == "I"
-      ) {
+      if (course["grade"] == "I") {
         let courseEntry = {
           course: course["courseCode"],
           semester: course["semester"],
@@ -685,6 +690,30 @@ export const incompleteGradeRule: IRule = {
     }
     returnData.data.totalCredits = credits;
 
+    return returnData;
+  },
+};
+
+export const onlineCoursesHonorsRule: IRule = {
+  ruleId: 12,
+  checkRule: (rollNumber: number, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    let onlineCourseData = onlineCoursesRule.checkRule(rollNumber, context);
+
+    context = context ? context : "CSE";
+    for (let course of onlineCourseData.data.courses) {
+      if ((course as any)["course"].startsWith(context as string)) {
+        returnData.data.totalCredits += (course as any)["credit"];
+      }
+    }
     return returnData;
   },
 };
