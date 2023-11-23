@@ -16,19 +16,23 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
+      - name: Switch to Backend
+        id: backend
+        uses: cd backend
+
       - name: Setup Node.js
         id: setup-node
-        uses: cd backend && actions/setup-node@v4
+        uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
           cache: npm
 
       - name: Install Dependencies
-        id: npm-install
+        id: yarn-install
         run: yarn install
         
       - name: Test
-        id: npm-backend-tests
+        id: yarn-backend-tests
         run: yarn run ci
 
   test-action:
