@@ -44,4 +44,15 @@ describe('BtpDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should populate BTP details on initialization', () => {
+    expect(component.dataSource.data.length).toBe(2); // Assuming two courses in the courseData
+  });
+
+  it('should navigate back to dashboard on goBack()', () => {
+    component.goBack();
+    // Ensure that the navigate function is called with the correct arguments
+    const router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard', component.rollNumber]);
+  });
 });
