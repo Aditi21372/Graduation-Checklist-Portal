@@ -63,4 +63,4 @@ jobs:
 
       - name: Test
         id: yarn-frontend-tests
-        run: cd frontend && ng test
+        run: cd frontend && npm run test:prod
