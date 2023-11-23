@@ -79,7 +79,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Final CGPA',
-              status: gpa["10"].cgpa, // TODO: @srishti add API call after complete
+              status: gpa["10"].cgpa, 
             },
             {
               requirement: 'Completed SG / CW credits',
@@ -100,7 +100,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Graduating with Honors',
-              status: honors ? 'Yes' : 'No', // TODO
+              status: honors ? 'Yes' : 'No', 
             },
             {
               requirement: 'Graduating with Minors',
