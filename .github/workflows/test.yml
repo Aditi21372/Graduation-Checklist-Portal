@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  test-typescript:
+  test-backend:
     name: Backend Tests
     runs-on: ubuntu-latest
 
@@ -29,7 +29,38 @@ jobs:
       - name: Install Dependencies
         id: yarn-install
         run: cd backend && yarn install
-        
+
       - name: Test
         id: yarn-backend-tests
         run: cd backend && yarn run ci
+
+  test-frontend:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: Switch to Frontend
+        id: frontend
+        run: cd frontend
+
+      - name: Setup Node.js
+        id: setup-node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        id: yarn-install
+        run: cd frontend && yarn install
+
+      - name: Install Angular
+        id: angular-install
+        run: cd frontend && npm install -g @angular/cli && npm link @angular/cli
+
+      - name: Test
+        id: yarn-frontend-tests
+        run: cd frontend && npm run test:prod
