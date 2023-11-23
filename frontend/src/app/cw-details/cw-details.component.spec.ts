@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
 import { CwDetailsComponent } from './cw-details.component';
+import { MatCardModule } from '@angular/material/card';
 
 describe('CwDetailsComponent', () => {
   let component: CwDetailsComponent;
@@ -8,7 +10,31 @@ describe('CwDetailsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CwDetailsComponent]
+      declarations: [CwDetailsComponent],
+      imports: [MatTableModule, MatCardModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: {
+              subscribe: (fn: (value: any) => void) =>
+                fn({
+                  studentName: 'Test Student',
+                  program: 'Test Program',
+                  rollNumber: 123,
+                  branch: 'Test Branch',
+                  courseData: '[{"course": "Math", "semester": 1, "status": "Completed", "credits": 3, "grade": "A"}, {"course": "Physics", "semester": 2, "status": "In Progress", "credits": 4, "grade": null}]',
+                }),
+            },
+          },
+        },
+        {
+          provide: Router,
+          useValue: {
+            navigate: jasmine.createSpy('navigate'),
+          },
+        },
+      ],
     });
     fixture = TestBed.createComponent(CwDetailsComponent);
     component = fixture.componentInstance;

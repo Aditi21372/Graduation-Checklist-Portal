@@ -14,19 +14,18 @@ export class LoginComponent {
 
   constructor(private studentService: StudentServiceService, private router: Router,) {}
 
-  onLogin() {
-    this.studentService.login(this.username, this.password).subscribe(
-      (response) => {
-        // Handle the response from the backend, e.g., redirect to another page;
-        this.router.navigate(['/student-info-input']);
-      
-      },
-      (error) => {
-        // Handle any errors, e.g., display an error message
-        this.responseMessage= "The password that you've entered is incorrect."
-
-      }
-    );
-  }
+  // LoginComponent
+onLogin() {
+  this.studentService.login(this.username, this.password).subscribe(
+    (response) => {
+      // Handle the response from the backend, e.g., redirect to another page;
+      this.router.navigate(['/student-info-input']);
+    },
+    (error) => {
+      // Handle any errors, e.g., display an error message
+      this.responseMessage = "The password that you've entered is incorrect.";
+    }
+  );
+}
 
 }
