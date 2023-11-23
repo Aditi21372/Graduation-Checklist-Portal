@@ -32,7 +32,7 @@ jobs:
         
       - name: Test
         id: yarn-backend-tests
-        run: yarn run ci
+        run: cd backend && yarn run ci
 
   test-action:
     name: GitHub Actions Test
