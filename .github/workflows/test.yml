@@ -18,7 +18,7 @@ jobs:
 
       - name: Switch to Backend
         id: backend
-        uses: cd backend
+        run: cd backend
 
       - name: Setup Node.js
         id: setup-node
