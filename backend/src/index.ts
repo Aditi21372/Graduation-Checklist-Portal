@@ -79,7 +79,6 @@ export type GraduatedStudent = {
   cgpa: number;
 };
 
-export function findCGPA(rollNumber: number) {
-  const student: StudentInfo = studentDatabase[rollNumber];
-  return calculateCGPA(student);
+export function findCGPA(studentCourseData: StudentInfo) {
+  return calculateCGPA(studentCourseData);
 }

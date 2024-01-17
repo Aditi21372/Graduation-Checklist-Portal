@@ -1,7 +1,14 @@
 import express from "express";
+import * as fs from "fs";
 
-import { studentDatabase, findCGPA } from "./index";
+import { findCGPA } from "./index";
 import { getGraduationStatus, getGraduationDate } from "./degree";
+import {
+  searchByRollNo,
+  updateStudentData,
+  preprocessCourseData,
+  StudentInfo,
+} from "./database";
 
 import {
   sshRule,
@@ -16,11 +23,17 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
   incompleteGradeRule,
+  tocRule
 } from "./rule";
 import { isHonors } from "./honors";
 
 const app = express();
 const port = 3000;
+let studentCourseData: StudentInfo = {
+  studentName: "",
+  program: "",
+  courses: [],
+};
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -33,153 +46,128 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get("/api/:rollNumber/info", (req, res) => {
+app.get("/api/:rollNumber/info", async (req, res) => {
   // Get the rollNumber parameter from the request URL.
   const { rollNumber } = req.params;
+  const studentData = await searchByRollNo(Number(rollNumber));
   // Check if the roll number exists in the database.
-  if (studentDatabase.hasOwnProperty(rollNumber)) {
-    const studentData = {
+  if (studentData.length > 0) {
+    const studentInfo = {
       rollNumber: rollNumber,
-      studentName: studentDatabase[Number(rollNumber)].studentName,
-      branch: studentDatabase[Number(rollNumber)].program,
+      studentName: studentData[0]["Student Name"],
+      branch: studentData[0]["Program"],
     };
 
-    res.json(studentData);
+    res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
 });
 
-app.get("/api/:branch/:rollNumber/mandatory", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { branch, rollNumber } = req.params;
-
-  if (branch === "CSE") {
-    res.json(mandatoryCoreRule.checkRule(Number(rollNumber), branch));
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
-});
-
-app.get("/api/:branch/:rollNumber/bucket", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { branch, rollNumber } = req.params;
-  if (branch === "CSE") {
-    res.json(mandatoryBucketRule.checkRule(Number(rollNumber), branch));
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
-});
-
-app.get("/api/:rollNumber/ssh", (req, res) => {
-  // Get the branch parameter from the request URL.
+app.get("/api/:rollNumber/courseinfo", async (req, res) => {
   const { rollNumber } = req.params;
-
-  res.json(sshRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/cw", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(cwRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/sg", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(sgRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/btp", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(btpRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/twoxxcourses", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(twoxxRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/ip", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(ipRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/onlinecourses", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(onlineCoursesRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/thirtytwocredits", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(thirtyTwoCreditsRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/incompletegrade", (req, res) => {
-  // Get the branch parameter from the request URL.
-  const { rollNumber } = req.params;
-
-  res.json(incompleteGradeRule.checkRule(Number(rollNumber), null));
-});
-
-app.get("/api/:rollNumber/required-credits", (req, res) => {
-  const { rollNumber } = req.params;
-
-  res.json(required156CreditsRule.checkRule(Number(rollNumber), "CSE"));
-});
-
-app.get("/api/:rollNumber/graduation-check", (req, res) => {
-  const { rollNumber } = req.params;
-
-  res.json(getGraduationStatus(Number(rollNumber), "CSE"));
-});
-
-app.get("/api/:rollNumber/graduation-date", (req, res) => {
-  const { rollNumber } = req.params;
-
-  res.json(getGraduationDate(Number(rollNumber)));
-});
-
-app.get("/api/:rollNumber/semester-wise-cgpa", (req, res) => {
-  // Get the rollNumber parameter from the request URL.
-  const { rollNumber } = req.params;
-
+  const studentData = await searchByRollNo(Number(rollNumber));
   // Check if the roll number exists in the database.
-  if (studentDatabase.hasOwnProperty(rollNumber)) {
-    // Replace this with your logic to fetch semester-wise CGPA data.
-    // You can calculate it from the student's course grades and credits.
-    // For demonstration purposes, let's assume you have a function to calculate CGPA.
-    const semesterWiseCGPA = findCGPA(Number(rollNumber));
-
-    // Return the semester-wise CGPA data.
-    res.json(semesterWiseCGPA);
+  if (studentData.length > 0) {
+    const studentInfo = {
+      rollNumber: rollNumber,
+      studentName: studentData[0]["Student Name"],
+      branch: studentData[0]["Program"],
+    };
+    studentCourseData = preprocessCourseData(studentData);
+    fs.writeFileSync(
+      "./src/data/studentDatabase2.json",
+      JSON.stringify(studentCourseData, null, 2)
+    );
+    res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
 });
 
-app.get("/api/:rollNumber/honors", (req, res) => {
-  // Get the rollNumber parameter from the request URL.
-  const { rollNumber } = req.params;
+app.get("/api/:branch/mandatory", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { branch } = req.params;
 
-  console.log("Is Honors Backend: ", isHonors(Number(rollNumber)));
-  res.json(isHonors(Number(rollNumber)));
+  if (branch === "CSE") {
+    res.json(mandatoryCoreRule.checkRule(studentCourseData, branch));
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.get("/api/:branch/bucket", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { branch } = req.params;
+  if (branch === "CSE") {
+    res.json(mandatoryBucketRule.checkRule(studentCourseData, branch));
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.get("/api/ssh", (req, res) => {
+  res.json(sshRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/cw", (req, res) => {
+  res.json(cwRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/sg", (req, res) => {
+  res.json(sgRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/btp", (req, res) => {
+  res.json(btpRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/twoxxcourses", (req, res) => {
+  res.json(twoxxRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/ip", (req, res) => {
+  res.json(ipRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/onlinecourses", (req, res) => {
+  res.json(onlineCoursesRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/thirtytwocredits", (req, res) => {
+  res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/toc", (req, res) => {
+  res.json(tocRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/incompletegrade", (req, res) => {
+  res.json(incompleteGradeRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/required-credits", (req, res) => {
+  res.json(required156CreditsRule.checkRule(studentCourseData, "CSE"));
+});
+
+app.get("/api/graduation-check", (req, res) => {
+  res.json(getGraduationStatus(studentCourseData, "CSE"));
+});
+
+app.get("/api/graduation-date", (req, res) => {
+  res.json(getGraduationDate(studentCourseData));
+});
+
+app.get("/api/semester-wise-cgpa", (req, res) => {
+  res.json(findCGPA(studentCourseData));
+});
+
+app.get("/api/honors", (req, res) => {
+  res.json(isHonors(studentCourseData));
 });
 
 app.get("/api/login/:username/:password", (req, res) => {
@@ -189,6 +177,28 @@ app.get("/api/login/:username/:password", (req, res) => {
   }
 
   res.status(404).json({ error: "User not found" });
+});
+
+app.get("/api/student/:rollNumber", async (req, res) => {
+  const { rollNumber } = req.params;
+  const studentData = await searchByRollNo(Number(rollNumber));
+  if (studentData.length > 0) {
+    res.json(studentData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.post("/api/updateStudent", async (req, res) => {
+  const studentData = req.body;
+  const studentDataUpdated = await updateStudentData(studentData);
+  if (studentDataUpdated) {
+    res.json(studentDataUpdated);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
 });
 
 if (process.env.NODE_ENV !== "test") {

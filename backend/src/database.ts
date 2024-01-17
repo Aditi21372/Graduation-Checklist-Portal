@@ -1,7 +1,11 @@
 import { StudentCourse } from "./degree";
 import { GraduatedStudent } from "./index";
+import { MongoClient } from "mongodb";
 
 const xlsx = require("xlsx");
+
+const uri = "mongodb://localhost:27017";
+const client = new MongoClient(uri);
 
 export type StudentInfo = {
   studentName: string;
@@ -108,7 +112,45 @@ export function getStudentDatabase(filePath: string): DatabaseMap {
     studentDatabase[_rollNo].courses.push(course);
   });
 
+  // const outputFilePath = './src/data/studentDatabase2.json';
+  // const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1, range });
+  // const headersRow: Record<string, string> = jsonData[1];
+  // const headers: string[] = Object.values(headersRow);
+  // console.log(headers);
+
+  // // Rest of the code
+  // const mongoDbJson = jsonData.slice(2).map((row: any) => {
+  //   const doc: { [key: string]: any } = {};
+  //   headers.forEach((header: string, index: number) => {
+  //     doc[header] = row[index];
+  //   });
+  //   return doc;
+  // });
+  //   // Write JSON data to a file
+  //
+  // fs.writeFileSync(outputFilePath, JSON.stringify(studentDatabase, null, 2));
   return studentDatabase;
+}
+
+export function preprocessCourseData(studentData: any): StudentInfo {
+  const studentInfo: StudentInfo = {
+    studentName: studentData[0]["Student Name"],
+    program: studentData[0]["Program"],
+    courses: [],
+  };
+
+  studentData.forEach((entry: any) => {
+    const course: StudentCourse = {
+      courseCode: entry["Course Code"],
+      grade: entry["Grade"],
+      semester: entry["Batch / Term Code"],
+      credit: entry["Credit"],
+    };
+
+    studentInfo.courses.push(course);
+  });
+
+  return studentInfo;
 }
 
 // getCourseDatabase creates a JSON object courseDatabase that stores the course codes for the courses being
@@ -157,4 +199,53 @@ export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
   }
 
   return graduatedStudents;
+}
+
+export async function searchByRollNo(rollNo: number): Promise<any[]> {
+  try {
+    await client.connect();
+    const database = client.db("graduation");
+    const collection = database.collection("StudentDatabase2019");
+
+    // Use the find method to retrieve all documents matching the query
+    const query = { "Roll No": rollNo };
+    const result = await collection.find(query).toArray();
+    if (result.length === 0) {
+      return []; // Return an empty array
+    }
+
+    return result;
+  } finally {
+    await client.close();
+  }
+}
+
+export async function updateStudentData(studentData: any): Promise<any> {
+  try {
+    await client.connect();
+    const database = client.db("graduation");
+    const collection = database.collection("StudentDatabase2019");
+
+    // Use the find method to retrieve all documents matching the query
+    const query = {
+      "Roll No": studentData["Roll No"],
+      "Batch / Term Code": studentData["Batch / Term Code"],
+      "Course Code": studentData["Course Code"],
+    };
+
+    const existingStudent = await collection.findOne(query);
+    if (!existingStudent) {
+      return []; // Student not found
+    }
+
+    existingStudent["Grade"] = studentData["Grade"];
+    const result = await collection.replaceOne(query, existingStudent);
+    if (result.modifiedCount === 0) {
+      return []; // Document not updated
+    }
+
+    return existingStudent; // Document updated successfully
+  } finally {
+    await client.close();
+  }
 }

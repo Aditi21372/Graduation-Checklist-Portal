@@ -19,7 +19,7 @@ onLogin() {
   this.studentService.login(this.username, this.password).subscribe(
     (response) => {
       // Handle the response from the backend, e.g., redirect to another page;
-      this.router.navigate(['/student-info-input']);
+      this.router.navigate(['/selection']);
     },
     (error) => {
       // Handle any errors, e.g., display an error message

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
   selector: 'app-sg-details',
   templateUrl: './sg-details.component.html',
-  styleUrls: ['./sg-details.component.css']
+  styleUrls: ['./sg-details.component.css'],
 })
 export class SgDetailsComponent {
   dataSource: MatTableDataSource<any>;
@@ -14,40 +14,45 @@ export class SgDetailsComponent {
   program: string = '';
   studentName: string = '';
   courseData: any;
-  displayedColumns: string[] = ['course', 'semester', 'status', 'credits', 'grade'];
+  displayedColumns: string[] = [
+    'course',
+    'semester',
+    'status',
+    'credits',
+    'grade',
+  ];
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.dataSource = new MatTableDataSource();
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.studentName = params["studentName"];
-      this.program = params["program"];
+    this.route.queryParams.subscribe((params) => {
+      this.studentName = params['studentName'];
+      this.program = params['program'];
       this.rollNumber = params['rollNumber'];
       this.branch = params['branch'];
-      this.courseData = JSON.parse(params['courseData'])
+      this.courseData = JSON.parse(params['courseData']);
       this.populateSGCourses();
     });
   }
 
   populateSGCourses() {
-        const newData = [];
-        for (let i = 0; i < this.courseData.length; i++) {
-          newData.push({
-            course: this.courseData[i].course,
-            semester: this.courseData[i].semester,
-            status: this.courseData[i].status,
-            credits: this.courseData[i].credits,
-            grade: this.courseData[i].grade,
-          });
-        }
+    const newData = [];
+    for (let i = 0; i < this.courseData.length; i++) {
+      newData.push({
+        course: this.courseData[i].course,
+        semester: this.courseData[i].semester,
+        status: this.courseData[i].status,
+        credits: this.courseData[i].credits,
+        grade: this.courseData[i].grade,
+      });
+    }
 
-        this.dataSource.data = [...this.dataSource.data, ...newData];
-      }
-      
-      goBack() {
-        this.router.navigate(['/dashboard', this.rollNumber]);
-      }
+    this.dataSource.data = [...this.dataSource.data, ...newData];
+  }
 
+  goBack() {
+    this.router.navigate(['/dashboard', this.rollNumber]);
+  }
 }

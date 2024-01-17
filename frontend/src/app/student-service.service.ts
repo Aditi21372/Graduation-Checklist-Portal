@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class StudentServiceService {
-  private apiUrl = 'http://localhost:3000/api/'; // Adjust the URL to match your Express route
+  private apiUrl = 'http://192.168.3.164:3000/api/'; // Adjust the URL to match your Express route
 
   constructor(private http: HttpClient) {}
 
@@ -14,88 +14,103 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + String(rollNumber) + '/info');
   }
 
-  getMandatoryCourses(branch: string, rollNumber: number): Observable<any> {
+  getStudentCourseData(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + String(rollNumber) + '/courseinfo');
+  }
+
+  getMandatoryCourses(branch: string): Observable<any> {
     return this.http.get(
-      this.apiUrl + branch + '/' + String(rollNumber) + '/mandatory'
+      this.apiUrl + branch +  '/mandatory'
     );
   }
 
-  getBucketCourses(branch: string, rollNumber: number): Observable<any> {
+  getBucketCourses(branch: string): Observable<any> {
     return this.http.get(
-      this.apiUrl + branch + '/' + String(rollNumber) + '/bucket'
+      this.apiUrl + branch + '/bucket'
     );
   }
 
-  getSSHcourses(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/ssh');
+  getSSHcourses(): Observable<any> {
+    return this.http.get(this.apiUrl + 'ssh');
   }
 
-  getCWcourses(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/cw');
+  getCWcourses(): Observable<any> {
+    return this.http.get(this.apiUrl + 'cw');
   }
 
-  getSGcourses(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/sg');
+  getSGcourses(): Observable<any> {
+    return this.http.get(this.apiUrl + 'sg');
   }
 
-  getBTPCredits(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/btp');
+  getBTPCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'btp');
   }
 
-  getTwoXXCredits(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/twoxxcourses');
+  getTwoXXCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'twoxxcourses');
   }
 
-  getIPCredits(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/ip');
+  getIPCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'ip');
   }
 
-  getOnlineCourseCredits(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/onlinecourses');
+  getOnlineCourseCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'onlinecourses');
   }
 
-  get32Credits(rollNumber: number): Observable<any> {
+  get32Credits(): Observable<any> {
     return this.http.get(
-      this.apiUrl + String(rollNumber) + '/thirtytwocredits'
+      this.apiUrl + 'thirtytwocredits'
     );
   }
 
-  getSemWiseCGPA(rollNumber: number): Observable<any> {
+  getSemWiseCGPA(): Observable<any> {
     return this.http.get(
-      this.apiUrl + String(rollNumber) + '/semester-wise-cgpa'
+      this.apiUrl + 'semester-wise-cgpa'
     );
   }
 
-  getRequiredCredits(rollNumber: number): Observable<any> {
+  getRequiredCredits(): Observable<any> {
     return this.http.get(
-      this.apiUrl + String(rollNumber) + '/required-credits'
+      this.apiUrl + 'required-credits'
     );
   }
 
-  getIncompleteGrade(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/incompletegrade');
+  getTOCCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'toc');
   }
 
-  getGraduationStatus(rollNumber: number): Observable<any> {
+  getIncompleteGrade(): Observable<any> {
+    return this.http.get(this.apiUrl + 'incompletegrade');
+  }
+
+  getGraduationStatus(): Observable<any> {
     return this.http.get(
-      this.apiUrl + String(rollNumber) + '/graduation-check'
+      this.apiUrl + 'graduation-check'
     );
   }
 
-  getGraduationDate(rollNumber: number): Observable<any> {
+  getGraduationDate(): Observable<any> {
     return this.http.get(
-      this.apiUrl + String(rollNumber) + '/graduation-date'
+      this.apiUrl + 'graduation-date'
     );
   }
 
-  getHonors(rollNumber: number): Observable<any> {
-    return this.http.get(this.apiUrl + String(rollNumber) + '/honors');
+  getHonors(): Observable<any> {
+    return this.http.get(this.apiUrl + 'honors');
   }
 
   login(username: string, password: string): Observable<any> {
-    const credentials = { username, password };
     return this.http.get(
       this.apiUrl + 'login' + '/' + username + '/' + password
     );
+  }
+
+  getStudentCourses(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'student' + '/' + rollNumber);
+  }
+
+  updateStudent(student: any): Observable<any> {
+    return this.http.post(this.apiUrl + 'updateStudent', student);
   }
 }

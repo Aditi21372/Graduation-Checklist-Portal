@@ -40,16 +40,16 @@ export class SummaryPageComponent implements OnInit {
 
       // Create an array of observables for each API call
       const observables = [
-        this.studentService.getGraduationStatus(this.rollNumber),
-        this.studentService.getGraduationDate(this.rollNumber),
-        this.studentService.getRequiredCredits(this.rollNumber),
-        this.studentService.getSemWiseCGPA(this.rollNumber),
-        this.studentService.getSGcourses(this.rollNumber),
-        this.studentService.getCWcourses(this.rollNumber),
-        this.studentService.getSSHcourses(this.rollNumber),
-        this.studentService.getBTPCredits(this.rollNumber),
-        this.studentService.get32Credits(this.rollNumber),
-        this.studentService.getHonors(this.rollNumber),
+        this.studentService.getGraduationStatus(),
+        this.studentService.getGraduationDate(),
+        this.studentService.getRequiredCredits(),
+        this.studentService.getSemWiseCGPA(),
+        this.studentService.getSGcourses(),
+        this.studentService.getCWcourses(),
+        this.studentService.getSSHcourses(),
+        this.studentService.getBTPCredits(),
+        this.studentService.get32Credits(),
+        this.studentService.getHonors(),
       ];
 
       // Use forkJoin to wait for all observables to complete
@@ -98,7 +98,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Completed BTP credits',
-              status: btpCredits.isCompleteBool ? 'Yes' : 'No',
+              status: btpCredits.isCompleteText === 'Complete' ? 'Yes' : 'No',
             },
             {
               requirement: 'Completed Departmental 32 Credits',
@@ -106,7 +106,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Graduating with Honors',
-              status: honors ? 'Yes' : 'No', 
+              status: honors.isCompleteText === "Done" ? 'Yes' : 'No', 
             },
             {
               requirement: 'Graduating with Minors',

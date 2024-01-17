@@ -33,7 +33,7 @@ export class StudentInfoComponent implements OnInit {
 
   setGraduationStatus() {
     this.studentService
-      .getGraduationStatus(this.rollNumber)
+      .getGraduationStatus()
       .subscribe((data: any) => {
         this.gradStatus = data;
       });

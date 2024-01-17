@@ -2,7 +2,6 @@ import { StudentInfo } from "./database";
 import {
   gradeHierarchy,
   disallowedGrades,
-  studentDatabase,
   courseDatabase,
 } from "./index";
 
@@ -13,15 +12,14 @@ export interface RuleData {
 }
 export interface IRule {
   ruleId: number;
-  checkRule: (rollNumber: number, context: any) => RuleData;
+  checkRule: (studentCourseData: StudentInfo, context: any) => RuleData;
 }
 
 export const sshRule: IRule = {
   ruleId: 0,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const sshCourses = courseDatabase["SSH Courses"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+    const studentCourses = studentCourseData["courses"];
     let coursesTaken = new Map<string, number>();
     let credits = 0;
     let returnData: RuleData = {
@@ -64,10 +62,9 @@ export const sshRule: IRule = {
 
 export const cwRule: IRule = {
   ruleId: 1,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const cwCourses = courseDatabase["CW Course"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
     let returnData: RuleData = {
       isCompleteBool: false,
@@ -107,10 +104,9 @@ export const cwRule: IRule = {
 
 export const sgRule: IRule = {
   ruleId: 2,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const sgCourses = courseDatabase["SG Course"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+    const studentCourses = studentCourseData["courses"];
     let coursesTaken = new Map<string, number>();
     let credits = 0;
     let returnData: RuleData = {
@@ -152,7 +148,7 @@ export const sgRule: IRule = {
 
 export const btpRule: IRule = {
   ruleId: 3,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Not Done",
@@ -161,8 +157,8 @@ export const btpRule: IRule = {
         courses: [],
       },
     };
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+
+    const studentCourses = studentCourseData["courses"];
     let sem = [];
     let credits = 0;
 
@@ -227,7 +223,7 @@ export const btpRule: IRule = {
 
 export const mandatoryCoreRule: IRule = {
   ruleId: 4,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Complete",
@@ -241,8 +237,8 @@ export const mandatoryCoreRule: IRule = {
 
     if (context === "CSE") {
       const coreCourses = courseDatabase["CSE"];
-      const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-      const studentCourses = studentInfo["courses"];
+
+      const studentCourses = studentCourseData["courses"];
 
       for (const courseCode of coreCourses) {
         let courseEntry = {
@@ -295,7 +291,7 @@ export const mandatoryCoreRule: IRule = {
 
 export const mandatoryBucketRule: IRule = {
   ruleId: 5,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Complete",
@@ -311,8 +307,8 @@ export const mandatoryBucketRule: IRule = {
     if (context === "CSE") {
       // Path to the excel sheet containing courses and their course codes
       const mandatoryBuckets = [];
-      const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-      const studentCourses = studentInfo["courses"];
+
+      const studentCourses = studentCourseData["courses"];
 
       for (const key of Object.keys(courseDatabase)) {
         if (key.startsWith("CSE bucket")) {
@@ -388,7 +384,7 @@ export const mandatoryBucketRule: IRule = {
 
 export const twoxxRule: IRule = {
   ruleId: 6,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Not Done",
@@ -399,8 +395,8 @@ export const twoxxRule: IRule = {
     };
 
     const coreCourses = courseDatabase["CSE"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
 
     const mandatoryBuckets = [];
@@ -453,7 +449,7 @@ export const twoxxRule: IRule = {
 
 export const required156CreditsRule: IRule = {
   ruleId: 7,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: false,
       isCompleteText: "Incomplete",
@@ -461,34 +457,34 @@ export const required156CreditsRule: IRule = {
     };
 
     let credits = 0;
-    credits += sshRule.checkRule(rollNumber, context).data.totalCredits;
+    credits += sshRule.checkRule(studentCourseData, context).data.totalCredits;
     credits += Math.min(
-      cwRule.checkRule(rollNumber, context).data.totalCredits,
+      cwRule.checkRule(studentCourseData, context).data.totalCredits,
       2
     );
     credits += Math.min(
-      sgRule.checkRule(rollNumber, context).data.totalCredits,
+      sgRule.checkRule(studentCourseData, context).data.totalCredits,
       2
     );
-    credits += mandatoryCoreRule.checkRule(rollNumber, context).data
+    credits += mandatoryCoreRule.checkRule(studentCourseData, context).data
       .totalCredits;
-    credits += mandatoryBucketRule.checkRule(rollNumber, context).data
+    credits += mandatoryBucketRule.checkRule(studentCourseData, context).data
       .totalCredits;
     credits += Math.min(
-      twoxxRule.checkRule(rollNumber, context).data.totalCredits,
+      twoxxRule.checkRule(studentCourseData, context).data.totalCredits,
       8
     );
     credits += Math.min(
-      ipRule.checkRule(rollNumber, context).data.totalCredits,
+      ipRule.checkRule(studentCourseData, context).data.totalCredits,
       8
     );
     credits += Math.min(
-      onlineCoursesRule.checkRule(rollNumber, context).data.totalCredits,
+      onlineCoursesRule.checkRule(studentCourseData, context).data.totalCredits,
       8
     );
-    credits += thirtyTwoCreditsRule.checkRule(rollNumber, context).data
+    credits += thirtyTwoCreditsRule.checkRule(studentCourseData, context).data
       .totalCredits;
-    const btpReturnData = btpRule.checkRule(rollNumber, context);
+    const btpReturnData = btpRule.checkRule(studentCourseData, context);
     if (
       btpReturnData.isCompleteText === "Complete" ||
       btpReturnData.isCompleteText === "Done extra credits"
@@ -507,7 +503,7 @@ export const required156CreditsRule: IRule = {
 
 export const ipRule: IRule = {
   ruleId: 8,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Not Done",
@@ -518,8 +514,8 @@ export const ipRule: IRule = {
     };
 
     const ipCourses = courseDatabase["IP/IS/UR"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
 
     for (const course of studentCourses) {
@@ -558,7 +554,7 @@ export const ipRule: IRule = {
 
 export const onlineCoursesRule: IRule = {
   ruleId: 9,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Not Done",
@@ -569,8 +565,8 @@ export const onlineCoursesRule: IRule = {
     };
 
     const onlineCourses = courseDatabase["Online course"];
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
 
     for (const course of studentCourses) {
@@ -604,7 +600,7 @@ export const onlineCoursesRule: IRule = {
 
 export const thirtyTwoCreditsRule: IRule = {
   ruleId: 10,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: false,
       isCompleteText: "Incomplete",
@@ -614,15 +610,15 @@ export const thirtyTwoCreditsRule: IRule = {
       },
     };
 
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
     let coursesTaken = new Map<string, number>();
 
     for (const course of studentCourses) {
       // Doesn't check for a 2xx course.
       // Doesn't check for courses that were Incomplete in the last four semesters.
-      if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5") {
+      if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5" || course["semester"].toString
+      ().startsWith("Summer Term")) {
         continue;
       }
       // Checks if the course has a valid grade against it and is a CSE course.
@@ -655,7 +651,7 @@ export const thirtyTwoCreditsRule: IRule = {
 
 export const incompleteGradeRule: IRule = {
   ruleId: 11,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Complete",
@@ -664,8 +660,7 @@ export const incompleteGradeRule: IRule = {
       },
     };
 
-    const studentInfo: StudentInfo = studentDatabase[Number(rollNumber)];
-    const studentCourses = studentInfo["courses"];
+    const studentCourses = studentCourseData["courses"];
     let credits = 0;
     let incompleteGradePresent = false;
 
@@ -696,7 +691,7 @@ export const incompleteGradeRule: IRule = {
 
 export const onlineCoursesHonorsRule: IRule = {
   ruleId: 12,
-  checkRule: (rollNumber: number, context: any): RuleData => {
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
       isCompleteText: "Not Done",
@@ -706,14 +701,56 @@ export const onlineCoursesHonorsRule: IRule = {
       },
     };
 
-    let onlineCourseData = onlineCoursesRule.checkRule(rollNumber, context);
-
-    context = context ? context : "CSE";
+    let onlineCourseData = onlineCoursesRule.checkRule(
+      studentCourseData,
+      context
+    );
+    const branch: string = context ? context : "CSE";
     for (let course of onlineCourseData.data.courses) {
-      if ((course as any)["course"].startsWith(context as string)) {
-        returnData.data.totalCredits += (course as any)["credit"];
+      if (course["course"].startsWith(branch)) {
+        returnData.data.totalCredits += Number(course["credits"]);
       }
     }
+    return returnData;
+  },
+};
+
+export const tocRule: IRule = {
+  ruleId: 13,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteText: "Not Done",
+      isCompleteBool: false,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourses) {
+      if ((course["courseCode"].startsWith("MTH") && course["courseCode"].slice(0, 4) >= "MTH2") || course["courseCode"].startsWith("MTH") && course["courseCode"]=== "CSE322") {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        credits += course["credit"];
+        coursesTaken.set(course["courseCode"], course["credit"]);
+        returnData.data.courses.push(courseEntry);
+      }
+    }
+
+    if (credits >= 4) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    }
+    returnData.data.totalCredits = credits;
     return returnData;
   },
 };

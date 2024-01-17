@@ -16,6 +16,10 @@ import { BranchCoursesListComponent } from './branch-courses-list/branch-courses
 import { SummaryPageComponent } from './summary-page/summary-page.component';
 import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
 import { LoginComponent} from './login/login.component';
+import { SelectionComponent } from './selection/selection.component';
+import { UpdateStudentDatabaseComponent } from './update-student-database/update-student-database.component';
+import { HonorsComponent } from './honors/honors.component';
+import { TocMthComponent } from './toc-mth/toc-mth.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -35,6 +39,10 @@ const routes: Routes = [
   { path: 'branch-courses-list', component: BranchCoursesListComponent },
   { path: 'summary-page', component: SummaryPageComponent },
   { path: 'incomplete-grades-list', component: IncompleteGradesListComponent },
+  { path: 'selection', component: SelectionComponent },
+  { path: 'update-student-database', component: UpdateStudentDatabaseComponent },
+  { path: 'honors', component: HonorsComponent },
+  { path: 'toc-mth', component: TocMthComponent },
 ];
 
 @NgModule({

@@ -31,6 +31,11 @@ import { LoginComponent} from './login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
 import { RouterModule } from '@angular/router';
+import { SelectionComponent } from './selection/selection.component';
+import { UpdateStudentDatabaseComponent } from './update-student-database/update-student-database.component';
+import { MatSortModule } from '@angular/material/sort';
+import { HonorsComponent } from './honors/honors.component';
+import { TocMthComponent } from './toc-mth/toc-mth.component';
 
 
 @NgModule({
@@ -53,6 +58,10 @@ import { RouterModule } from '@angular/router';
     SummaryPageComponent,
     LoginComponent,
     IncompleteGradesListComponent,
+    SelectionComponent,
+    UpdateStudentDatabaseComponent,
+    HonorsComponent,
+    TocMthComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,6 +77,7 @@ import { RouterModule } from '@angular/router';
     MatDialogModule,
     MatFormFieldModule,
     RouterModule,
+    MatSortModule,
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],

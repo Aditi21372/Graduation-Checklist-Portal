@@ -1,4 +1,4 @@
-import { allRules, studentDatabase } from "./index";
+import { allRules } from "./index";
 import { StudentInfo } from "./database";
 export interface IDegree {
   name: string;
@@ -51,7 +51,7 @@ export const CSEDegree: IDegree = {
 };
 
 export function getGraduationStatus(
-  rollNumber: number,
+  studentCourseData: StudentInfo,
   branch: string
 ): Boolean {
   let isGraduated: Boolean = true;
@@ -60,8 +60,7 @@ export function getGraduationStatus(
 
     for (let rule of allRules) {
       if (rule.ruleId in cseRules) {
-        if (!rule.checkRule(rollNumber, branch).isCompleteBool) {
-          // console.log("Rule not complete: ", rule.ruleId);
+        if (!rule.checkRule(studentCourseData, branch).isCompleteBool) {
           isGraduated = false;
         }
       }
@@ -70,9 +69,9 @@ export function getGraduationStatus(
   return isGraduated;
 }
 
-export function getGraduationDate(rollNumber: number): string {
-  const isGraduated = getGraduationStatus(rollNumber, "CSE");
-  const studentCourses = studentDatabase[Number(rollNumber)]["courses"];
+export function getGraduationDate(studentCourseData: StudentInfo): string {
+  const isGraduated = getGraduationStatus(studentCourseData, "CSE");
+  const studentCourses = studentCourseData["courses"];
 
   let maxSem = 0;
   for (let course of studentCourses) {

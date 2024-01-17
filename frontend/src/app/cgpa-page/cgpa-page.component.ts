@@ -34,7 +34,7 @@ export class CgpaPageComponent implements OnInit {
       if (!isNaN(this.rollNumber)) {
         // Fetch CGPA data using the retrieved 'rollNumber'
         this.studentService
-          .getSemWiseCGPA(this.rollNumber)
+          .getSemWiseCGPA()
           .subscribe((data: any) => {
             // Assuming 'data' contains an array of objects with 'semester' and 'cgpa' properties
 
