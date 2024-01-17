@@ -11,8 +11,3 @@ coverage
 .DS_Store
 Thumbs.db
 
-# MongoDB
-/data/
-/logs/
-
-mongodb-linux-x86_64-2.2.7.tgz
