@@ -1,76 +1,82 @@
 {
-  "studentName": " Pritish Wadhwa",
+  "studentName": " Satwik Tiwari",
   "program": "July 2019/BTech/CSE",
   "courses": [
     {
       "courseCode": "COM101",
-      "grade": "A",
+      "grade": "C",
       "semester": 1,
       "credit": 4
     },
     {
-      "courseCode": "DES206",
+      "courseCode": "CSE101",
       "grade": "B",
       "semester": 1,
       "credit": 4
     },
     {
-      "courseCode": "MTH100",
-      "grade": "A",
-      "semester": 1,
-      "credit": 4
-    },
-    {
       "courseCode": "ECE111",
-      "grade": "A",
+      "grade": "C",
       "semester": 1,
       "credit": 4
     },
     {
-      "courseCode": "CSE102",
-      "grade": "A",
-      "semester": 2,
+      "courseCode": "DES206",
+      "grade": "C",
+      "semester": 1,
+      "credit": 4
+    },
+    {
+      "courseCode": "MTH100",
+      "grade": "C",
+      "semester": 1,
       "credit": 4
     },
     {
       "courseCode": "CSE112",
-      "grade": "A",
+      "grade": "B",
+      "semester": 2,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE102",
+      "grade": "B",
       "semester": 2,
       "credit": 4
     },
     {
       "courseCode": "ECE113",
-      "grade": "A",
+      "grade": "B-",
       "semester": 2,
       "credit": 4
     },
     {
       "courseCode": "MTH201",
-      "grade": "A-",
+      "grade": "B-",
       "semester": 2,
       "credit": 4
     },
     {
-      "courseCode": "CSE101",
-      "grade": "A",
-      "semester": 1,
+      "courseCode": "ECO223",
+      "grade": "C-",
+      "semester": 2,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE121",
+      "grade": "B",
+      "semester": 3,
       "credit": 4
     },
     {
       "courseCode": "CSE201",
-      "grade": "A",
+      "grade": "A-",
       "semester": 3,
       "credit": 4
     },
     {
-      "courseCode": "CSE231",
-      "grade": "A+",
-      "semester": 3,
-      "credit": 4
-    },
-    {
-      "courseCode": "ECO101",
-      "grade": "A",
+      "courseCode": "SSH223",
+      "grade": "C",
       "semester": 3,
       "credit": 4
     },
@@ -81,63 +87,69 @@
       "credit": 4
     },
     {
-      "courseCode": "BIO213",
+      "courseCode": "CSE202",
       "grade": "A-",
       "semester": 4,
       "credit": 4
     },
     {
-      "courseCode": "CSE121",
-      "grade": "A",
+      "courseCode": "CSE222",
+      "grade": "A-",
+      "semester": 4,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE231",
+      "grade": "B",
       "semester": 3,
       "credit": 4
     },
     {
-      "courseCode": "SSH215",
-      "grade": "A-",
-      "semester": 2,
+      "courseCode": "CSE322",
+      "grade": "C-",
+      "semester": 4,
       "credit": 4
     },
     {
-      "courseCode": "CSE202",
-      "grade": "A",
+      "courseCode": "MTH204",
+      "grade": "A-",
       "semester": 4,
       "credit": 4
     },
     {
       "courseCode": "MTH310",
-      "grade": "A",
+      "grade": "A-",
       "semester": 4,
       "credit": 4
     },
     {
       "courseCode": "COM301A",
-      "grade": "A-",
+      "grade": "B",
       "semester": 5,
       "credit": 2
     },
     {
       "courseCode": "CSE232",
-      "grade": "A-",
+      "grade": "B-",
       "semester": 5,
       "credit": 4
     },
     {
-      "courseCode": "BTP499",
-      "grade": "A",
+      "courseCode": "CSE506",
+      "grade": "B",
       "semester": 5,
       "credit": 4
     },
     {
-      "courseCode": "CSE556",
-      "grade": "A",
+      "courseCode": "CSE343",
+      "grade": "B-",
       "semester": 5,
       "credit": 4
     },
     {
-      "courseCode": "CSE222",
-      "grade": "A",
-      "semester": 4,
+      "courseCode": "CSE340",
+      "grade": "B-",
+      "semester": 5,
       "credit": 4
     },
     {
@@ -147,142 +159,106 @@
       "credit": 2
     },
     {
-      "courseCode": "BTP499",
+      "courseCode": "PSY306",
       "grade": "B",
       "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE632",
-      "grade": "A",
-      "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE641",
-      "grade": "A",
-      "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "ECO221",
-      "grade": "B",
-      "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE343",
-      "grade": "A",
-      "semester": 5,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE342",
-      "grade": "A",
-      "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "DES204",
-      "grade": "A",
-      "semester": 4,
-      "credit": 4
-    },
-    {
-      "courseCode": "ECO331",
-      "grade": "A",
-      "semester": 7,
-      "credit": 4
-    },
-    {
-      "courseCode": "ECO311",
-      "grade": "A-",
-      "semester": 7,
-      "credit": 4
-    },
-    {
-      "courseCode": "BIO546",
-      "grade": "A",
-      "semester": 7,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE569",
-      "grade": "A",
-      "semester": 7,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE643",
-      "grade": "A",
-      "semester": 7,
-      "credit": 4
-    },
-    {
-      "courseCode": "BIO522",
-      "grade": "A+",
-      "semester": 8,
-      "credit": 4
-    },
-    {
-      "courseCode": "BIO543",
-      "grade": "A",
-      "semester": 8,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE508",
-      "grade": "A",
-      "semester": 8,
-      "credit": 4
-    },
-    {
-      "courseCode": "BIS398",
-      "grade": "A",
-      "semester": 6,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE640",
-      "grade": "A",
-      "semester": 8,
-      "credit": 4
-    },
-    {
-      "courseCode": "CSE506",
-      "grade": "A-",
-      "semester": 7,
       "credit": 4
     },
     {
       "courseCode": "BIP399",
       "grade": "A",
-      "semester": 8,
+      "semester": 6,
       "credit": 4
     },
     {
-      "courseCode": "CSE999",
-      "grade": "S",
-      "semester": 8,
+      "courseCode": "CSE518",
+      "grade": "B",
+      "semester": 6,
       "credit": 4
     },
     {
-      "courseCode": "MSC481",
-      "grade": "S",
-      "semester": "Summer Term 1",
-      "credit": 1
+      "courseCode": "CSE342",
+      "grade": "B-",
+      "semester": 6,
+      "credit": 4
     },
     {
-      "courseCode": "MSC481",
-      "grade": "S",
-      "semester": "Summer Term 1",
-      "credit": 1
+      "courseCode": "ECE999A2",
+      "grade": "W",
+      "semester": 6,
+      "credit": 2
+    },
+    {
+      "courseCode": "PSY307",
+      "grade": "B",
+      "semester": 7,
+      "credit": 4
+    },
+    {
+      "courseCode": "BTP499",
+      "grade": "W",
+      "semester": 7,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE569",
+      "grade": "C",
+      "semester": 7,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE643",
+      "grade": "C-",
+      "semester": 7,
+      "credit": 4
+    },
+    {
+      "courseCode": "BIP398",
+      "grade": "A",
+      "semester": 7,
+      "credit": 4
     },
     {
       "courseCode": "BTA300",
       "grade": "S",
-      "semester": "Summer Term 2",
+      "semester": 6,
       "credit": 2
+    },
+    {
+      "courseCode": "CSE998A1",
+      "grade": "S",
+      "semester": 8,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE508",
+      "grade": "C-",
+      "semester": 8,
+      "credit": 4
+    },
+    {
+      "courseCode": "BIO213",
+      "grade": "C",
+      "semester": 8,
+      "credit": 4
+    },
+    {
+      "courseCode": "CSE640",
+      "grade": "B-",
+      "semester": 8,
+      "credit": 4
+    },
+    {
+      "courseCode": "MSC481",
+      "grade": "S",
+      "semester": "Summer Term 1",
+      "credit": 1
+    },
+    {
+      "courseCode": "MSC481",
+      "grade": "S",
+      "semester": "Summer Term 2",
+      "credit": 1
     },
     {
       "courseCode": "MSC491",
@@ -291,9 +267,9 @@
       "credit": 1
     },
     {
-      "courseCode": "BTP499",
-      "grade": "A",
-      "semester": "Summer Term 3",
+      "courseCode": "PSY305",
+      "grade": "D",
+      "semester": 8,
       "credit": 4
     },
     {
