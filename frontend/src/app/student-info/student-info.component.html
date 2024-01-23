@@ -1,5 +1,3 @@
-<!-- Your component's HTML file -->
-
 <mat-card class="center-card">
   <mat-card-content>
     <h2>Student Information</h2>
@@ -24,20 +22,28 @@
 
     <!-- Buttons -->
     <button
-  mat-raised-button
-  color="primary"
-  [routerLink]="['/summary-page']"
-  [queryParams]="{ rollNumber: rollNumber, program: branch, studentName: studentName }"
->
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/summary-page']"
+      [queryParams]="{
+        rollNumber: rollNumber,
+        program: branch,
+        studentName: studentName
+      }"
+    >
       Show Summary
     </button>
 
     <button
-  mat-raised-button
-  color="accent"
-  [routerLink]="['/cgpa-page']"
-  [queryParams]="{ rollNumber: rollNumber, program: branch, studentName: studentName }"
->
+      mat-raised-button
+      color="accent"
+      [routerLink]="['/cgpa-page']"
+      [queryParams]="{
+        rollNumber: rollNumber,
+        program: branch,
+        studentName: studentName
+      }"
+    >
       Show Semester Wise CGPA
     </button>
   </mat-card-content>

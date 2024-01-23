@@ -1,5 +1,5 @@
 import { StudentInfo } from "./database";
-import { findCGPA } from "./index";
+import { calculateCGPA } from "./cgpa";
 import {
   btpRule,
   thirtyTwoCreditsRule,
@@ -34,12 +34,13 @@ export function isHonors(studentCourseData: StudentInfo): ruleData {
     "CSE"
   );
   const btpRuleData = btpRule.checkRule(studentCourseData, null);
-  const gpaRuleData = findCGPA(studentCourseData);
+  const gpaRuleData = calculateCGPA(studentCourseData);
 
   const extraCredits =
     extra12CreditsData.data.totalCredits +
     onlineCoursesData.data.totalCredits -
     32;
+
   if (extraCredits >= 12) {
     ruleData.push({
       rule: "Extra 12 credits",
@@ -54,7 +55,7 @@ export function isHonors(studentCourseData: StudentInfo): ruleData {
     });
   }
 
-  if (requiredCreditsData.data > 168) {
+  if (requiredCreditsData.data >= 168) {
     ruleData.push({
       rule: "Required 168 Credits",
       value: requiredCreditsData.data,
@@ -81,6 +82,7 @@ export function isHonors(studentCourseData: StudentInfo): ruleData {
       status: "No",
     });
   }
+
   if (gpaRuleData["10"].cgpa >= 8.0) {
     ruleData.push({
       rule: "CGPA",
@@ -107,5 +109,6 @@ export function isHonors(studentCourseData: StudentInfo): ruleData {
       break;
     }
   }
+
   return returnData;
 }

@@ -1,9 +1,5 @@
 import { StudentInfo } from "./database";
-import {
-  gradeHierarchy,
-  disallowedGrades,
-  courseDatabase,
-} from "./index";
+import { gradeHierarchy, disallowedGrades, courseDatabase } from "./index";
 
 export interface RuleData {
   isCompleteText: string;
@@ -15,8 +11,171 @@ export interface IRule {
   checkRule: (studentCourseData: StudentInfo, context: any) => RuleData;
 }
 
-export const sshRule: IRule = {
+export const mandatoryCoreRule: IRule = {
   ruleId: 0,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Complete",
+      data: {
+        coreCourses: [],
+        totalCredits: 0,
+      },
+    };
+
+    let studentCoreCourse = [];
+
+    if (context === "CSE") {
+      const coreCourses = courseDatabase["CSE"];
+
+      const studentCourses = studentCourseData["courses"];
+
+      for (const courseCode of coreCourses) {
+        let courseEntry = {
+          course: courseCode,
+          semester: "",
+          status: "Incomplete",
+          credits: 0,
+          grade: "",
+        };
+
+        for (const studentCourse of studentCourses) {
+          if (studentCourse["courseCode"] === courseCode) {
+            if (!disallowedGrades.includes(studentCourse["grade"])) {
+              courseEntry.status = "Complete";
+              courseEntry.credits = studentCourse["credit"];
+              courseEntry.semester = studentCourse["semester"];
+              const currentGradeIndex = gradeHierarchy.indexOf(
+                courseEntry.grade
+              );
+              const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
+              if (gradeIndex < currentGradeIndex) {
+                courseEntry.grade = studentCourse["grade"];
+              }
+            } else {
+              if (courseEntry.status == "Complete") continue;
+              courseEntry.status =
+                studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
+              courseEntry.semester = studentCourse["semester"];
+              courseEntry.credits = 0;
+              courseEntry.grade = studentCourse["grade"];
+            }
+          }
+        }
+        studentCoreCourse.push(courseEntry);
+      }
+    }
+
+    for (let i = 0; i < studentCoreCourse.length; i++) {
+      if (studentCoreCourse[i].status !== "Complete") {
+        returnData.isCompleteBool = false;
+        returnData.isCompleteText = "Incomplete";
+      } else {
+        returnData.data.totalCredits += studentCoreCourse[i].credits;
+      }
+    }
+    returnData.data.coreCourses = studentCoreCourse;
+
+    return returnData;
+  },
+};
+
+export const mandatoryBucketRule: IRule = {
+  ruleId: 1,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Complete",
+      data: {
+        studentBucketCourses: [],
+        completedBuckets: [],
+        totalCredits: 0,
+      },
+    };
+
+    let studentBucketCourse = [];
+
+    if (context === "CSE") {
+      // Path to the excel sheet containing courses and their course codes
+      const mandatoryBuckets = [];
+
+      const studentCourses = studentCourseData["courses"];
+
+      for (const key of Object.keys(courseDatabase)) {
+        if (key.startsWith("CSE bucket")) {
+          mandatoryBuckets.push(courseDatabase[key]);
+        }
+      }
+
+      for (const courseBucket of mandatoryBuckets) {
+        let mandateBucket = [];
+        for (const courseCode of courseBucket) {
+          let courseEntry = {
+            course: courseCode,
+            semester: "",
+            status: "Incomplete",
+            credits: 0,
+            grade: "",
+          };
+
+          for (const studentCourse of studentCourses) {
+            if (studentCourse["courseCode"] === courseCode) {
+              if (!disallowedGrades.includes(studentCourse["grade"])) {
+                courseEntry.status = "Complete";
+                courseEntry.credits = studentCourse["credit"];
+                courseEntry.semester = studentCourse["semester"];
+                const currentGradeIndex = gradeHierarchy.indexOf(
+                  courseEntry.grade
+                );
+                const gradeIndex = gradeHierarchy.indexOf(
+                  studentCourse["grade"]
+                );
+                if (gradeIndex < currentGradeIndex) {
+                  courseEntry.grade = studentCourse["grade"];
+                }
+              } else {
+                if (courseEntry.status == "Complete") continue;
+                courseEntry.status =
+                  studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
+                courseEntry.credits = 0;
+                courseEntry.grade = studentCourse["grade"];
+                courseEntry.semester = studentCourse["semester"];
+              }
+            }
+          }
+          mandateBucket.push(courseEntry);
+        }
+        studentBucketCourse.push(mandateBucket);
+      }
+    }
+
+    let completedBuckets = [true, true, true, true, true];
+
+    for (let i = 0; i < studentBucketCourse.length; i++) {
+      let atleastOne = false;
+
+      for (let j = 0; j < studentBucketCourse[i].length; j++) {
+        if (studentBucketCourse[i][j].status === "Complete") {
+          returnData.data.totalCredits += studentBucketCourse[i][j].credits;
+          atleastOne = true;
+        }
+      }
+      if (!atleastOne) {
+        returnData.isCompleteBool = false;
+        returnData.isCompleteText = "Incomplete";
+        completedBuckets[i] = false;
+      }
+    }
+
+    returnData.data.studentBucketCourses = studentBucketCourse;
+    returnData.data.completedBuckets = completedBuckets;
+
+    return returnData;
+  },
+};
+
+export const sshRule: IRule = {
+  ruleId: 2,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const sshCourses = courseDatabase["SSH Courses"];
     const studentCourses = studentCourseData["courses"];
@@ -61,7 +220,7 @@ export const sshRule: IRule = {
 };
 
 export const cwRule: IRule = {
-  ruleId: 1,
+  ruleId: 3,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const cwCourses = courseDatabase["CW Course"];
     const studentCourses = studentCourseData["courses"];
@@ -103,7 +262,7 @@ export const cwRule: IRule = {
 };
 
 export const sgRule: IRule = {
-  ruleId: 2,
+  ruleId: 4,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const sgCourses = courseDatabase["SG Course"];
     const studentCourses = studentCourseData["courses"];
@@ -146,8 +305,269 @@ export const sgRule: IRule = {
   },
 };
 
+export const thirtyTwoCreditsRule: IRule = {
+  ruleId: 5,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: false,
+      isCompleteText: "Incomplete",
+      data: {
+        totalCredits: 0,
+        courseData: [],
+      },
+    };
+
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourses) {
+      // Doesn't check for a 2xx course.
+      // Doesn't check for courses that were Incomplete in the last four semesters.
+      if (
+        course["courseCode"].startsWith("CSE2") ||
+        course["semester"] < "5" ||
+        course["semester"].toString().startsWith("Summer Term")
+      ) {
+        continue;
+      }
+      // Checks if the course has a valid grade against it and is a CSE course.
+      if (
+        !disallowedGrades.includes(course["grade"]) &&
+        !coursesTaken.has(course["courseCode"]) &&
+        course["courseCode"].startsWith("CSE")
+      ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        credits += course["credit"];
+        coursesTaken.set(course["courseCode"], course["credit"]);
+        returnData.data.courseData.push(courseEntry);
+      }
+    }
+
+    if (credits >= 32) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
+export const ipRule: IRule = {
+  ruleId: 6,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const ipCourses = courseDatabase["IP/IS/UR"];
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+
+    for (const course of studentCourses) {
+      const courseCodeIp = course["courseCode"].substring(0, 3);
+      for (const courseCode of ipCourses) {
+        if (
+          courseCodeIp === courseCode &&
+          !disallowedGrades.includes(course["grade"])
+        ) {
+          let courseEntry = {
+            course: course["courseCode"],
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
+          returnData.data.courses.push(courseEntry);
+          credits += course["credit"];
+        }
+      }
+    }
+
+    if (credits == 0) {
+      returnData.isCompleteText = "Not Done";
+    }
+    if (credits <= 8) {
+      returnData.isCompleteText = "Complete";
+    } else {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Done extra credits";
+    }
+    returnData.data.totalCredits = credits;
+
+    return returnData;
+  },
+};
+
+export const onlineCoursesRule: IRule = {
+  ruleId: 7,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const onlineCourses = courseDatabase["Online course"];
+
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+
+    for (const course of studentCourses) {
+      for (const courseCode of onlineCourses) {
+        if (course["courseCode"] === courseCode && course["grade"] == "S") {
+          let courseEntry = {
+            course: course["courseCode"],
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
+          returnData.data.courses.push(courseEntry);
+          credits += course["credit"];
+        }
+      }
+    }
+
+    if (credits == 0) {
+      returnData.isCompleteText = "Not Done";
+    } else if (credits <= 8) {
+      returnData.isCompleteText = "Complete";
+    } else {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Done extra credits";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
+export const twoxxRule: IRule = {
+  ruleId: 8,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Not Done",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const coreCourses = courseDatabase["CSE"];
+
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+
+    const mandatoryBuckets = [];
+    for (const key of Object.keys(courseDatabase)) {
+      if (key.startsWith("CSE bucket")) {
+        mandatoryBuckets.push(courseDatabase[key]);
+      }
+    }
+
+    const mandatoryBucketCourses = [];
+    for (const courseBucket of mandatoryBuckets) {
+      for (const course of courseBucket) {
+        mandatoryBucketCourses.push(course);
+      }
+    }
+
+    for (const course of studentCourses) {
+      if (
+        course["courseCode"].substring(3, 4) === "2" &&
+        !disallowedGrades.includes(course["grade"]) &&
+        (course["semester"] >= "5" || course["semester"] >= "Summer Term 3") &&
+        !courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
+        !coreCourses.includes(course["courseCode"]) &&
+        !mandatoryBucketCourses.includes(course["courseCode"])
+      ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        returnData.data.courses.push(courseEntry);
+        credits += course["credit"];
+      }
+    }
+
+    if (credits == 0) {
+      returnData.isCompleteText = "Not Done";
+    } else if (credits <= 8) {
+      returnData.isCompleteText = "Complete";
+    } else {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Done with extra credits";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
+export const tocRule: IRule = {
+  ruleId: 9,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteText: "Not Done",
+      isCompleteBool: false,
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const studentCourses = studentCourseData["courses"];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourses) {
+      if (
+        (course["courseCode"].startsWith("MTH") &&
+          course["courseCode"].slice(0, 4) >= "MTH2") ||
+        (course["courseCode"].startsWith("MTH") &&
+          course["courseCode"] === "CSE322")
+      ) {
+        let courseEntry = {
+          course: course["courseCode"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        };
+        credits += course["credit"];
+        coursesTaken.set(course["courseCode"], course["credit"]);
+        returnData.data.courses.push(courseEntry);
+      }
+    }
+
+    if (credits >= 4) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
 export const btpRule: IRule = {
-  ruleId: 3,
+  ruleId: 10,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -221,434 +641,6 @@ export const btpRule: IRule = {
   },
 };
 
-export const mandatoryCoreRule: IRule = {
-  ruleId: 4,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: true,
-      isCompleteText: "Complete",
-      data: {
-        coreCourses: [],
-        totalCredits: 0,
-      },
-    };
-
-    let studentCoreCourse = [];
-
-    if (context === "CSE") {
-      const coreCourses = courseDatabase["CSE"];
-
-      const studentCourses = studentCourseData["courses"];
-
-      for (const courseCode of coreCourses) {
-        let courseEntry = {
-          course: courseCode,
-          semester: "",
-          status: "Incomplete",
-          credits: 0,
-          grade: "",
-        };
-
-        for (const studentCourse of studentCourses) {
-          if (studentCourse["courseCode"] === courseCode) {
-            if (!disallowedGrades.includes(studentCourse["grade"])) {
-              courseEntry.status = "Complete";
-              courseEntry.credits = studentCourse["credit"];
-              courseEntry.semester = studentCourse["semester"];
-              const currentGradeIndex = gradeHierarchy.indexOf(
-                courseEntry.grade
-              );
-              const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
-              if (gradeIndex < currentGradeIndex) {
-                courseEntry.grade = studentCourse["grade"];
-              }
-            } else {
-              if (courseEntry.status == "Complete") continue;
-              courseEntry.status = "Failed";
-              courseEntry.semester = studentCourse["semester"];
-              courseEntry.credits = 0;
-              courseEntry.grade = "F";
-            }
-          }
-        }
-        studentCoreCourse.push(courseEntry);
-      }
-    }
-
-    for (let i = 0; i < studentCoreCourse.length; i++) {
-      if (studentCoreCourse[i].status !== "Complete") {
-        returnData.isCompleteBool = false;
-        returnData.isCompleteText = "Incomplete";
-      } else {
-        returnData.data.totalCredits += studentCoreCourse[i].credits;
-      }
-    }
-    returnData.data.coreCourses = studentCoreCourse;
-
-    return returnData;
-  },
-};
-
-export const mandatoryBucketRule: IRule = {
-  ruleId: 5,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: true,
-      isCompleteText: "Complete",
-      data: {
-        studentBucketCourses: [],
-        completedBuckets: [],
-        totalCredits: 0,
-      },
-    };
-
-    let studentBucketCourse = [];
-
-    if (context === "CSE") {
-      // Path to the excel sheet containing courses and their course codes
-      const mandatoryBuckets = [];
-
-      const studentCourses = studentCourseData["courses"];
-
-      for (const key of Object.keys(courseDatabase)) {
-        if (key.startsWith("CSE bucket")) {
-          mandatoryBuckets.push(courseDatabase[key]);
-        }
-      }
-
-      for (const courseBucket of mandatoryBuckets) {
-        let mandateBucket = [];
-        for (const courseCode of courseBucket) {
-          let courseEntry = {
-            course: courseCode,
-            semester: "",
-            status: "Incomplete",
-            credits: 0,
-            grade: "",
-          };
-
-          for (const studentCourse of studentCourses) {
-            if (studentCourse["courseCode"] === courseCode) {
-              if (!disallowedGrades.includes(studentCourse["grade"])) {
-                courseEntry.status = "Complete";
-                courseEntry.credits = studentCourse["credit"];
-                courseEntry.semester = studentCourse["semester"];
-                const currentGradeIndex = gradeHierarchy.indexOf(
-                  courseEntry.grade
-                );
-                const gradeIndex = gradeHierarchy.indexOf(
-                  studentCourse["grade"]
-                );
-                if (gradeIndex < currentGradeIndex) {
-                  courseEntry.grade = studentCourse["grade"];
-                }
-              } else {
-                if (courseEntry.status == "Complete") continue;
-                courseEntry.status = "Failed";
-                courseEntry.credits = 0;
-                courseEntry.grade = "F";
-                courseEntry.semester = studentCourse["semester"];
-              }
-            }
-          }
-          mandateBucket.push(courseEntry);
-        }
-        studentBucketCourse.push(mandateBucket);
-      }
-    }
-
-    let completedBuckets = [true, true, true, true, true];
-
-    for (let i = 0; i < studentBucketCourse.length; i++) {
-      let atleastOne = false;
-
-      for (let j = 0; j < studentBucketCourse[i].length; j++) {
-        if (studentBucketCourse[i][j].status === "Complete") {
-          returnData.data.totalCredits += studentBucketCourse[i][j].credits;
-          atleastOne = true;
-        }
-      }
-      if (!atleastOne) {
-        returnData.isCompleteBool = false;
-        returnData.isCompleteText = "Incomplete";
-        completedBuckets[i] = false;
-      }
-    }
-
-    returnData.data.studentBucketCourses = studentBucketCourse;
-    returnData.data.completedBuckets = completedBuckets;
-
-    return returnData;
-  },
-};
-
-export const twoxxRule: IRule = {
-  ruleId: 6,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: true,
-      isCompleteText: "Not Done",
-      data: {
-        totalCredits: 0,
-        courses: [],
-      },
-    };
-
-    const coreCourses = courseDatabase["CSE"];
-
-    const studentCourses = studentCourseData["courses"];
-    let credits = 0;
-
-    const mandatoryBuckets = [];
-    for (const key of Object.keys(courseDatabase)) {
-      if (key.startsWith("CSE bucket")) {
-        mandatoryBuckets.push(courseDatabase[key]);
-      }
-    }
-
-    const mandatoryBucketCourses = [];
-    for (const courseBucket of mandatoryBuckets) {
-      for (const course of courseBucket) {
-        mandatoryBucketCourses.push(course);
-      }
-    }
-
-    for (const course of studentCourses) {
-      if (
-        course["courseCode"].substring(3, 4) === "2" &&
-        !disallowedGrades.includes(course["grade"]) &&
-        (course["semester"] >= "5" || course["semester"] >= "Summer Term 3") &&
-        !courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
-        !coreCourses.includes(course["courseCode"]) &&
-        !mandatoryBucketCourses.includes(course["courseCode"])
-      ) {
-        let courseEntry = {
-          course: course["courseCode"],
-          semester: course["semester"],
-          status: "Complete",
-          credits: course["credit"],
-          grade: course["grade"],
-        };
-        returnData.data.courses.push(courseEntry);
-        credits += course["credit"];
-      }
-    }
-
-    if (credits == 0) {
-      returnData.isCompleteText = "Not Done";
-    } else if (credits <= 8) {
-      returnData.isCompleteText = "Complete";
-    } else {
-      returnData.isCompleteBool = false;
-      returnData.isCompleteText = "Done with extra credits";
-    }
-    returnData.data.totalCredits = credits;
-    return returnData;
-  },
-};
-
-export const required156CreditsRule: IRule = {
-  ruleId: 7,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: false,
-      isCompleteText: "Incomplete",
-      data: 0,
-    };
-
-    let credits = 0;
-    credits += sshRule.checkRule(studentCourseData, context).data.totalCredits;
-    credits += Math.min(
-      cwRule.checkRule(studentCourseData, context).data.totalCredits,
-      2
-    );
-    credits += Math.min(
-      sgRule.checkRule(studentCourseData, context).data.totalCredits,
-      2
-    );
-    credits += mandatoryCoreRule.checkRule(studentCourseData, context).data
-      .totalCredits;
-    credits += mandatoryBucketRule.checkRule(studentCourseData, context).data
-      .totalCredits;
-    credits += Math.min(
-      twoxxRule.checkRule(studentCourseData, context).data.totalCredits,
-      8
-    );
-    credits += Math.min(
-      ipRule.checkRule(studentCourseData, context).data.totalCredits,
-      8
-    );
-    credits += Math.min(
-      onlineCoursesRule.checkRule(studentCourseData, context).data.totalCredits,
-      8
-    );
-    credits += thirtyTwoCreditsRule.checkRule(studentCourseData, context).data
-      .totalCredits;
-    const btpReturnData = btpRule.checkRule(studentCourseData, context);
-    if (
-      btpReturnData.isCompleteText === "Complete" ||
-      btpReturnData.isCompleteText === "Done extra credits"
-    ) {
-      credits += Math.min(btpReturnData.data.totalCredits, 12);
-    }
-
-    returnData.data = credits;
-    if (credits >= 156) {
-      returnData.isCompleteBool = true;
-      returnData.isCompleteText = "Complete";
-    }
-    return returnData;
-  },
-};
-
-export const ipRule: IRule = {
-  ruleId: 8,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: true,
-      isCompleteText: "Not Done",
-      data: {
-        totalCredits: 0,
-        courses: [],
-      },
-    };
-
-    const ipCourses = courseDatabase["IP/IS/UR"];
-
-    const studentCourses = studentCourseData["courses"];
-    let credits = 0;
-
-    for (const course of studentCourses) {
-      const courseCodeIp = course["courseCode"].substring(0, 3);
-      for (const courseCode of ipCourses) {
-        if (
-          courseCodeIp === courseCode &&
-          !disallowedGrades.includes(course["grade"])
-        ) {
-          let courseEntry = {
-            course: course["courseCode"],
-            semester: course["semester"],
-            status: "Complete",
-            credits: course["credit"],
-            grade: course["grade"],
-          };
-          returnData.data.courses.push(courseEntry);
-          credits += course["credit"];
-        }
-      }
-    }
-
-    if (credits == 0) {
-      returnData.isCompleteText = "Not Done";
-    }
-    if (credits <= 8) {
-      returnData.isCompleteText = "Complete";
-    } else {
-      returnData.isCompleteText = "Done extra credits";
-    }
-    returnData.data.totalCredits = credits;
-
-    return returnData;
-  },
-};
-
-export const onlineCoursesRule: IRule = {
-  ruleId: 9,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: true,
-      isCompleteText: "Not Done",
-      data: {
-        totalCredits: 0,
-        courses: [],
-      },
-    };
-
-    const onlineCourses = courseDatabase["Online course"];
-
-    const studentCourses = studentCourseData["courses"];
-    let credits = 0;
-
-    for (const course of studentCourses) {
-      for (const courseCode of onlineCourses) {
-        if (course["courseCode"] === courseCode && course["grade"] == "S") {
-          let courseEntry = {
-            course: course["courseCode"],
-            semester: course["semester"],
-            status: "Complete",
-            credits: course["credit"],
-            grade: course["grade"],
-          };
-          returnData.data.courses.push(courseEntry);
-          credits += course["credit"];
-        }
-      }
-    }
-
-    if (credits == 0) {
-      returnData.isCompleteText = "Not Done";
-    } else if (credits <= 8) {
-      returnData.isCompleteText = "Complete";
-    } else {
-      returnData.isCompleteBool = false;
-      returnData.isCompleteText = "Done extra credits";
-    }
-    returnData.data.totalCredits = credits;
-    return returnData;
-  },
-};
-
-export const thirtyTwoCreditsRule: IRule = {
-  ruleId: 10,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteBool: false,
-      isCompleteText: "Incomplete",
-      data: {
-        totalCredits: 0,
-        courseData: [],
-      },
-    };
-
-    const studentCourses = studentCourseData["courses"];
-    let credits = 0;
-    let coursesTaken = new Map<string, number>();
-
-    for (const course of studentCourses) {
-      // Doesn't check for a 2xx course.
-      // Doesn't check for courses that were Incomplete in the last four semesters.
-      if (course["courseCode"].startsWith("CSE2") || course["semester"] < "5" || course["semester"].toString
-      ().startsWith("Summer Term")) {
-        continue;
-      }
-      // Checks if the course has a valid grade against it and is a CSE course.
-      if (
-        !disallowedGrades.includes(course["grade"]) &&
-        !coursesTaken.has(course["courseCode"]) &&
-        course["courseCode"].startsWith("CSE")
-      ) {
-        let courseEntry = {
-          course: course["courseCode"],
-          semester: course["semester"],
-          status: "Complete",
-          credits: course["credit"],
-          grade: course["grade"],
-        };
-        credits += course["credit"];
-        coursesTaken.set(course["courseCode"], course["credit"]);
-        returnData.data.courseData.push(courseEntry);
-      }
-    }
-
-    if (credits >= 32) {
-      returnData.isCompleteBool = true;
-      returnData.isCompleteText = "Complete";
-    }
-    returnData.data.totalCredits = credits;
-    return returnData;
-  },
-};
-
 export const incompleteGradeRule: IRule = {
   ruleId: 11,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
@@ -689,8 +681,66 @@ export const incompleteGradeRule: IRule = {
   },
 };
 
-export const onlineCoursesHonorsRule: IRule = {
+export const required156CreditsRule: IRule = {
   ruleId: 12,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: false,
+      isCompleteText: "Incomplete",
+      data: 0,
+    };
+
+    const avoidCourses = ["BIP", "BIS", "BUR", "MSC", "BTA", "BTP"];
+    const disallowedGrades = ["F", "I", "W", "X"];
+    let credits = 0;
+    let coursesTaken = new Map<string, number>();
+
+    for (const course of studentCourseData["courses"]) {
+      if (
+        !coursesTaken.has(course["courseCode"]) &&
+        !disallowedGrades.includes(course["grade"]) &&
+        !avoidCourses.includes(course["courseCode"].slice(0, 3))
+      ) {
+        coursesTaken.set(course["courseCode"], course["credit"]);
+        credits += course["credit"];
+      }
+
+      if (course["courseCode"].startsWith("BTA")) {
+        credits += course["credit"];
+      }
+    }
+
+    credits += Math.min(
+      cwRule.checkRule(studentCourseData, context).data.totalCredits,
+      2
+    );
+    credits += Math.min(
+      sgRule.checkRule(studentCourseData, context).data.totalCredits,
+      2
+    );
+    credits += Math.min(
+      ipRule.checkRule(studentCourseData, context).data.totalCredits,
+      8
+    );
+    const btpReturnData = btpRule.checkRule(studentCourseData, context);
+    if (
+      btpReturnData.isCompleteText === "Complete" ||
+      btpReturnData.isCompleteText === "Done extra credits"
+    ) {
+      credits += Math.min(btpReturnData.data.totalCredits, 12);
+    }
+
+    returnData.data = credits;
+    if (credits >= 156) {
+      returnData.isCompleteBool = true;
+      returnData.isCompleteText = "Complete";
+    }
+    return returnData;
+  },
+};
+
+export const onlineCoursesHonorsRule: IRule = {
+  ruleId: 13,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -711,46 +761,6 @@ export const onlineCoursesHonorsRule: IRule = {
         returnData.data.totalCredits += Number(course["credits"]);
       }
     }
-    return returnData;
-  },
-};
-
-export const tocRule: IRule = {
-  ruleId: 13,
-  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    let returnData: RuleData = {
-      isCompleteText: "Not Done",
-      isCompleteBool: false,
-      data: {
-        totalCredits: 0,
-        courses: [],
-      },
-    };
-
-    const studentCourses = studentCourseData["courses"];
-    let credits = 0;
-    let coursesTaken = new Map<string, number>();
-
-    for (const course of studentCourses) {
-      if ((course["courseCode"].startsWith("MTH") && course["courseCode"].slice(0, 4) >= "MTH2") || course["courseCode"].startsWith("MTH") && course["courseCode"]=== "CSE322") {
-        let courseEntry = {
-          course: course["courseCode"],
-          semester: course["semester"],
-          status: "Complete",
-          credits: course["credit"],
-          grade: course["grade"],
-        };
-        credits += course["credit"];
-        coursesTaken.set(course["courseCode"], course["credit"]);
-        returnData.data.courses.push(courseEntry);
-      }
-    }
-
-    if (credits >= 4) {
-      returnData.isCompleteBool = true;
-      returnData.isCompleteText = "Complete";
-    }
-    returnData.data.totalCredits = credits;
     return returnData;
   },
 };

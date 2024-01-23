@@ -15,20 +15,20 @@ import { SgDetailsComponent } from './sg-details/sg-details.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
 import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
-import { LoginComponent} from './login/login.component';
+import { LoginComponent } from './login/login.component';
 import { SelectionComponent } from './selection/selection.component';
 import { UpdateStudentDatabaseComponent } from './update-student-database/update-student-database.component';
 import { HonorsComponent } from './honors/honors.component';
 import { TocMthComponent } from './toc-mth/toc-mth.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full'},
-  { path: 'login', component: LoginComponent},
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
   { path: 'cgpa-page', component: CgpaPageComponent },
-  { path: 'core-courses-list', component: CoreCoursesListComponent},
+  { path: 'core-courses-list', component: CoreCoursesListComponent },
   { path: 'ssh-courses-list', component: SshCoursesListComponent },
   { path: 'btp-details', component: BtpDetailsComponent },
   { path: 'ip-details', component: IpDetailsComponent },
@@ -40,7 +40,10 @@ const routes: Routes = [
   { path: 'summary-page', component: SummaryPageComponent },
   { path: 'incomplete-grades-list', component: IncompleteGradesListComponent },
   { path: 'selection', component: SelectionComponent },
-  { path: 'update-student-database', component: UpdateStudentDatabaseComponent },
+  {
+    path: 'update-student-database',
+    component: UpdateStudentDatabaseComponent,
+  },
   { path: 'honors', component: HonorsComponent },
   { path: 'toc-mth', component: TocMthComponent },
 ];

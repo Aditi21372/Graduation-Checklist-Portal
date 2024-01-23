@@ -1,24 +1,24 @@
-import { calculateCGPA } from "./cgpa";
 import {
   DatabaseMap,
   getStudentDatabase,
-  StudentInfo,
   CourseMap,
   getCourseDatabase,
 } from "./database";
 
 import {
+  mandatoryCoreRule,
+  mandatoryBucketRule,
   sshRule,
   cwRule,
   sgRule,
-  btpRule,
-  mandatoryCoreRule,
-  mandatoryBucketRule,
-  twoxxRule,
-  required156CreditsRule,
+  thirtyTwoCreditsRule,
   ipRule,
   onlineCoursesRule,
-  thirtyTwoCreditsRule,
+  twoxxRule,
+  tocRule,
+  btpRule,
+  incompleteGradeRule,
+  required156CreditsRule,
 } from "./rule";
 
 export const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
@@ -49,17 +49,19 @@ export const gradeHierarchy = [
 export const disallowedGrades = ["I", "S", "W", "F", "X"];
 export const rollNumber = 2019032;
 export const allRules = [
+  mandatoryCoreRule,
+  mandatoryBucketRule,
   sshRule,
   cwRule,
   sgRule,
-  btpRule,
-  mandatoryCoreRule,
-  mandatoryBucketRule,
-  twoxxRule,
-  required156CreditsRule,
+  thirtyTwoCreditsRule,
   ipRule,
   onlineCoursesRule,
-  thirtyTwoCreditsRule,
+  twoxxRule,
+  tocRule,
+  btpRule,
+  incompleteGradeRule,
+  required156CreditsRule,
 ];
 
 export type GraduatedStudent = {
@@ -79,6 +81,3 @@ export type GraduatedStudent = {
   cgpa: number;
 };
 
-export function findCGPA(studentCourseData: StudentInfo) {
-  return calculateCGPA(studentCourseData);
-}

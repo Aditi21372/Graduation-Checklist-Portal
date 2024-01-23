@@ -46,8 +46,8 @@ const semesters: string[] = [
 export const CSEDegree: IDegree = {
   name: "CSE",
   degreeType: "BTECH",
-  minors: ["ECO", "ENT"], // To be added
-  graduationRules: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  minors: ["ECO", "CB"],
+  graduationRules: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
 };
 
 export function getGraduationStatus(

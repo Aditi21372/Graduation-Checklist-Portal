@@ -1,35 +1,23 @@
-/* graduation-checklist.component.css (or your appropriate file) */
-
 /* Apply the same container styling */
 table .red-row {
   background-color: rgb(246, 104, 104);
   color: white;
 }
 
-body {
-  overflow: auto;
-}
-
 .mat-card {
   margin: 20px auto;
-  max-width: 600px; /* Decreased max-width for the mat-card */
+  max-width: 600px;
   background-color: #f4f4f4;
   border-radius: 10px;
   padding: 20px;
 }
 
-h2 {
-  font-size: 24px;
-  margin: 20px 0;
-  color: #333;
-}
-
-/* Apply the same table styling */
 table {
   width: 100%;
   border-collapse: collapse;
   margin: 10px auto;
-  max-width: 400px; /* Decreased max-width for the table */
+  max-width: 800px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 th,
@@ -52,31 +40,23 @@ tr.mat-cell-header {
   background-color: rgb(229, 229, 229);
 }
 
-/* Your component.css */
-.green-text {
-  color: green;
-}
-
-.red-text {
-  color: red;
-}
-
 /* Adjust the button styles within the table cell */
 td button {
-  margin: 5px; /* Adjust margin for space around the button */
-  padding: 4px 8px; /* Adjust padding to make the button smaller */
-  font-size: 14px; /* Adjust font size */
-  font-weight: normal; /* Use normal font weight */
-  text-align: center; /* Center the button within the cell */
+  margin: 5px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
   text-decoration: none;
   background-color: #44b3ad;
   color: #fff;
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  width: 100%; /* Make the button occupy the full width of the cell */
-  max-width: 150px; /* Set a maximum width for the button */
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+  width: 100%;
+  max-width: 150px;
 }
 
 td button:hover {
@@ -85,39 +65,10 @@ td button:hover {
   color: #fff;
 }
 
-/* Adjust the minimum width for the button column only */
-th.mat-header-cell.button-column,
-td.mat-cell.button-column {
-  width: 1%; /* Set a minimum width for the button column */
-}
-
-/* Center the button vertically and horizontally */
-.center-button {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px; /* Adjust the margin as needed */
-}
-
-.scrollable-content {
-  max-height: 400px; /* Set the maximum height for scrolling */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
-
-.center-horizontally {
-  display: flex;
-  justify-content: center;
-}
-
-.vertical-spacer {
-  margin-bottom: 50px; /* Adjust the value to control the spacing */
-}
-
-/* Add this to your component's CSS file */
-
 /* Add styling for the button column */
 .button-column {
   width: 1%;
-  white-space: nowrap; /* Prevent button from wrapping to the next line */
+  white-space: nowrap;
 }
 
 /* Style the button within the button column */
@@ -133,7 +84,8 @@ td.mat-cell.button-column {
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .button-column button:hover {
@@ -141,27 +93,3 @@ td.mat-cell.button-column {
   border-color: #367976;
   color: #fff;
 }
-
-/* Style the entire table for consistency */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 10px auto;
-  max-width: 800px; /* Adjusted max-width for better responsiveness */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-
-

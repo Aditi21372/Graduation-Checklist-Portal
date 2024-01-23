@@ -27,7 +27,7 @@ import { OnlineCoursesListComponent } from './online-courses-list/online-courses
 import { TwoxxCoursesListComponent } from './twoxx-courses-list/twoxx-courses-list.component';
 import { BranchCoursesListComponent } from './branch-courses-list/branch-courses-list.component';
 import { SummaryPageComponent } from './summary-page/summary-page.component';
-import { LoginComponent} from './login/login.component';
+import { LoginComponent } from './login/login.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { IncompleteGradesListComponent } from './incomplete-grades-list/incomplete-grades-list.component';
 import { RouterModule } from '@angular/router';
@@ -36,7 +36,6 @@ import { UpdateStudentDatabaseComponent } from './update-student-database/update
 import { MatSortModule } from '@angular/material/sort';
 import { HonorsComponent } from './honors/honors.component';
 import { TocMthComponent } from './toc-mth/toc-mth.component';
-
 
 @NgModule({
   declarations: [

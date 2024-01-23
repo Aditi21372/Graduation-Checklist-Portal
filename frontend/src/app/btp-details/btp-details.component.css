@@ -1,177 +1,122 @@
-/* Your component.css */
+/* Resetting styles for all elements */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Style the entire table for consistency */
+/* Common styles for buttons */
+button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+/* Container styling */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin: 16px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Card styling */
+.mat-card {
+  width: 48%;
+}
+
+/* Custom toolbar */
+.custom-toolbar {
+  background-color: #fff;
+  border-radius: 6px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+/* Center horizontally */
+.center-horizontally {
+  padding-top: 10px;
+  text-align: center;
+}
+
+/* Student info section */
+.student-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 0 20px 20px 20px;
+  font-size: medium;
+}
+
+/* Table styling */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px auto;
-    max-width: 300px; /* Decreased max-width for the table */
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px auto;
+  max-width: 300px;
 }
 
 th,
 td {
-    border: 1px solid #ddd;
-    padding: 6px; /* Adjusted padding for smaller cells */
-    text-align: center;
+  border: 1px solid #ddd;
+  padding: 6px;
+  text-align: center;
 }
 
 th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 
-/* Apply the same container styling */
-table .red-row {
-    background-color: rgb(246, 104, 104);
-    color: white;
-}
-
-/* Apply the same table styling */
-table {
-    width: 100%; /* Adjusted width for smaller tables */
-    border-collapse: collapse;
-    margin: 10px auto;
-    max-width: 300px; /* Decreased max-width for the table */
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 6px; /* Adjusted padding for smaller cells */
-    text-align: center;
-    font-size: 14px; /* Increased font size */
-}
-
-th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
+/* Alternate row styling */
 tr:nth-child(even) {
-    background-color: rgb(229, 229, 229);
+  background-color: rgb(229, 229, 229);
 }
 
-tr.mat-cell-header {
-    background-color: rgb(229, 229, 229);
+/* Red row styling */
+.red-row {
+  background-color: rgb(246, 104, 104);
+  color: white;
 }
 
-/* Your component.css */
-.green-text {
-    color: green;
-}
-
-.red-text {
-    color: red;
-}
-
-/* Adjust the button styles within the table cell */
+/* Button within table cell styling */
 td button {
-    margin: 3px; /* Adjust margin for space around the button */
-    padding: 4px 6px; /* Adjust padding to make the button smaller */
-    font-size: 14px; /* Increased font size for buttons */
-    font-weight: normal; /* Use normal font weight */
-    text-align: center; /* Center the button within the cell */
-    text-decoration: none;
-    background-color: #44b3ad;
-    color: #fff;
-    border: 2px solid #40aca7;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    width: 100%; /* Make the button occupy the full width of the cell */
-    max-width: 80px; /* Set a maximum width for the button */
+  margin: 3px;
+  padding: 4px 6px;
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 80px;
 }
 
 td button:hover {
-    background-color: #367976;
-    border-color: #367976;
-    color: #fff;
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
 }
-
-/* Adjust the minimum width for the button column only */
-th.mat-header-cell.button-column,
-td.mat-cell.button-column {
-    width: 1%; /* Set a minimum width for the button column */
-}
-
-/* Center the button vertically and horizontally */
-.center-button {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px; /* Adjust the margin as needed */
-}
-
-.scrollable-content {
-    max-height: 200px; /* Set the maximum height for scrolling */
-    overflow-y: auto; /* Enable vertical scrolling */
-}
-
-.center-horizontally {
-    display: flex;
-    justify-content: center;
-}
-
-.vertical-spacer {
-    margin-bottom: 20px; /* Adjust the value to control the spacing */
-}
-
-
-button {
-    margin: 10px 10px;
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    background-color: #44b3ad;
-    color: #fff;
-    border: 2px solid #40aca7;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #367976;
-    border-color: #367976;
-    color: #fff;
-  }
-  
-  .custom-toolbar {
-    background-color: #fff;
-    border-radius: 6px;
-    margin-top: 16px; /* Add some margin for spacing */
-    width: 100%;
-  }
-  
-  .center-horizontally {
-    padding-top: 10px;
-    text-align: center;
-  }
-  
-  
-.student-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: nowrap;
-    padding: 0 20px 20px 20px;
-    font-size: medium;
-  }
-
-  .container {
-    display: flex;
-    justify-content: center; /* Center the container horizontally */
-    align-items: center; /* Center the container vertically */
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    margin: 16px;
-    width: 70%;
-    margin-left: auto; /* Add this to center the container */
-    margin-right: auto; /* Add this to center the container */
-  }
-  
-  .mat-card {
-    width: 48%; /* Adjust the width as needed */
-  }

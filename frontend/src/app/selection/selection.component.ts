@@ -17,4 +17,8 @@ export class SelectionComponent {
   checkGraduationChecklist() {
     this.router.navigate(['/student-info-input']);
   }
+
+  logout() {
+    this.router.navigate(['/login']);
+  }
 }

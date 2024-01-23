@@ -33,10 +33,9 @@ export class StudentInfoComponent implements OnInit {
 
   setGraduationStatus() {
     this.studentService
-      .getGraduationStatus()
+      .getGraduationStatusFromChecklist()
       .subscribe((data: any) => {
         this.gradStatus = data;
       });
   }
-
 }

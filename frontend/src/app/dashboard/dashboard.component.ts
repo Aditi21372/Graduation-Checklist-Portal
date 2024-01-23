@@ -9,10 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   rollNumber: number = 0;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
     // Get the rollNumber parameter from the route
@@ -25,7 +22,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['/student-info-input']);
   }
 
-  logout(){
+  logout() {
     this.router.navigate(['/login']);
   }
 }

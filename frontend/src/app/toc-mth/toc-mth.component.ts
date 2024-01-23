@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-toc-mth',
@@ -22,7 +23,11 @@ export class TocMthComponent {
     'grade',
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private utilityService: UtilityService
+  ) {
     this.dataSource = new MatTableDataSource();
   }
 
@@ -50,6 +55,9 @@ export class TocMthComponent {
     }
 
     this.dataSource.data = [...this.dataSource.data, ...newData];
+    this.dataSource.data.sort((a: any, b: any) =>
+      this.utilityService.customSort(a.semester, b.semester)
+    );
   }
 
   goBack() {

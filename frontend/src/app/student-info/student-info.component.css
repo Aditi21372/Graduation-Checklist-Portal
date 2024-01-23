@@ -1,5 +1,3 @@
-/* Merged Styles */
-
 .container {
   text-align: center;
   padding: 60px;
@@ -7,7 +5,7 @@
 
 h1 {
   font-size: 24px;
-  color: #1c1e21; /* Updated to match title color */
+  color: #1c1e21;
 }
 
 p {
@@ -19,10 +17,10 @@ p {
   max-width: 400px;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #dddfe2; /* Updated to match input border color */
-  border-radius: 6px; /* Updated to match input border radius */
-  box-shadow: 0 5px 6px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
-  background-color: #fff; /* Updated to match login form background color */
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
 }
 
 .form-group {
@@ -33,18 +31,18 @@ p {
 label {
   font-size: 16px;
   font-weight: bold;
-  color: #1c1e21; /* Updated to match title color */
+  color: #1c1e21;
   padding-top: 30px;
   padding-bottom: 30px;
 }
 
 input[type="number"] {
-  width: 330px; /* Updated to match input width */
-  padding: 14px 16px 16px 14px; /* Updated to match input padding */
-  font-size: 17px; /* Updated to match input font size */
-  border: 1px solid #dddfe2; /* Updated to match input border color */
-  border-radius: 6px; /* Updated to match input border radius */
-  background-color: #fff; /* Updated to match input background color */
+  width: 330px;
+  padding: 14px 16px 16px 14px;
+  font-size: 17px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  background-color: #fff;
 }
 
 button {
@@ -54,10 +52,10 @@ button {
   font-weight: bold;
   text-align: center;
   text-decoration: none;
-  background-color: #39AEA8; /* Updated to match login button background color */
+  background-color: #39aea8;
   color: #fff;
-  border: none; /* Updated to remove border */
-  border-radius: 6px; /* Updated to match login button border radius */
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -67,31 +65,25 @@ button:hover {
   color: #fff;
 }
 
-/* New styles for showMessage */
-
 .error-message {
   font-size: 14px;
-  color: #1d2129; /* Updated to match input text color */
+  color: #1d2129;
   margin-top: 5px;
   margin-bottom: 15px;
 }
 
-/* Styles for the center-card class */
-
 .center-card {
-  width: 400px; /* Adjust the width as needed */
-  margin: 50px auto; /* Adjust the margin for vertical centering */
+  width: 400px;
+  margin: 50px auto;
   padding: 20px;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
   text-align: center;
 }
 
 mat-card-content {
-  text-align: center; /* Center text content horizontally */
-  padding: 20px; /* Add padding to mat-card-content */
+  text-align: center;
+  padding: 20px;
 }
-
-/* Rest of your existing styles */
 
 h2 {
   font-size: 24px;
@@ -104,20 +96,19 @@ p {
   margin: 5px 0;
 }
 
-/* Style specific paragraphs if needed */
 p:nth-child(2) {
   font-weight: bold;
 }
 
 button {
-  margin: 10px 10px; /* Add margin for space between buttons */
+  margin: 10px 10px;
   display: inline-block;
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
   text-decoration: none;
-  background-color: #44B3AD;
+  background-color: #44b3ad;
   color: #fff;
   border: 2px solid #40aca7;
   border-radius: 5px;
@@ -131,14 +122,10 @@ button:hover {
   color: #fff;
 }
 
-/* Your component's CSS file */
-
-/* Add this style for the graduated class */
 .graduated {
   color: green;
 }
 
-/* Add this style for the incomplete class */
 .incomplete {
   color: red;
 }

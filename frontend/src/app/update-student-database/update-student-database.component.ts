@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentServiceService } from '../student-service.service';
-import { MatDialog } from '@angular/material/dialog';
-
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-update-student-database',
@@ -18,9 +17,26 @@ export class UpdateStudentDatabaseComponent {
   editedStudentGrade: string = '';
   editStudentFormVisible: boolean = false;
   editedStudent: any;
+  grades: string[] = [
+    'A+',
+    'A',
+    'A-',
+    'B',
+    'B-',
+    'C',
+    'C-',
+    'D',
+    'F',
+    'S',
+    'X',
+    'I',
+    'W',
+  ];
+
   constructor(
     private router: Router,
-    private studentService: StudentServiceService
+    private studentService: StudentServiceService,
+    private utilityService: UtilityService
   ) {}
 
   ngOnInit() {
@@ -30,11 +46,17 @@ export class UpdateStudentDatabaseComponent {
 
   onSubmit() {
     this.studentService.getStudentCourses(this.studentRollNumber).subscribe(
-      (data) => {
+      (data: any[]) => {
         this.rollNumberExists = true;
         this.showContent = true;
         this.showMessage = '';
         this.studentDataArray = data;
+        this.studentDataArray.sort((a: any, b: any) =>
+          this.utilityService.customSort(
+            a['Batch / Term Code'],
+            b['Batch / Term Code']
+          )
+        );
       },
       (error) => {
         this.showMessage = '';
@@ -48,14 +70,10 @@ export class UpdateStudentDatabaseComponent {
   editStudent(student: any) {
     this.editedStudent = student;
     this.editStudentFormVisible = true;
-
   }
 
   submitEdit(editedStudentGrade: string) {
-    // Update the grade of the edited student
-
     this.editedStudent['Grade'] = editedStudentGrade;
-    // Call your service to update the student data in the backend
     this.studentService.updateStudent(this.editedStudent).subscribe(
       (data) => {
         this.showMessage = 'Student data updated successfully!';
@@ -64,14 +82,16 @@ export class UpdateStudentDatabaseComponent {
         this.showMessage = 'Error updating student data!';
       }
     );
-    // Hide the edit form after submission
     this.editStudentFormVisible = false;
   }
 
   cancelEdit() {
-    // Clear the edited student and hide the edit form
     this.editedStudent = null;
     this.editedStudentGrade = '';
     this.editStudentFormVisible = false;
+  }
+
+  goBack() {
+    this.router.navigate(['/selection']);
   }
 }

@@ -3,6 +3,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of } from 'rxjs';
+import { concatMap, tap } from 'rxjs/operators';
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-checklist',
@@ -23,42 +25,57 @@ export class ChecklistComponent implements OnInit {
 
   constructor(
     private studentService: StudentServiceService,
-    private router: Router
+    private router: Router,
+    private utilityService: UtilityService
   ) {
     this.dataSourceTwo = new MatTableDataSource();
     this.courseData = new Map<string, any>();
   }
 
   ngOnInit() {
-    // Call the service to fetch student data
     this.studentService
       .getStudentCourseData(this.rollNumber.toString())
-      .subscribe((studentData) => {
-        this.program = studentData.branch;
-        this.studentName = studentData.studentName;
-        this.branch = this.program.slice(
-          this.program.lastIndexOf('/') + 1,
-          this.program.length
+      .pipe(
+        tap((studentData) => {
+          this.program = studentData.branch;
+          this.studentName = studentData.studentName;
+          this.branch = this.program.slice(
+            this.program.lastIndexOf('/') + 1,
+            this.program.length
+          );
+          this.setGraduationStatus();
+        }),
+        concatMap(() => {
+          const observables = [
+            this.populateBuckets(),
+            this.populateMandatory(),
+            this.populateSSH(),
+            this.populateCW(),
+            this.populateSG(),
+            this.populate32Credits(),
+            this.populateIPCredits(),
+            this.populateOnlineCourseCredits(),
+            this.populateTwoXXCredits(),
+            this.populateTOCCredits(),
+            this.populateBTP(),
+            this.populateHonors(),
+            this.populateIncompleteGrades(),
+          ];
+
+          return forkJoin(observables);
+        })
+      )
+      .subscribe(() => {
+        this.dataSourceTwo.data.sort((a: any, b: any) =>
+          this.utilityService.customSort(a.semester, b.semester)
         );
-
-        const observables = [
-          this.populateBuckets(),
-          this.populateMandatory(),
-          this.populateSSH(),
-          this.populateCW(),
-          this.populateSG(),
-          this.populate32Credits(),
-          this.populateIPCredits(),
-          this.populateOnlineCourseCredits(),
-          this.populateTwoXXCredits(),
-          this.populateTOCCredits(),
-          this.populateBTP(),
-          this.populateHonors(),
-          this.populateIncompleteGrades(),
-        ];
-
-        forkJoin(observables).subscribe(() => {});
       });
+  }
+
+  setGraduationStatus() {
+    this.studentService.getGraduationStatus().subscribe((data: any) => {
+      this.studentService.setGraduationStatus(data);
+    });
   }
 
   populateMandatory(): Observable<any> {
@@ -313,7 +330,7 @@ export class ChecklistComponent implements OnInit {
       const newData = [];
       newData.push({
         index: 9,
-        rule: 'TOC / Maths of 200 level or above',
+        rule: 'TOC / Maths of 2xx level or above',
         status: ruleData.isCompleteText,
         statusBool: ruleData.isCompleteBool,
         credits: ruleData.data.totalCredits,
@@ -466,7 +483,7 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
-      case 'TOC / Maths of 200 level or above':
+      case 'TOC / Maths of 2xx level or above':
         let tocCourses = this.courseData.get('TOC');
         this.router.navigate(['/toc-mth'], {
           queryParams: {

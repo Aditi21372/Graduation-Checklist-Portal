@@ -1,7 +1,6 @@
 <mat-card>
   <mat-card-content>
-    <table mat-table [dataSource]="dataSourceTwo" matSort>
-      <!-- Define your table columns here -->
+    <table mat-table [dataSource]="dataSourceTwo">
       <ng-container matColumnDef="index">
         <th mat-header-cell *matHeaderCellDef>SNo.</th>
         <td mat-cell *matCellDef="let element">{{ element.index }}</td>
@@ -14,7 +13,7 @@
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element">{{ element.status}}</td>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
       </ng-container>
 
       <ng-container matColumnDef="credits">
@@ -35,7 +34,10 @@
       <tr
         mat-row
         *matRowDef="let row; columns: displayedColumn"
-        [ngClass]="{ 'red-row': row.status !== 'Complete' && row.status !== 'Not Done' }"
+        [ngClass]="{
+          'red-row':
+            row.status === 'Incomplete' || row.status === 'Done extra credits'
+        }"
       ></tr>
     </table>
   </mat-card-content>

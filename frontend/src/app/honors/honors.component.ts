@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-honors',
   templateUrl: './honors.component.html',
-  styleUrls: ['./honors.component.css']
+  styleUrls: ['./honors.component.css'],
 })
 export class HonorsComponent {
   dataSource: MatTableDataSource<any>;
@@ -14,13 +15,13 @@ export class HonorsComponent {
   program: string = '';
   studentName: string = '';
   courseData: any;
-  displayedColumns: string[] = [
-    'rule',
-    'value',
-    'status'
-  ];
+  displayedColumns: string[] = ['index', 'rule', 'value', 'status'];
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private utilityService: UtilityService
+  ) {
     this.dataSource = new MatTableDataSource();
   }
 
@@ -39,17 +40,20 @@ export class HonorsComponent {
     const newData = [];
     for (let i = 0; i < this.courseData.length; i++) {
       newData.push({
+        index: i + 1,
         rule: this.courseData[i].rule,
         value: this.courseData[i].value,
-        status: this.courseData[i].status
+        status: this.courseData[i].status,
       });
     }
 
     this.dataSource.data = [...this.dataSource.data, ...newData];
+    this.dataSource.data.sort((a: any, b: any) =>
+      this.utilityService.customSort(a.index, b.index)
+    );
   }
 
   goBack() {
     this.router.navigate(['/dashboard', this.rollNumber]);
   }
-
 }

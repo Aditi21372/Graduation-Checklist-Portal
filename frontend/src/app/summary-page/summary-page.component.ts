@@ -22,8 +22,8 @@ export class SummaryPageComponent implements OnInit {
   graduatingWithHonors: string = 'No';
   graduatingWithMinors: string = 'No';
   minorsStream: string = 'None';
-  studentName: string = "";
-  program: string = "";
+  studentName: string = '';
+  program: string = '';
 
   constructor(
     private studentService: StudentServiceService,
@@ -34,9 +34,9 @@ export class SummaryPageComponent implements OnInit {
   ngOnInit(): void {
     // Get the rollNumber parameter from the route
     this.route.queryParams.subscribe((params) => {
-      this.rollNumber = params["rollNumber"];
-      this.program = params["program"];
-      this.studentName = params["studentName"];
+      this.rollNumber = params['rollNumber'];
+      this.program = params['program'];
+      this.studentName = params['studentName'];
 
       // Create an array of observables for each API call
       const observables = [
@@ -85,12 +85,14 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Final CGPA',
-              status: gpa["10"].cgpa, 
+              status: gpa['10'].cgpa,
             },
             {
               requirement: 'Completed SG / CW credits',
               status:
-                sgCourses.isCompleteBool && cwCourses.isCompleteBool ? 'Yes' : 'No',
+                sgCourses.isCompleteBool && cwCourses.isCompleteBool
+                  ? 'Yes'
+                  : 'No',
             },
             {
               requirement: 'Completed SSH credits',
@@ -106,7 +108,7 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Graduating with Honors',
-              status: honors.isCompleteText === "Done" ? 'Yes' : 'No', 
+              status: honors.isCompleteText === 'Done' ? 'Yes' : 'No',
             },
             {
               requirement: 'Graduating with Minors',

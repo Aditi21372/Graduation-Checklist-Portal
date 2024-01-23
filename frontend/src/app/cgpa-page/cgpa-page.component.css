@@ -1,5 +1,4 @@
-/* graduation-checklist.component.css (or your appropriate file) */
-
+/* Common styles for buttons */
 button {
   margin: 10px 10px;
   display: inline-block;
@@ -23,12 +22,20 @@ button:hover {
   color: #fff;
 }
 
-/* Apply the same container styling */
-table .red-row {
-  background-color: rgb(246, 104, 104);
-  color: white;
+/* Container styling */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin: 16px;
+  width: 70%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+/* Card styling */
 .mat-card {
   margin: 20px auto;
   max-width: 800px;
@@ -43,7 +50,7 @@ h2 {
   color: #333;
 }
 
-/* Apply the same table styling */
+/* Table styling */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -67,16 +74,7 @@ tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-/* Your component.css */
-.green-text {
-  color: green;
-}
-
-.red-text {
-  color: red;
-}
-
- 
+/* Student info section */
 .student-info {
   display: flex;
   justify-content: space-between;
@@ -86,26 +84,11 @@ tr:nth-child(even) {
   font-size: medium;
 }
 
-.container {
-  display: flex;
-  justify-content: center; /* Center the container horizontally */
-  align-items: center; /* Center the container vertically */
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  margin: 16px;
-  width: 70%;
-  margin-left: auto; /* Add this to center the container */
-  margin-right: auto; /* Add this to center the container */
-}
-
-.mat-card {
-  width: 48%; /* Adjust the width as needed */
-}
-
+/* Additional styles as needed */
 .custom-toolbar {
   background-color: #fff;
   border-radius: 6px;
-  margin-top: 16px; /* Add some margin for spacing */
+  margin-top: 16px;
   width: 100%;
 }
 
@@ -113,4 +96,3 @@ tr:nth-child(even) {
   padding-top: 10px;
   text-align: center;
 }
-

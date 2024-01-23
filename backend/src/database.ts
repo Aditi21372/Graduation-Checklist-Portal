@@ -1,11 +1,8 @@
 import { StudentCourse } from "./degree";
 import { GraduatedStudent } from "./index";
-import { MongoClient } from "mongodb";
+import { db } from "./db";
 
 const xlsx = require("xlsx");
-
-const uri = "mongodb://localhost:27017";
-const client = new MongoClient(uri);
 
 export type StudentInfo = {
   studentName: string;
@@ -203,9 +200,7 @@ export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
 
 export async function searchByRollNo(rollNo: number): Promise<any[]> {
   try {
-    await client.connect();
-    const database = client.db("graduation");
-    const collection = database.collection("StudentDatabase2019");
+    const collection = db.collection("StudentDatabase2019");
 
     // Use the find method to retrieve all documents matching the query
     const query = { "Roll No": rollNo };
@@ -215,16 +210,15 @@ export async function searchByRollNo(rollNo: number): Promise<any[]> {
     }
 
     return result;
-  } finally {
-    await client.close();
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 }
 
 export async function updateStudentData(studentData: any): Promise<any> {
   try {
-    await client.connect();
-    const database = client.db("graduation");
-    const collection = database.collection("StudentDatabase2019");
+    const collection = db.collection("StudentDatabase2019");
 
     // Use the find method to retrieve all documents matching the query
     const query = {
@@ -245,7 +239,8 @@ export async function updateStudentData(studentData: any): Promise<any> {
     }
 
     return existingStudent; // Document updated successfully
-  } finally {
-    await client.close();
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 }

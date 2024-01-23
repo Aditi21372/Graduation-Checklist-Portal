@@ -1,11 +1,6 @@
-.container {
-  text-align: center;
-  padding: 60px;
-}
-
+.container,
 .modal {
   text-align: center;
-  padding: 10px;
 }
 
 .form {
@@ -128,8 +123,8 @@ th {
 }
 
 .edited-grade-input {
-  width: 30%; /* Adjust the width as needed */
-  padding: 8px; /* Adjust the padding as needed */
+  width: 30%;
+  padding: 8px;
   font-size: 16px;
   border: 1px solid #dddfe2;
   border-radius: 6px;
@@ -140,4 +135,33 @@ th {
   align-items: center;
   padding: 10px;
   margin: 10px;
+}
+
+.go-back-button {
+  position: absolute;
+  top: 65px;
+  left: 10px;
+}
+
+.go-back-button button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.go-back-button button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
 }

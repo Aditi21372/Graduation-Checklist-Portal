@@ -1,7 +1,6 @@
 import express from "express";
 import * as fs from "fs";
 
-import { findCGPA } from "./index";
 import { getGraduationStatus, getGraduationDate } from "./degree";
 import {
   searchByRollNo,
@@ -9,6 +8,7 @@ import {
   preprocessCourseData,
   StudentInfo,
 } from "./database";
+import { calculateCGPA } from "./cgpa";
 
 import {
   sshRule,
@@ -23,7 +23,7 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
   incompleteGradeRule,
-  tocRule
+  tocRule,
 } from "./rule";
 import { isHonors } from "./honors";
 
@@ -163,7 +163,7 @@ app.get("/api/graduation-date", (req, res) => {
 });
 
 app.get("/api/semester-wise-cgpa", (req, res) => {
-  res.json(findCGPA(studentCourseData));
+  res.json(calculateCGPA(studentCourseData));
 });
 
 app.get("/api/honors", (req, res) => {
