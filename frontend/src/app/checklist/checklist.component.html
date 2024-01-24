@@ -1,44 +1,31 @@
-<mat-card>
-  <mat-card-content>
-    <table mat-table [dataSource]="dataSourceTwo">
-      <ng-container matColumnDef="index">
-        <th mat-header-cell *matHeaderCellDef>SNo.</th>
-        <td mat-cell *matCellDef="let element">{{ element.index }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="rule">
-        <th mat-header-cell *matHeaderCellDef>Requirement</th>
-        <td mat-cell *matCellDef="let element">{{ element.rule }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="credits">
-        <th mat-header-cell *matHeaderCellDef>Credits</th>
-        <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef class="button-column"></th>
-        <td mat-cell *matCellDef="let element" class="button-column">
-          <button mat-button (click)="navigateToPage(element)">
-            {{ element.button_text }}
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumn"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumn"
-        [ngClass]="{
-          'red-row':
-            row.status === 'Incomplete' || row.status === 'Done extra credits'
-        }"
-      ></tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+<table>
+  <thead >
+    <tr>
+      <th>SNo.</th>
+      <th>Requirement</th>
+      <th>Status</th>
+      <th>Credits</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let element of dataSourceTwo"
+      [ngClass]="{
+        'red-row':
+          element.status === 'Incomplete' ||
+          element.status === 'Done extra credits'
+      }"
+    >
+      <td>{{ element.index }}</td>
+      <td>{{ element.rule }}</td>
+      <td>{{ element.status }}</td>
+      <td>{{ element.credits }}</td>
+      <td>
+        <button (click)="navigateToPage(element)" class="button-column">
+          {{ element.button_text }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

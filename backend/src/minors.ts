@@ -1,130 +1,224 @@
-import {StudentInfo} from "./database";
-import { courseDatabase} from "./index";
+import { Console } from "console";
+import { courseDatabase } from "./index";
+import { StudentInfo, RuleData, CourseData } from "./type";
 
 const disallowedGrades = ["I", "W", "F", "X"];
 
-// checkCoreCourses checks if the core courses for a particular minor have been completed by the student.
-// Returns a boolean value to indicate whether the student has completed the courses or not.
-function checkCoreCourses(rollNumber: number, studentInfo: StudentInfo, coreCourses: string[]){
-    const studentCourses = studentInfo["courses"];
-
-    for (const course of coreCourses){
-        let courseCompleted = false;
-        for (const studentCourse of studentCourses){
-            if (studentCourse["courseCode"] === course) {
-                if (!disallowedGrades.includes(studentCourse["grade"])) {
-                    courseCompleted = true;
-                }
-            }
-        }
-        if(!courseCompleted){
-            return false;
-        }
-    }
-    return true;
+export function isMinors(studentInfo: StudentInfo): RuleData[] {
+  const minors: RuleData[] = [];
+  const bioMinors = new ComputationalBiologyMinors();
+  minors.push(bioMinors.checkMinorsCompleted(studentInfo));
+  const ecoMinors = new EconomicsMinors();
+  minors.push(ecoMinors.checkMinorsCompleted(studentInfo));
+  return minors;
 }
 
 export interface Minors {
-    // List the core courses required to be completed for the minors.
-    coreCourses: string[];
-    // Checks if the minimum number of course work credits have been completed.
-    checkMinimumCredits: (rollNumber: number, studentInfo: StudentInfo) => Boolean;
-    // Checks if an additional number of credits have been completed through IP/BTP/coursework/etc.
-    checkAdditionalCredits: (rollNumber: number, studentInfo: StudentInfo) => Boolean;
-    // Checks if all the minor requirements have been completed.
-    checkMinorsCompleted: (rollnumber: number, studentInfo: StudentInfo) => Boolean;
+  // List the core courses required to be completed for the minors.
+  coreCourses: string[];
+  // Check if not in same branch
+  checkSameBranch: (studentInfo: StudentInfo) => Boolean;
+  // Checks if the minimum number of course work credits have been completed.
+  checkMandatoryCourses: (studentInfo: StudentInfo) => RuleData;
+  // Checks if an additional number of credits have been completed through IP/BTP/coursework/etc.
+  checkAdditionalCredits: (studentInfo: StudentInfo, coreData?: CourseData[]) => RuleData;
+  // Checks if all the minor requirements have been completed.
+  checkMinorsCompleted: (studentInfo: StudentInfo) => RuleData;
 }
 
 export class ComputationalBiologyMinors implements Minors {
-    coreCourses: string[] = ["BIO213"];
+  coreCourses: string[] = courseDatabase["Minor in BIO"];
 
-    // satisfiesCourseForMinimumCredits checks if the given course code can be counted in the minimum credit
-    // requirements.
-    satisfiesCourseForMinimumCredits(courseCode: string): Boolean{
-        const disallowedCourses = ["BIO512"]
-        const ipCourses = courseDatabase["IP/IS/UR"];
-        const startingCode = courseCode.substring(0, 3);
-        const disallowedPattern = /^BIOX(?:7[1-9]|80)$/;
+  checkSameBranch(studentInfo: StudentInfo): boolean {
+    return studentInfo["program"].includes("CSB");
+  }
 
-        if(disallowedCourses.includes(courseCode) || ipCourses.includes(courseCode) || startingCode === "BTP"){
-            return false;
+  checkMandatoryCourses(studentInfo: StudentInfo): RuleData {
+    const courses = [];
+    for (const coreCourse in this.coreCourses) {
+      let courseEntry = {
+        course: this.coreCourses[coreCourse],
+        semester: "",
+        status: "Incomplete",
+        credits: 0,
+        grade: "",
+      };
+      for (const course of studentInfo["courses"]) {
+        if (
+          course["courseCode"] === this.coreCourses[coreCourse] &&
+          !disallowedGrades.includes(course["grade"])
+        ) {
+          courseEntry["semester"] = course["semester"];
+          courseEntry["status"] = "Complete";
+          courseEntry["credits"] = course["credit"];
+          courseEntry["grade"] = course["grade"];
         }
+      }
+      courses.push(courseEntry);
+    }
+    const ruleData: RuleData = {
+      isCompleteBool: courses.length === this.coreCourses.length,
+      isCompleteText:
+        courses.length === this.coreCourses.length ? "Complete" : "Incomplete",
+      data: courses,
+    };
 
-        if(disallowedPattern.test(courseCode)){
-            return false;
-        }
+    return ruleData;
+  }
 
-        if(startingCode === 'BIO' && courseCode[3] >= '5'){
-            return true;
-        }
-        return false;
+  checkAdditionalCredits(studentInfo: StudentInfo): RuleData {
+    const creditsToComplete = 20 - this.coreCourses.length * 4;
+    let creditsCompleted = 0;
+    const studentCourses = studentInfo["courses"];
+    const courses = [];
+
+    for (const studentCourse of studentCourses) {
+      const grade = studentCourse["grade"];
+
+      if (studentCourse["courseCode"].startsWith("BIO") &&
+        studentCourse["courseCode"].slice(0, 4) >= "BIO3" &&
+        !disallowedGrades.includes(grade)
+      ) {
+        creditsCompleted += studentCourse["credit"];
+        courses.push({
+          course: studentCourse["courseCode"],
+          semester: studentCourse["semester"],
+          status: "Complete",
+          credits: studentCourse["credit"],
+          grade: studentCourse["grade"],
+        });
+      }
     }
 
-    // TODO[@dikshasethi2511]: Check for IP/BTP in CB. 
-    satisfiesCourseForAdditionalCredits(courseCode: string): Boolean{
-        const disallowedCourses = ["BIO512"]
-        const startingCode = courseCode.substring(0, 3);
-        const disallowedPattern = /^BIOX(?:7[1-9]|80)$/;
+    const ruleData: RuleData = {
+      isCompleteBool: creditsCompleted >= creditsToComplete,
+      isCompleteText:
+        creditsCompleted >= creditsToComplete ? "Complete" : "Incomplete",
+      data: courses,
+    };
+    return ruleData;
+  }
 
-        if(disallowedCourses.includes(courseCode)){
-            return false;
-        }
+  checkMinorsCompleted(studentInfo: StudentInfo): RuleData {
+    const pursuingCSB = this.checkSameBranch(studentInfo);
+    const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
+    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
+    const minors =
+      !pursuingCSB &&
+      coreCoursesCompleted.isCompleteBool &&
+      additionalCreditsCompleted.isCompleteBool;
+    const ruleData: RuleData = {
+      isCompleteBool: minors,
+      isCompleteText: minors ? "Complete" : "Incomplete",
+      data: {
+        stream: "Computational Biology",
+        coreCoursesCompleted: coreCoursesCompleted,
+        additionalCreditsCompleted: additionalCreditsCompleted,
+      },
+    };
+    return ruleData;
+  }
+}
 
-        if(disallowedPattern.test(courseCode)){
-            return false;
-        }
+export class EconomicsMinors implements Minors {
+  coreCourses: string[] = courseDatabase["Minor in ECO"];
 
-        if(startingCode === 'BIO' && courseCode[3] >= '5'){
-            return true;
+  checkSameBranch(studentInfo: StudentInfo): boolean {
+    return studentInfo["program"].includes("CSSS");
+  }
+
+  checkMandatoryCourses(studentInfo: StudentInfo): RuleData {
+
+    const courses = [];
+
+    for (const coreCourse in this.coreCourses) {
+      let courseEntry = {
+        course: this.coreCourses[coreCourse],
+        semester: "",
+        status: "Incomplete",
+        credits: 0,
+        grade: "",
+      };
+      for (const course of studentInfo["courses"]) {
+        if (
+          course["courseCode"] === this.coreCourses[coreCourse] &&
+          !disallowedGrades.includes(course["grade"])
+        ) {
+          courseEntry["semester"] = course["semester"];
+          courseEntry["status"] = "Complete";
+          courseEntry["credits"] = course["credit"];
+          courseEntry["grade"] = course["grade"];
         }
-        return false;
+      }
+      courses.push(courseEntry);
+    }
+    const ruleData: RuleData = {
+      isCompleteBool: courses.length >= this.coreCourses.length - 1,
+      isCompleteText:
+        courses.length >= this.coreCourses.length - 1 ? "Complete" : "Incomplete",
+      data: courses,
+    };
+
+    return ruleData;
+  }
+
+  checkAdditionalCredits(studentInfo: StudentInfo, coreData?: CourseData[]): RuleData {
+    const doneMandatory = [];
+    let doneMandatoryCredits = 0;
+    if (coreData) {
+      for (const coreCourse of coreData){
+        doneMandatory.push(coreCourse.course);
+        doneMandatoryCredits += coreCourse.credits;
+      }
+    }
+    const creditsToComplete = 20 - doneMandatoryCredits;
+    let creditsCompleted = 0;
+    const studentCourses = studentInfo["courses"];
+    const courses = [];
+
+    for (const studentCourse of studentCourses) {
+      const grade = studentCourse["grade"];
+
+      if (studentCourse["courseCode"].startsWith("ECO") &&
+        !disallowedGrades.includes(grade) && !doneMandatory.includes(studentCourse["courseCode"])
+      ) {
+        creditsCompleted += studentCourse["credit"];
+        courses.push({
+          course: studentCourse["courseCode"],
+          semester: studentCourse["semester"],
+          status: "Complete",
+          credits: studentCourse["credit"],
+          grade: studentCourse["grade"],
+        });
+      }
     }
 
-    checkMinimumCredits(rollNumber: number, studentInfo: StudentInfo){
-        const creditsToComplete = 16;
-        let creditsCompleted = 0;
-        const studentCourses = studentInfo["courses"];
-        for (const studentCourse of studentCourses){
-            const semester = studentCourse["semester"];
-            const grade = studentCourse["grade"];
+    const ruleData: RuleData = {
+      isCompleteBool: creditsCompleted >= creditsToComplete,
+      isCompleteText:
+        creditsCompleted >= creditsToComplete ? "Complete" : "Incomplete",
+      data: courses,
+    };
+    return ruleData;
+  }
 
-            if (semester >= '6' && !disallowedGrades.includes(grade)) {
-                if(this.satisfiesCourseForMinimumCredits(studentCourse["courseCode"])){
-                    creditsCompleted += studentCourse["credit"]
-                }
-            }
-        }
-        return creditsCompleted >= creditsToComplete;
-    }
-
-    checkAdditionalCredits(rollNumber: number, studentInfo: StudentInfo){
-        const creditsToComplete = 4;
-        let creditsCompleted = 0;
-        const studentCourses = studentInfo["courses"];
-        for (const studentCourse of studentCourses){
-            const semester = studentCourse["semester"];
-            const grade = studentCourse["grade"];
-
-            if (semester >= '6' && !disallowedGrades.includes(grade)) {
-                if(this.satisfiesCourseForAdditionalCredits(studentCourse["courseCode"])){
-                    creditsCompleted += studentCourse["credit"]
-                }
-            }
-        }
-        return creditsCompleted >= creditsToComplete;
-    }
-
-    checkMinorsCompleted(rollNumber: number, studentInfo: StudentInfo){
-        let program = studentInfo["program"];
-        let branch = program.slice(
-            program.lastIndexOf('/') + 1,
-            program.length
-        );
-
-        let pursuingCSB = branch == 'CSB';
-        let coreCoursesCompleted = checkCoreCourses(rollNumber, studentInfo, this.coreCourses);
-        let minimumCreditsCompleted = this.checkMinimumCredits(rollNumber, studentInfo);
-        let additionalCreditsCompleted = this.checkAdditionalCredits(rollNumber, studentInfo);
-        return coreCoursesCompleted && minimumCreditsCompleted && additionalCreditsCompleted && !pursuingCSB;
-    }
+  checkMinorsCompleted(studentInfo: StudentInfo): RuleData {
+    const pursuingCSSS = this.checkSameBranch(studentInfo);
+    const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
+    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo, coreCoursesCompleted.data);
+    const minors =
+      !pursuingCSSS &&
+      coreCoursesCompleted.isCompleteBool &&
+      additionalCreditsCompleted.isCompleteBool;
+    const ruleData: RuleData = {
+      isCompleteBool: minors,
+      isCompleteText: minors ? "Complete" : "Incomplete",
+      data: {
+        stream: "Economics",
+        coreCoursesCompleted: coreCoursesCompleted,
+        additionalCreditsCompleted: additionalCreditsCompleted,
+      },
+    };
+    return ruleData;
+  }
 }

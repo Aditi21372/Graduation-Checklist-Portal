@@ -1,11 +1,11 @@
-import { StudentInfo } from "./database";
+import { StudentInfo, RuleData, CourseData } from "./type";
 import { gradeHierarchy, disallowedGrades, courseDatabase } from "./index";
 
-export interface RuleData {
-  isCompleteText: string;
-  isCompleteBool: boolean;
-  data: any;
-}
+// export type RuleData {
+//   isCompleteText: string;
+//   isCompleteBool: boolean;
+//   data: any;
+// }
 export interface IRule {
   ruleId: number;
   checkRule: (studentCourseData: StudentInfo, context: any) => RuleData;
@@ -31,7 +31,7 @@ export const mandatoryCoreRule: IRule = {
       const studentCourses = studentCourseData["courses"];
 
       for (const courseCode of coreCourses) {
-        let courseEntry = {
+        let courseEntry: CourseData = {
           course: courseCode,
           semester: "",
           status: "Incomplete",
@@ -110,7 +110,7 @@ export const mandatoryBucketRule: IRule = {
       for (const courseBucket of mandatoryBuckets) {
         let mandateBucket = [];
         for (const courseCode of courseBucket) {
-          let courseEntry = {
+          let courseEntry: CourseData = {
             course: courseCode,
             semester: "",
             status: "Incomplete",
@@ -197,7 +197,7 @@ export const sshRule: IRule = {
           !disallowedGrades.includes(course["grade"]) &&
           !coursesTaken.has(course["courseCode"])
         ) {
-          let courseEntry = {
+          let courseEntry: CourseData = {
             course: courseCode,
             semester: course["semester"],
             status: "Complete",
@@ -237,7 +237,7 @@ export const cwRule: IRule = {
     for (const courseCode of cwCourses) {
       for (const course of studentCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
-          let courseEntry = {
+          let courseEntry: CourseData = {
             course: courseCode,
             semester: course["semester"],
             status: "Complete",
@@ -280,7 +280,7 @@ export const sgRule: IRule = {
     for (const courseCode of sgCourses) {
       for (const course of studentCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
-          let courseEntry = {
+          let courseEntry: CourseData = {
             course: courseCode,
             semester: course["semester"],
             status: "Complete",
@@ -337,7 +337,7 @@ export const thirtyTwoCreditsRule: IRule = {
         !coursesTaken.has(course["courseCode"]) &&
         course["courseCode"].startsWith("CSE")
       ) {
-        let courseEntry = {
+        let courseEntry: CourseData  = {
           course: course["courseCode"],
           semester: course["semester"],
           status: "Complete",
@@ -382,7 +382,7 @@ export const ipRule: IRule = {
           courseCodeIp === courseCode &&
           !disallowedGrades.includes(course["grade"])
         ) {
-          let courseEntry = {
+          let courseEntry: CourseData  = {
             course: course["courseCode"],
             semester: course["semester"],
             status: "Complete",
@@ -430,7 +430,7 @@ export const onlineCoursesRule: IRule = {
     for (const course of studentCourses) {
       for (const courseCode of onlineCourses) {
         if (course["courseCode"] === courseCode && course["grade"] == "S") {
-          let courseEntry = {
+          let courseEntry: CourseData  = {
             course: course["courseCode"],
             semester: course["semester"],
             status: "Complete",
@@ -496,7 +496,7 @@ export const twoxxRule: IRule = {
         !coreCourses.includes(course["courseCode"]) &&
         !mandatoryBucketCourses.includes(course["courseCode"])
       ) {
-        let courseEntry = {
+        let courseEntry: CourseData  = {
           course: course["courseCode"],
           semester: course["semester"],
           status: "Complete",
@@ -514,7 +514,7 @@ export const twoxxRule: IRule = {
       returnData.isCompleteText = "Complete";
     } else {
       returnData.isCompleteBool = false;
-      returnData.isCompleteText = "Done with extra credits";
+      returnData.isCompleteText = "Done extra credits";
     }
     returnData.data.totalCredits = credits;
     return returnData;
@@ -544,7 +544,7 @@ export const tocRule: IRule = {
         (course["courseCode"].startsWith("MTH") &&
           course["courseCode"] === "CSE322")
       ) {
-        let courseEntry = {
+        let courseEntry: CourseData  = {
           course: course["courseCode"],
           semester: course["semester"],
           status: "Complete",
@@ -593,7 +593,7 @@ export const btpRule: IRule = {
       }
 
       if (courseCodebtp === "BTP") {
-        let courseEntry = {
+        let courseEntry: CourseData  = {
           course: course["courseCode"],
           semester: course["semester"],
           status: "Complete",
@@ -658,7 +658,7 @@ export const incompleteGradeRule: IRule = {
 
     for (const course of studentCourses) {
       if (course["grade"] == "I") {
-        let courseEntry = {
+        let courseEntry: CourseData  = {
           course: course["courseCode"],
           semester: course["semester"],
           status: "Incomplete",

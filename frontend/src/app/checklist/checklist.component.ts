@@ -1,10 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
 import { StudentServiceService } from '../student-service.service';
 import { Router } from '@angular/router';
-import { forkJoin, Observable, of } from 'rxjs';
-import { concatMap, tap } from 'rxjs/operators';
-import { UtilityService } from '../utility.service';
+import { forkJoin, Observable, of, map } from 'rxjs';
 
 @Component({
   selector: 'app-checklist',
@@ -19,56 +16,56 @@ export class ChecklistComponent implements OnInit {
   studentName: string = '';
   displayedColumn: string[] = ['index', 'rule', 'status', 'credits', 'action'];
   bucketsRuleCompleted: string = '';
-  dataSourceTwo: MatTableDataSource<any>;
+  dataSourceTwo: any[] = [];
   courseData: Map<string, any>;
   completedBuckets: any;
+  xyz = {
+    index: 1,
+    rule: 'Core Courses',
+    status: '',
+    credits: Number,
+    button_text: 'View Core Courses',
+  };
 
   constructor(
     private studentService: StudentServiceService,
-    private router: Router,
-    private utilityService: UtilityService
+    private router: Router
   ) {
-    this.dataSourceTwo = new MatTableDataSource();
     this.courseData = new Map<string, any>();
   }
 
   ngOnInit() {
     this.studentService
       .getStudentCourseData(this.rollNumber.toString())
-      .pipe(
-        tap((studentData) => {
-          this.program = studentData.branch;
-          this.studentName = studentData.studentName;
-          this.branch = this.program.slice(
-            this.program.lastIndexOf('/') + 1,
-            this.program.length
-          );
-          this.setGraduationStatus();
-        }),
-        concatMap(() => {
-          const observables = [
-            this.populateBuckets(),
-            this.populateMandatory(),
-            this.populateSSH(),
-            this.populateCW(),
-            this.populateSG(),
-            this.populate32Credits(),
-            this.populateIPCredits(),
-            this.populateOnlineCourseCredits(),
-            this.populateTwoXXCredits(),
-            this.populateTOCCredits(),
-            this.populateBTP(),
-            this.populateHonors(),
-            this.populateIncompleteGrades(),
-          ];
-
-          return forkJoin(observables);
-        })
-      )
-      .subscribe(() => {
-        this.dataSourceTwo.data.sort((a: any, b: any) =>
-          this.utilityService.customSort(a.semester, b.semester)
+      .subscribe((studentData) => {
+        this.program = studentData.branch;
+        this.studentName = studentData.studentName;
+        this.branch = this.program.slice(
+          this.program.lastIndexOf('/') + 1,
+          this.program.length
         );
+        this.setGraduationStatus();
+
+        const observables = [
+          this.populateBuckets(),
+          this.populateMandatory(),
+          this.populateSSH(),
+          this.populateCW(),
+          this.populateSG(),
+          this.populate32Credits(),
+          this.populateIPCredits(),
+          this.populateOnlineCourseCredits(),
+          this.populateTwoXXCredits(),
+          this.populateTocCredits(),
+          this.populateBTP(),
+          this.populateHonors(),
+          this.populateMinors(),
+          this.populateIncompleteGrades(),
+        ];
+
+        forkJoin(observables).subscribe(() => {
+          this.dataSourceTwo.sort((a, b) => a.index - b.index);
+        });
       });
   }
 
@@ -79,34 +76,23 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateMandatory(): Observable<any> {
-    this.studentService
-      .getMandatoryCourses(this.branch)
-      .subscribe((data: any) => {
-        let ruleData = data;
+    return this.studentService.getMandatoryCourses(this.branch).pipe(
+      map((ruleData: any) => {
+        let status = ruleData.isCompleteBool ? 'Complete' : 'Incomplete';
 
-        let status = '';
-        if (
-          ruleData.isCompleteText == this.bucketsRuleCompleted &&
-          ruleData.isCompleteBool == true
-        ) {
-          status = 'Complete';
-        } else {
-          status = 'Incomplete';
-        }
-
-        const tempData = [];
-        tempData.push({
+        const newData = {
           index: 1,
           rule: 'Core Courses',
           status: status,
           credits: ruleData.data.totalCredits,
           button_text: 'View Core Courses',
-        });
+        };
 
         this.courseData.set('Core_Courses', ruleData.data.coreCourses);
-        this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...tempData];
-      });
-    return of(null);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   populateBuckets(): Observable<any> {
@@ -124,224 +110,238 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateSSH(): Observable<any> {
-    this.studentService.getSSHcourses().subscribe((ruleData: any) => {
-      const newData = [];
-      newData.push({
-        index: 2,
-        rule: '12 credits of SSH courses',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View SSH Courses',
-      });
-      this.courseData.set('SSH_Courses', ruleData.data.courses);
+    return this.studentService.getSSHcourses().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 2,
+          rule: '12 credits of SSH courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View SSH Courses',
+        };
 
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('SSH_Courses', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   populateCW(): Observable<any> {
-    this.studentService.getCWcourses().subscribe((data: any) => {
-      let ruleData = data;
+    return this.studentService.getCWcourses().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 3,
+          rule: '2 credits of Community Work',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
 
-      const newData = [];
-      newData.push({
-        index: 3,
-        rule: '2 credits of Community Work',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
-
-      this.courseData.set('CW_Details', ruleData.data.courses);
-
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('CW_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   populateSG(): Observable<any> {
-    this.studentService.getSGcourses().subscribe((data: any) => {
-      let ruleData = data;
-      const newData = [];
-      newData.push({
-        index: 4,
-        rule: '2 credits of Self Growth',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
+    return this.studentService.getSGcourses().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 4,
+          rule: '2 credits of Self Growth',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
 
-      this.courseData.set('SG_Details', ruleData.data.courses);
-
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
-  }
-
-  populateBTP(): Observable<any> {
-    this.studentService.getBTPCredits().subscribe((data: any) => {
-      let ruleData = data;
-
-      const newData = [];
-      newData.push({
-        index: 10,
-        rule: 'BTP',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
-
-      this.courseData.set('BTP_Details', ruleData.data.courses);
-
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
-  }
-
-  populateTwoXXCredits(): Observable<any> {
-    this.studentService.getTwoXXCredits().subscribe((data: any) => {
-      let ruleData = data;
-
-      const newData = [];
-      newData.push({
-        index: 8,
-        rule: 'Atmost two 2xx level courses',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Courses',
-      });
-
-      this.courseData.set('2XX_Courses', ruleData.data.courses);
-
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
-  }
-
-  populateIPCredits(): Observable<any> {
-    this.studentService.getIPCredits().subscribe((data: any) => {
-      let ruleData = data;
-
-      const newData = [];
-      newData.push({
-        index: 6,
-        rule: 'Atmost 8 credits of IP/IS/UR',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
-
-      this.courseData.set('IP_Details', ruleData.data.courses);
-
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
-  }
-
-  populateOnlineCourseCredits(): Observable<any> {
-    this.studentService.getOnlineCourseCredits().subscribe((data: any) => {
-      let ruleData = data;
-
-      const newData = [];
-      newData.push({
-        index: 7,
-        rule: 'Atmost 8 credits of online courses',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Online Courses',
-      });
-      this.courseData.set('Online_Courses', ruleData.data.courses);
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('SG_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   populate32Credits(): Observable<any> {
-    this.studentService.get32Credits().subscribe((data: any) => {
-      let ruleData = data;
+    return this.studentService.get32Credits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 5,
+          rule: '32 Credits of CSE Courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View CSE Courses',
+        };
 
-      const newData = [];
-      newData.push({
-        index: 5,
-        rule: '32 Credits of CSE Courses',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View CSE Courses',
-      });
-
-      this.courseData.set('32Credits_Courses', ruleData.data.courseData);
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('32Credits_Courses', ruleData.data.courseData);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
-  populateIncompleteGrades(): Observable<any> {
-    this.studentService.getIncompleteGrade().subscribe((data: any) => {
-      let ruleData = data;
+  populateIPCredits(): Observable<any> {
+    return this.studentService.getIPCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 6,
+          rule: 'Atmost 8 credits of IP/IS/UR',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
 
-      const newData = [];
-      newData.push({
-        index: 12,
-        rule: 'Incomplete Grade on Transcript',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
+        this.courseData.set('IP_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
 
-      this.courseData.set('Incomplete_Grades', ruleData.data.courseData);
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+  populateOnlineCourseCredits(): Observable<any> {
+    return this.studentService.getOnlineCourseCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 7,
+          rule: 'Atmost 8 credits of online courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Online Courses',
+        };
+
+        this.courseData.set('Online_Courses', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateTwoXXCredits(): Observable<any> {
+    return this.studentService.getTwoXXCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 8,
+          rule: 'Atmost two 2xx level courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Courses',
+        };
+
+        this.courseData.set('2XX_Courses', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateTocCredits(): Observable<any> {
+    return this.studentService.getTOCCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 9,
+          rule: 'TOC / Maths of 2xx level or above',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
+
+        this.courseData.set('TOC', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateBTP(): Observable<any> {
+    return this.studentService.getBTPCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 10,
+          rule: 'BTP',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
+
+        this.courseData.set('BTP_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   populateHonors(): Observable<any> {
-    this.studentService.getHonors().subscribe((data: any) => {
-      let ruleData = data;
+    return this.studentService.getHonors().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 11,
+          rule: 'Honors',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data[1].value,
+          button_text: 'View Details',
+        };
 
-      const newData = [];
-      newData.push({
-        index: 11,
-        rule: 'Honors',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data[1].value,
-        button_text: 'View Details',
-      });
-      this.courseData.set('Honors', ruleData.data);
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('Honors', ruleData.data);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
-  populateTOCCredits(): Observable<any> {
-    this.studentService.getTOCCredits().subscribe((data: any) => {
-      let ruleData = data;
+  populateMinors(): Observable<any> {
+    return this.studentService.getMinors().pipe(
+      map((ruleData: any) => {
+        let newData = {
+          index: 12,
+          rule: 'Minors',
+          status: 'Not Done',
+          statusBool: true,
+          credits: 'NA',
+          button_text: 'View Details',
+        };
+        for (const minor of ruleData) {
+          if (minor.isCompleteBool) {
+            newData.statusBool = true;
+            newData.status = 'Complete';
+            break;
+          }
+        }
 
-      const newData = [];
-      newData.push({
-        index: 9,
-        rule: 'TOC / Maths of 2xx level or above',
-        status: ruleData.isCompleteText,
-        statusBool: ruleData.isCompleteBool,
-        credits: ruleData.data.totalCredits,
-        button_text: 'View Details',
-      });
+        this.courseData.set('Minors', ruleData);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
 
-      this.courseData.set('TOC', ruleData.data.courses);
+  populateIncompleteGrades(): Observable<any> {
+    return this.studentService.getIncompleteGrade().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: 13,
+          rule: 'Incomplete Grade on Transcript',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
 
-      this.dataSourceTwo.data = [...this.dataSourceTwo.data, ...newData];
-    });
-    return of(null);
+        this.courseData.set('Incomplete_Grades', ruleData.data.courseData);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
   }
 
   // Add this function to navigate to different pages based on the row data
@@ -490,6 +490,18 @@ export class ChecklistComponent implements OnInit {
             rollNumber: this.rollNumber,
             branch: this.branch,
             courseData: JSON.stringify(tocCourses),
+            studentName: this.studentName,
+            program: this.program,
+          },
+        });
+        break;
+      case 'Minors':
+        let minors = this.courseData.get('Minors');
+        this.router.navigate(['/minors'], {
+          queryParams: {
+            rollNumber: this.rollNumber,
+            branch: this.branch,
+            courseData: JSON.stringify(minors),
             studentName: this.studentName,
             program: this.program,
           },

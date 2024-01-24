@@ -1,9 +1,5 @@
-import {
-  DatabaseMap,
-  getStudentDatabase,
-  CourseMap,
-  getCourseDatabase,
-} from "./database";
+import { getStudentDatabase, getCourseDatabase } from "./database";
+import { DatabaseMap, CourseMap } from "./type";
 
 import {
   mandatoryCoreRule,
@@ -47,7 +43,6 @@ export const gradeHierarchy = [
 ];
 
 export const disallowedGrades = ["I", "S", "W", "F", "X"];
-export const rollNumber = 2019032;
 export const allRules = [
   mandatoryCoreRule,
   mandatoryBucketRule,
@@ -63,21 +58,3 @@ export const allRules = [
   incompleteGradeRule,
   required156CreditsRule,
 ];
-
-export type GraduatedStudent = {
-  sNo: number;
-  programSeq: number;
-  rollNo: number;
-  name: string;
-  program: string;
-  graduationDate: string;
-  honors: string;
-  minorInCB: string;
-  minorInEco: string;
-  minorInENT: string;
-  ecoMajor: string;
-  btp: string;
-  credits: number;
-  cgpa: number;
-};
-

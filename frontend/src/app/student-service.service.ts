@@ -96,6 +96,10 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'honors');
   }
 
+  getMinors(): Observable<any> {
+    return this.http.get(this.apiUrl + 'minors');
+  }
+
   login(username: string, password: string): Observable<any> {
     return this.http.get(
       this.apiUrl + 'login' + '/' + username + '/' + password

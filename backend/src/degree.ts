@@ -1,5 +1,5 @@
 import { allRules } from "./index";
-import { StudentInfo } from "./database";
+import { StudentInfo } from "./type";
 export interface IDegree {
   name: string;
   degreeType: "BTECH" | "MTECH" | "PHD";
@@ -7,25 +7,6 @@ export interface IDegree {
   graduationRules: number[];
 }
 
-export type StudentCourse = {
-  courseCode: string;
-  grade:
-    | "A+"
-    | "A"
-    | "A-"
-    | "B"
-    | "B-"
-    | "C"
-    | "C-"
-    | "D"
-    | "F"
-    | "S"
-    | "I"
-    | "W"
-    | "X";
-  semester: string;
-  credit: 1 | 2 | 4 | 8 | 12;
-};
 
 const semesters: string[] = [
   "1",

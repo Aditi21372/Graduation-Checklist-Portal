@@ -136,3 +136,13 @@ button:hover {
   max-height: 200px;
   overflow-y: auto;
 }
+
+/* Green text style */
+.green-text {
+  color: green;
+}
+
+/* Red text style */
+.red-text {
+  color: red;
+}

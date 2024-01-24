@@ -4,6 +4,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MatMenuModule } from '@angular/material/menu';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StudentInfoInputComponent } from './student-info-input/student-info-input.component';
 import { MatTableModule } from '@angular/material/table';
@@ -36,6 +37,8 @@ import { UpdateStudentDatabaseComponent } from './update-student-database/update
 import { MatSortModule } from '@angular/material/sort';
 import { HonorsComponent } from './honors/honors.component';
 import { TocMthComponent } from './toc-mth/toc-mth.component';
+import { MinorsComponent } from './minors/minors.component';
+import { MinorsDetailsComponent } from './minors-details/minors-details.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +64,8 @@ import { TocMthComponent } from './toc-mth/toc-mth.component';
     UpdateStudentDatabaseComponent,
     HonorsComponent,
     TocMthComponent,
+    MinorsComponent,
+    MinorsDetailsComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +82,7 @@ import { TocMthComponent } from './toc-mth/toc-mth.component';
     MatFormFieldModule,
     RouterModule,
     MatSortModule,
+    MatMenuModule,
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],

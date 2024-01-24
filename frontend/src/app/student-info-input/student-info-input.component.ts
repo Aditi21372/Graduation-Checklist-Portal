@@ -38,8 +38,6 @@ export class StudentInfoInputComponent {
     );
   }
 
-  
-
   goBack() {
     this.router.navigate(['/selection']);
   }

@@ -6,9 +6,9 @@ import {
   searchByRollNo,
   updateStudentData,
   preprocessCourseData,
-  StudentInfo,
 } from "./database";
 import { calculateCGPA } from "./cgpa";
+import { StudentInfo } from "./type";
 
 import {
   sshRule,
@@ -26,6 +26,7 @@ import {
   tocRule,
 } from "./rule";
 import { isHonors } from "./honors";
+import { isMinors } from "./minors";
 
 const app = express();
 const port = 3000;
@@ -45,6 +46,37 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+app.get("/api/login/:username/:password", (req, res) => {
+  const { username, password } = req.params;
+  if (username === "iiitdadmin" && password === "Admin@2019") {
+    res.json(true);
+  }
+
+  res.status(404).json({ error: "User not found" });
+});
+
+app.get("/api/student/:rollNumber", async (req, res) => {
+  const { rollNumber } = req.params;
+  const studentData = await searchByRollNo(Number(rollNumber));
+  if (studentData.length > 0) {
+    res.json(studentData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.post("/api/updateStudent", async (req, res) => {
+  const studentData = req.body;
+  const studentDataUpdated = await updateStudentData(studentData);
+  if (studentDataUpdated) {
+    res.json(studentDataUpdated);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
 
 app.get("/api/:rollNumber/info", async (req, res) => {
   // Get the rollNumber parameter from the request URL.
@@ -122,12 +154,8 @@ app.get("/api/sg", (req, res) => {
   res.json(sgRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/btp", (req, res) => {
-  res.json(btpRule.checkRule(studentCourseData, null));
-});
-
-app.get("/api/twoxxcourses", (req, res) => {
-  res.json(twoxxRule.checkRule(studentCourseData, null));
+app.get("/api/thirtytwocredits", (req, res) => {
+  res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, null));
 });
 
 app.get("/api/ip", (req, res) => {
@@ -138,12 +166,16 @@ app.get("/api/onlinecourses", (req, res) => {
   res.json(onlineCoursesRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/thirtytwocredits", (req, res) => {
-  res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, null));
+app.get("/api/twoxxcourses", (req, res) => {
+  res.json(twoxxRule.checkRule(studentCourseData, null));
 });
 
 app.get("/api/toc", (req, res) => {
   res.json(tocRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/btp", (req, res) => {
+  res.json(btpRule.checkRule(studentCourseData, null));
 });
 
 app.get("/api/incompletegrade", (req, res) => {
@@ -152,6 +184,14 @@ app.get("/api/incompletegrade", (req, res) => {
 
 app.get("/api/required-credits", (req, res) => {
   res.json(required156CreditsRule.checkRule(studentCourseData, "CSE"));
+});
+
+app.get("/api/honors", (req, res) => {
+  res.json(isHonors(studentCourseData));
+});
+
+app.get("/api/minors", (req, res) => {
+  res.json(isMinors(studentCourseData));
 });
 
 app.get("/api/graduation-check", (req, res) => {
@@ -164,41 +204,6 @@ app.get("/api/graduation-date", (req, res) => {
 
 app.get("/api/semester-wise-cgpa", (req, res) => {
   res.json(calculateCGPA(studentCourseData));
-});
-
-app.get("/api/honors", (req, res) => {
-  res.json(isHonors(studentCourseData));
-});
-
-app.get("/api/login/:username/:password", (req, res) => {
-  const { username, password } = req.params;
-  if (username === "iiitdadmin" && password === "Admin@2019") {
-    res.json(true);
-  }
-
-  res.status(404).json({ error: "User not found" });
-});
-
-app.get("/api/student/:rollNumber", async (req, res) => {
-  const { rollNumber } = req.params;
-  const studentData = await searchByRollNo(Number(rollNumber));
-  if (studentData.length > 0) {
-    res.json(studentData);
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
-});
-
-app.post("/api/updateStudent", async (req, res) => {
-  const studentData = req.body;
-  const studentDataUpdated = await updateStudentData(studentData);
-  if (studentDataUpdated) {
-    res.json(studentDataUpdated);
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
 });
 
 if (process.env.NODE_ENV !== "test") {

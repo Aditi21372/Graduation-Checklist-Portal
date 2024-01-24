@@ -1,4 +1,3 @@
-import { StudentInfo } from "./database";
 import { calculateCGPA } from "./cgpa";
 import {
   btpRule,
@@ -6,21 +5,11 @@ import {
   required156CreditsRule,
   onlineCoursesHonorsRule,
 } from "./rule";
+import { StudentInfo, RuleEntry, RuleData  } from "./type";
 
-type ruleEntry = {
-  rule: string;
-  value: "";
-  status: "No" | "Yes";
-};
 
-type ruleData = {
-  isCompleteBool: boolean;
-  isCompleteText: "Done" | "Not Done";
-  data: ruleEntry[];
-};
-
-export function isHonors(studentCourseData: StudentInfo): ruleData {
-  let ruleData: ruleEntry[] = [];
+export function isHonors(studentCourseData: StudentInfo): RuleData {
+  let ruleData: RuleEntry[] = [];
   const extra12CreditsData = thirtyTwoCreditsRule.checkRule(
     studentCourseData,
     "CSE"
@@ -97,7 +86,7 @@ export function isHonors(studentCourseData: StudentInfo): ruleData {
     });
   }
 
-  let returnData: ruleData = {
+  let returnData: RuleData = {
     isCompleteBool: true,
     isCompleteText: "Done",
     data: ruleData,

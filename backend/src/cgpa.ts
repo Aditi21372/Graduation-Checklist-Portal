@@ -1,13 +1,5 @@
-import { StudentInfo } from "./database";
+import { Grade, Course, GradeMap, CreditGroups, StudentInfo } from "./type";
 
-type Grade = { semester: string; sgpa: number; cgpa: number };
-type Course = {
-  grade: number;
-  credit: number;
-};
-
-type creditGroups = { [key: number]: number };
-type GradeMap = { [grade: string]: number };
 const gradeMap: GradeMap = {
   "A+": 10,
   A: 10,
@@ -20,7 +12,7 @@ const gradeMap: GradeMap = {
   F: 2,
 };
 const disallowedGrades: string[] = ["I", "W", "X"];
-const possibleWorstCreditsPairs: creditGroups[] = [
+const possibleWorstCreditsPairs: CreditGroups[] = [
   { 8: 1 },
   { 6: 1, 2: 1 },
   { 4: 2 },

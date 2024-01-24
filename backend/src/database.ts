@@ -1,25 +1,13 @@
-import { StudentCourse } from "./degree";
-import { GraduatedStudent } from "./index";
 import { db } from "./db";
+import {
+  StudentCourse,
+  CourseMap,
+  DatabaseMap,
+  StudentInfo,
+  GraduatedStudent,
+} from "./type";
 
 const xlsx = require("xlsx");
-
-export type StudentInfo = {
-  studentName: string;
-  program: string;
-  courses: StudentCourse[];
-};
-
-export type DatabaseMap = {
-  [key: number]: StudentInfo; // Here, specify the types for keys and values
-};
-
-// Clubs multiple course codes under a category.
-// For example,
-// CourseMap["SSH"] = ["ECO101", "ECO102",]
-export type CourseMap = {
-  [key: string]: string[];
-};
 
 // readExcelColumnWise reads the excel sheet column by column. It constructs a 2-D array where each row represents
 // a column of the excel sheet. It also includes the headings along with the data.

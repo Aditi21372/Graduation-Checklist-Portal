@@ -20,6 +20,8 @@ import { SelectionComponent } from './selection/selection.component';
 import { UpdateStudentDatabaseComponent } from './update-student-database/update-student-database.component';
 import { HonorsComponent } from './honors/honors.component';
 import { TocMthComponent } from './toc-mth/toc-mth.component';
+import { MinorsComponent } from './minors/minors.component';
+import { MinorsDetailsComponent } from './minors-details/minors-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -46,6 +48,8 @@ const routes: Routes = [
   },
   { path: 'honors', component: HonorsComponent },
   { path: 'toc-mth', component: TocMthComponent },
+  { path: 'minors', component: MinorsComponent },
+  { path: 'minors-detail', component: MinorsDetailsComponent },
 ];
 
 @NgModule({
