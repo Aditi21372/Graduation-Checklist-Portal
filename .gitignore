@@ -1,0 +1,26 @@
+# Ignore everything
+*
+
+# Allow these directories
+!backend/
+!frontend/
+!README.
+!.gitignore
+
+/backend/node_modules
+/backend/src/data
+/.vscode
+/.github
+/backend/tsconfig.build.json
+/backend/tsconfig.json
+/backend/yarn-error.log
+/backend/yarn.lock
+/backend/package.json
+/frontend/.vscode
+/frontend/node_modules
+/frontend/.angular
+/frontend/package-lock.json
+/frontend/package.json
+/frontend/tsconfig.app.json
+/frontend/tsconfig.json
+/frontend/tsconfig.spec.json
