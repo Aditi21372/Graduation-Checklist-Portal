@@ -1,0 +1,87 @@
+export type Grade = { semester: string; sgpa: number; cgpa: number };
+export type Course = {
+  grade: number;
+  credit: number;
+};
+
+export type CreditGroups = { [key: number]: number };
+export type GradeMap = { [grade: string]: number };
+
+export type StudentCourse = {
+  courseCode: string;
+  grade:
+    | "A+"
+    | "A"
+    | "A-"
+    | "B"
+    | "B-"
+    | "C"
+    | "C-"
+    | "D"
+    | "F"
+    | "S"
+    | "I"
+    | "W"
+    | "X";
+  semester: string;
+  credit: 1 | 2 | 4 | 8 | 12;
+};
+
+export type StudentInfo = {
+  studentName: string;
+  program: string;
+  courses: StudentCourse[];
+};
+
+export type DatabaseMap = {
+  [key: number]: StudentInfo; // Here, specify the types for keys and values
+};
+
+// Clubs multiple course codes under a category.
+// For example,
+// CourseMap["SSH"] = ["ECO101", "ECO102",]
+export type CourseMap = {
+  [key: string]: string[];
+};
+
+export type RuleEntry = {
+  rule: string;
+  value: "";
+  status: "No" | "Yes";
+};
+
+export type RuleData = {
+  isCompleteBool: boolean;
+  isCompleteText:
+    | "Done"
+    | "Not Done"
+    | "Complete"
+    | "Done extra credits"
+    | "Incomplete";
+  data: any;
+};
+
+export type GraduatedStudent = {
+  sNo: number;
+  programSeq: number;
+  rollNo: number;
+  name: string;
+  program: string;
+  graduationDate: string;
+  honors: string;
+  minorInCB: string;
+  minorInEco: string;
+  minorInENT: string;
+  ecoMajor: string;
+  btp: string;
+  credits: number;
+  cgpa: number;
+};
+
+export type CourseData = {
+  course: string;
+  semester: string;
+  status: string;
+  credits: number;
+  grade: string;
+};
