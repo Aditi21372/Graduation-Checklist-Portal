@@ -93,3 +93,7 @@ td button:hover {
   border-color: #367976;
   color: #fff;
 }
+
+.bold-text {
+  font-weight: bold;
+}

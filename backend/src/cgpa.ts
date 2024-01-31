@@ -61,7 +61,7 @@ function calculateBestCgpa(
   worseCreds: number
 ): number {
   const creditGroups = new Map<number, number[]>();
-  for (const [courseCode, course] of coursesTaken) {
+  for (const [_, course] of coursesTaken) {
     const { grade, credit } = course;
     if (creditGroups.has(credit)) {
       creditGroups.get(credit)!.push(grade);
@@ -70,7 +70,7 @@ function calculateBestCgpa(
     }
   }
 
-  creditGroups.forEach((courses, credit) => {
+  creditGroups.forEach((courses, _) => {
     courses.sort((a, b) => a - b);
   });
 
@@ -85,7 +85,7 @@ function calculateBestCgpa(
     for (const credits of Object.keys(pairs)) {
       const credit = Number(credits);
       const count = pairs[credit];
-      possibleWorstCredits += credit;
+      possibleWorstCredits += credit * count;
       if (
         creditGroups.has(credit) &&
         creditGroups.get(credit)!.length >= count &&
@@ -207,18 +207,38 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
       sgpa = gradeSum / creditSum;
     }
 
-    cgpa = cumulativeGradeSum / cumulativeCreditSum;
+    if (!(semesters[i].startsWith("Summer") && sgpa == 0)) {
+      cgpa = cumulativeGradeSum / cumulativeCreditSum;
+    }
+    
+    
+    let flag = 0;
+    let worseCreds = 0;
+    if (
+      (Number(semesters[i]) == 6 || semesters[i] === "Summer Term 3") &&
+      cumulativeCreditSum + onlineCreds > 116
+    ) {
+      const extraCreds = cumulativeCreditSum + onlineCreds - 116;
+      worseCreds = Math.min(8, extraCreds);
+      flag = 1;
+    }
+
+    if (Number(semesters[i]) == 7 && cumulativeCreditSum + onlineCreds > 136) {
+      const extraCreds = cumulativeCreditSum + onlineCreds - 136;
+      worseCreds = Math.min(8, extraCreds);
+      flag = 1;
+    }
 
     if (
-      Number(semesters[i]) >= 6 &&
-      cumulativeCreditSum + onlineCreds > 116 + 20 * (Number(semesters[i]) - 6)
+      (Number(semesters[i]) >= 8 || semesters[i] >= "Summer Term 4") &&
+      cumulativeCreditSum + onlineCreds > 152
     ) {
-      const extraCreds =
-        cumulativeCreditSum +
-        onlineCreds -
-        116 +
-        20 * (Number(semesters[i]) - 6);
-      const worseCreds = Math.min(8, extraCreds);
+      const extraCreds = cumulativeCreditSum + onlineCreds - 152;
+      worseCreds = Math.min(8, extraCreds);
+      flag = 1;
+    }
+
+    if (flag == 1) {
       cgpa = calculateBestCgpa(
         cumulativeGradeSum,
         cumulativeCreditSum,
@@ -232,6 +252,7 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
       sgpa: Math.round(sgpa * 100) / 100,
       cgpa: Math.round(cgpa * 100) / 100,
     };
+    console.log(semesterGpa);
     semwiseGpa.push(semesterGpa);
   }
 

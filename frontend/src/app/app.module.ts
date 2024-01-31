@@ -36,9 +36,8 @@ import { SelectionComponent } from './selection/selection.component';
 import { UpdateStudentDatabaseComponent } from './update-student-database/update-student-database.component';
 import { MatSortModule } from '@angular/material/sort';
 import { HonorsComponent } from './honors/honors.component';
-import { TocMthComponent } from './toc-mth/toc-mth.component';
-import { MinorsComponent } from './minors/minors.component';
 import { MinorsDetailsComponent } from './minors-details/minors-details.component';
+import { UpdateStudentGradeComponent } from './update-student-grade/update-student-grade.component';
 
 @NgModule({
   declarations: [
@@ -63,9 +62,9 @@ import { MinorsDetailsComponent } from './minors-details/minors-details.componen
     SelectionComponent,
     UpdateStudentDatabaseComponent,
     HonorsComponent,
-    TocMthComponent,
-    MinorsComponent,
     MinorsDetailsComponent,
+    UpdateStudentGradeComponent,
+
   ],
   imports: [
     BrowserModule,

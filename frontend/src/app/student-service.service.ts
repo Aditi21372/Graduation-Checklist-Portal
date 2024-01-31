@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -76,10 +76,6 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'required-credits');
   }
 
-  getTOCCredits(): Observable<any> {
-    return this.http.get(this.apiUrl + 'toc');
-  }
-
   getIncompleteGrade(): Observable<any> {
     return this.http.get(this.apiUrl + 'incompletegrade');
   }
@@ -112,5 +108,16 @@ export class StudentServiceService {
 
   updateStudent(student: any): Observable<any> {
     return this.http.post(this.apiUrl + 'updateStudent', student);
+  }
+
+  uploadFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const request = new HttpRequest('POST', this.apiUrl + 'upload', formData, {
+      reportProgress: true,
+    });
+
+    return this.http.request(request);
   }
 }

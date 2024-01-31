@@ -1,22 +1,10 @@
 import { describe, expect, test } from "@jest/globals";
-import { calculateCGPA } from "../cgpa";
 
 import {
-  CourseMap,
-  DatabaseMap,
-  getCourseDatabase,
-  getStudentDatabase,
   getGraduatedStudents,
 } from "../database";
 
-import {
-  gradeHierarchy,
-  disallowedGrades,
-  studentDatabase,
-  courseDatabase,
-} from "../index";
 import { getGraduationStatus } from "../degree";
-import exp from "constants";
 
 describe("Graduation Algorithm tests", () => {
   test("All graduation positive cases are correct", () => {

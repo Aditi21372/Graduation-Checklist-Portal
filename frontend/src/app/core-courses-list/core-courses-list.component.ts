@@ -17,6 +17,7 @@ export class CoreCoursesListComponent implements OnInit {
   tablesData: MatTableDataSource<any>[] = [];
   displayedColumns: string[] = [
     'course',
+    'courseName',
     'semester',
     'status',
     'credits',
@@ -52,6 +53,7 @@ export class CoreCoursesListComponent implements OnInit {
     for (let i = 0; i < this.coreCourseData.length; i++) {
       newData.push({
         course: this.coreCourseData[i].course,
+        courseName: this.coreCourseData[i].courseName,
         semester: this.coreCourseData[i].semester,
         status: this.coreCourseData[i].status,
         credits: this.coreCourseData[i].credits,
@@ -69,6 +71,7 @@ export class CoreCoursesListComponent implements OnInit {
       for (let j = 0; j < this.bucketCourseData[i].length; j++) {
         newData.push({
           course: this.bucketCourseData[i][j].course,
+          courseName: this.bucketCourseData[i][j].courseName,
           semester: this.bucketCourseData[i][j].semester,
           status: this.bucketCourseData[i][j].status,
           credits: this.bucketCourseData[i][j].credits,

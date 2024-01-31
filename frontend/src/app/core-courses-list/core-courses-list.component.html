@@ -19,8 +19,13 @@
   </div>
   <table mat-table [dataSource]="dataSource">
     <ng-container matColumnDef="course">
-      <th mat-header-cell *matHeaderCellDef>Course</th>
+      <th mat-header-cell *matHeaderCellDef>Course Code</th>
       <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="courseName">
+      <th mat-header-cell *matHeaderCellDef>Course Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.courseName }}</td>
     </ng-container>
 
     <ng-container matColumnDef="semester">
@@ -64,6 +69,11 @@
       <ng-container matColumnDef="course">
         <th mat-header-cell *matHeaderCellDef>Course</th>
         <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="courseName">
+        <th mat-header-cell *matHeaderCellDef>Course Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.courseName }}</td>
       </ng-container>
 
       <ng-container matColumnDef="semester">

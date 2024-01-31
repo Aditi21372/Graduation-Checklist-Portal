@@ -9,6 +9,7 @@ export type GradeMap = { [grade: string]: number };
 
 export type StudentCourse = {
   courseCode: string;
+  course: string;
   grade:
     | "A+"
     | "A"
@@ -80,6 +81,7 @@ export type GraduatedStudent = {
 
 export type CourseData = {
   course: string;
+  courseName: string;
   semester: string;
   status: string;
   credits: number;

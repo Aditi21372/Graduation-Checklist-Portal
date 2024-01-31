@@ -1,4 +1,3 @@
-import { Console } from "console";
 import { courseDatabase } from "./index";
 import { StudentInfo, RuleData, CourseData } from "./type";
 
@@ -21,7 +20,10 @@ export interface Minors {
   // Checks if the minimum number of course work credits have been completed.
   checkMandatoryCourses: (studentInfo: StudentInfo) => RuleData;
   // Checks if an additional number of credits have been completed through IP/BTP/coursework/etc.
-  checkAdditionalCredits: (studentInfo: StudentInfo, coreData?: CourseData[]) => RuleData;
+  checkAdditionalCredits: (
+    studentInfo: StudentInfo,
+    coreData?: CourseData[]
+  ) => RuleData;
   // Checks if all the minor requirements have been completed.
   checkMinorsCompleted: (studentInfo: StudentInfo) => RuleData;
 }
@@ -36,10 +38,11 @@ export class ComputationalBiologyMinors implements Minors {
   checkMandatoryCourses(studentInfo: StudentInfo): RuleData {
     const courses = [];
     for (const coreCourse in this.coreCourses) {
-      let courseEntry = {
+      let courseEntry: CourseData = {
         course: this.coreCourses[coreCourse],
+        courseName: "",
         semester: "",
-        status: "Incomplete",
+        status: "Not Done",
         credits: 0,
         grade: "",
       };
@@ -48,6 +51,7 @@ export class ComputationalBiologyMinors implements Minors {
           course["courseCode"] === this.coreCourses[coreCourse] &&
           !disallowedGrades.includes(course["grade"])
         ) {
+          courseEntry["courseName"] = course["course"];
           courseEntry["semester"] = course["semester"];
           courseEntry["status"] = "Complete";
           courseEntry["credits"] = course["credit"];
@@ -59,7 +63,7 @@ export class ComputationalBiologyMinors implements Minors {
     const ruleData: RuleData = {
       isCompleteBool: courses.length === this.coreCourses.length,
       isCompleteText:
-        courses.length === this.coreCourses.length ? "Complete" : "Incomplete",
+        courses.length === this.coreCourses.length ? "Complete" : "Not Done",
       data: courses,
     };
 
@@ -75,13 +79,15 @@ export class ComputationalBiologyMinors implements Minors {
     for (const studentCourse of studentCourses) {
       const grade = studentCourse["grade"];
 
-      if (studentCourse["courseCode"].startsWith("BIO") &&
+      if (
+        studentCourse["courseCode"].startsWith("BIO") &&
         studentCourse["courseCode"].slice(0, 4) >= "BIO3" &&
         !disallowedGrades.includes(grade)
       ) {
         creditsCompleted += studentCourse["credit"];
         courses.push({
           course: studentCourse["courseCode"],
+          courseName: studentCourse["course"],
           semester: studentCourse["semester"],
           status: "Complete",
           credits: studentCourse["credit"],
@@ -93,7 +99,7 @@ export class ComputationalBiologyMinors implements Minors {
     const ruleData: RuleData = {
       isCompleteBool: creditsCompleted >= creditsToComplete,
       isCompleteText:
-        creditsCompleted >= creditsToComplete ? "Complete" : "Incomplete",
+        creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
       data: courses,
     };
     return ruleData;
@@ -109,7 +115,7 @@ export class ComputationalBiologyMinors implements Minors {
       additionalCreditsCompleted.isCompleteBool;
     const ruleData: RuleData = {
       isCompleteBool: minors,
-      isCompleteText: minors ? "Complete" : "Incomplete",
+      isCompleteText: minors ? "Complete" : "Not Done",
       data: {
         stream: "Computational Biology",
         coreCoursesCompleted: coreCoursesCompleted,
@@ -128,14 +134,14 @@ export class EconomicsMinors implements Minors {
   }
 
   checkMandatoryCourses(studentInfo: StudentInfo): RuleData {
-
     const courses = [];
 
     for (const coreCourse in this.coreCourses) {
-      let courseEntry = {
+      let courseEntry: CourseData = {
         course: this.coreCourses[coreCourse],
+        courseName: "",
         semester: "",
-        status: "Incomplete",
+        status: "Not Done",
         credits: 0,
         grade: "",
       };
@@ -144,6 +150,7 @@ export class EconomicsMinors implements Minors {
           course["courseCode"] === this.coreCourses[coreCourse] &&
           !disallowedGrades.includes(course["grade"])
         ) {
+          courseEntry["courseName"] = course["course"];
           courseEntry["semester"] = course["semester"];
           courseEntry["status"] = "Complete";
           courseEntry["credits"] = course["credit"];
@@ -155,18 +162,21 @@ export class EconomicsMinors implements Minors {
     const ruleData: RuleData = {
       isCompleteBool: courses.length >= this.coreCourses.length - 1,
       isCompleteText:
-        courses.length >= this.coreCourses.length - 1 ? "Complete" : "Incomplete",
+        courses.length >= this.coreCourses.length - 1 ? "Complete" : "Not Done",
       data: courses,
     };
 
     return ruleData;
   }
 
-  checkAdditionalCredits(studentInfo: StudentInfo, coreData?: CourseData[]): RuleData {
+  checkAdditionalCredits(
+    studentInfo: StudentInfo,
+    coreData?: CourseData[]
+  ): RuleData {
     const doneMandatory = [];
     let doneMandatoryCredits = 0;
     if (coreData) {
-      for (const coreCourse of coreData){
+      for (const coreCourse of coreData) {
         doneMandatory.push(coreCourse.course);
         doneMandatoryCredits += coreCourse.credits;
       }
@@ -179,12 +189,15 @@ export class EconomicsMinors implements Minors {
     for (const studentCourse of studentCourses) {
       const grade = studentCourse["grade"];
 
-      if (studentCourse["courseCode"].startsWith("ECO") &&
-        !disallowedGrades.includes(grade) && !doneMandatory.includes(studentCourse["courseCode"])
+      if (
+        studentCourse["courseCode"].startsWith("ECO") &&
+        !disallowedGrades.includes(grade) &&
+        !doneMandatory.includes(studentCourse["courseCode"])
       ) {
         creditsCompleted += studentCourse["credit"];
         courses.push({
           course: studentCourse["courseCode"],
+          courseName: studentCourse["course"],
           semester: studentCourse["semester"],
           status: "Complete",
           credits: studentCourse["credit"],
@@ -196,7 +209,7 @@ export class EconomicsMinors implements Minors {
     const ruleData: RuleData = {
       isCompleteBool: creditsCompleted >= creditsToComplete,
       isCompleteText:
-        creditsCompleted >= creditsToComplete ? "Complete" : "Incomplete",
+        creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
       data: courses,
     };
     return ruleData;
@@ -205,14 +218,17 @@ export class EconomicsMinors implements Minors {
   checkMinorsCompleted(studentInfo: StudentInfo): RuleData {
     const pursuingCSSS = this.checkSameBranch(studentInfo);
     const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
-    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo, coreCoursesCompleted.data);
+    const additionalCreditsCompleted = this.checkAdditionalCredits(
+      studentInfo,
+      coreCoursesCompleted.data
+    );
     const minors =
       !pursuingCSSS &&
       coreCoursesCompleted.isCompleteBool &&
       additionalCreditsCompleted.isCompleteBool;
     const ruleData: RuleData = {
       isCompleteBool: minors,
-      isCompleteText: minors ? "Complete" : "Incomplete",
+      isCompleteText: minors ? "Complete" : "Not Done",
       data: {
         stream: "Economics",
         coreCoursesCompleted: coreCoursesCompleted,

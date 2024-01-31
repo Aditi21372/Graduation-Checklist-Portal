@@ -1,140 +1,15 @@
-.container,
-.modal {
-  text-align: center;
-}
-
-.form {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
-  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-}
-
-.form-group {
-  text-align: left;
-  margin-bottom: 15px;
-}
-
-label {
-  font-size: 16px;
-  font-weight: bold;
-  color: #1c1e21;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
-
-input[type="number"] {
-  width: 330px;
-  padding: 14px 16px 16px 14px;
-  font-size: 17px;
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
-  background-color: #fff;
-}
-
-.logout-button {
-  position: absolute;
-  top: 65px;
-  right: 10px;
-}
-
-.logout-button button,
-button {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.logout-button button {
-  margin: 10px 10px;
-  background-color: #44b3ad;
-  color: #fff;
-  border: 2px solid #40aca7;
-}
-
 button {
   background-color: #39aea8;
   color: #fff;
   border: none;
   padding: 10px;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
 }
 
 button:hover {
   background-color: #367976;
   color: #fff;
-}
-
-.error-message {
-  font-size: 14px;
-  color: #1d2129;
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
-.center-card {
-  width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
-  text-align: center;
-}
-
-mat-card-content {
-  text-align: center;
-  padding: 20px;
-}
-
-.graduated {
-  color: green;
-}
-
-.incomplete {
-  color: red;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 10px auto;
-  max-width: 800px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-.edited-grade-input {
-  width: 30%;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #dddfe2;
-  border-radius: 6px;
-  margin-bottom: 10px;
-}
-
-.edit-buttons {
-  align-items: center;
-  padding: 10px;
-  margin: 10px;
 }
 
 .go-back-button {
@@ -164,4 +39,20 @@ th {
   background-color: #367976;
   border-color: #367976;
   color: #fff;
+}
+
+.form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  text-align: center;
+}
+
+.form h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
 }

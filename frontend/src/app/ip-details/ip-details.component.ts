@@ -16,7 +16,8 @@ export class IpDetailsComponent {
   studentName: string = '';
   courseData: any;
   displayedColumns: string[] = [
-    'course',
+    'courseCode',
+    'courseName',
     'semester',
     'status',
     'credits',
@@ -46,7 +47,8 @@ export class IpDetailsComponent {
     const newData = [];
     for (let i = 0; i < this.courseData.length; i++) {
       newData.push({
-        course: this.courseData[i].course,
+        courseCode: this.courseData[i].course,
+        courseName: this.courseData[i].courseName,
         semester: this.courseData[i].semester,
         status: this.courseData[i].status,
         credits: this.courseData[i].credits,

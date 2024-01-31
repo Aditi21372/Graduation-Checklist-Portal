@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentServiceService } from '../student-service.service';
-import { UtilityService } from '../utility.service';
+import { HttpProgressEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-update-student-database',
@@ -9,86 +9,59 @@ import { UtilityService } from '../utility.service';
   styleUrls: ['./update-student-database.component.css'],
 })
 export class UpdateStudentDatabaseComponent {
-  studentRollNumber: string = '';
-  showContent: boolean = false;
-  rollNumberExists: boolean = false;
-  showMessage: string = '';
-  studentDataArray: any;
-  editedStudentGrade: string = '';
-  editStudentFormVisible: boolean = false;
-  editedStudent: any;
-  grades: string[] = [
-    'A+',
-    'A',
-    'A-',
-    'B',
-    'B-',
-    'C',
-    'C-',
-    'D',
-    'F',
-    'S',
-    'X',
-    'I',
-    'W',
-  ];
+  selectedFile: File = new File([], '');
+  errorMessage: string = '';
+  progress: number = 0;
 
   constructor(
-    private router: Router,
     private studentService: StudentServiceService,
-    private utilityService: UtilityService
+    private router: Router
   ) {}
 
-  ngOnInit() {
-    this.rollNumberExists = false;
-    this.showMessage = '';
-  }
+  onFileChange(event: any) {
+    const fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      const file: File = fileList[0];
+      const fileNameParts = file.name.split('.');
+      const fileExtension =
+        fileNameParts[fileNameParts.length - 1].toLowerCase();
 
-  onSubmit() {
-    this.studentService.getStudentCourses(this.studentRollNumber).subscribe(
-      (data: any[]) => {
-        this.rollNumberExists = true;
-        this.showContent = true;
-        this.showMessage = '';
-        this.studentDataArray = data;
-        this.studentDataArray.sort((a: any, b: any) =>
-          this.utilityService.customSort(
-            a['Batch / Term Code'],
-            b['Batch / Term Code']
-          )
-        );
-      },
-      (error) => {
-        this.showMessage = '';
-        this.rollNumberExists = false;
-        this.showContent = false;
-        this.showMessage = "Roll number doesn't exist in the database!";
+      if (fileExtension === 'xls') {
+        this.selectedFile = file;
+      } else {
+        this.errorMessage = 'Please select a valid xlsx file.';
+        event.target.value = null;
       }
-    );
+    }
   }
 
-  editStudent(student: any) {
-    this.editedStudent = student;
-    this.editStudentFormVisible = true;
-  }
-
-  submitEdit(editedStudentGrade: string) {
-    this.editedStudent['Grade'] = editedStudentGrade;
-    this.studentService.updateStudent(this.editedStudent).subscribe(
-      (data) => {
-        this.showMessage = 'Student data updated successfully!';
-      },
-      (error) => {
-        this.showMessage = 'Error updating student data!';
-      }
-    );
-    this.editStudentFormVisible = false;
-  }
-
-  cancelEdit() {
-    this.editedStudent = null;
-    this.editedStudentGrade = '';
-    this.editStudentFormVisible = false;
+  uploadFile() {
+    if (this.selectedFile && this.selectedFile.size > 0) {
+      this.errorMessage = '';
+      this.studentService.uploadFile(this.selectedFile).subscribe(
+        (event) => {
+          console.log(event.type, event.loaded, event.total);
+          if (event.type === HttpEventType.Sent) {
+            // HttpEventType.Sent - Request sent, initialize progress to 0
+            this.progress = 0;
+          }
+          
+          if (event.type === HttpEventType.Response) {
+            // HttpEventType.Response - Upload completed successfully
+            console.log('File uploaded successfully', event.body);
+            this.errorMessage = 'File uploaded successfully';
+          } else {
+            this.errorMessage = "Processing file..."
+          }
+        },
+        (error) => {
+          console.error('Error uploading file', error);
+          this.errorMessage = 'Error uploading file. Please try again.';
+        }
+      );
+    } else {
+      this.errorMessage = 'Please select a file before uploading.';
+    }
   }
 
   goBack() {

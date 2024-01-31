@@ -1,11 +1,13 @@
 import express from "express";
 import * as fs from "fs";
+import multer from "multer";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
 import {
   searchByRollNo,
-  updateStudentData,
+  updateStudentGrade,
   preprocessCourseData,
+  updateStudentDatabase,
 } from "./database";
 import { calculateCGPA } from "./cgpa";
 import { StudentInfo } from "./type";
@@ -23,13 +25,15 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
   incompleteGradeRule,
-  tocRule,
 } from "./rule";
 import { isHonors } from "./honors";
 import { isMinors } from "./minors";
 
 const app = express();
 const port = 3000;
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 let studentCourseData: StudentInfo = {
   studentName: "",
   program: "",
@@ -69,7 +73,7 @@ app.get("/api/student/:rollNumber", async (req, res) => {
 
 app.post("/api/updateStudent", async (req, res) => {
   const studentData = req.body;
-  const studentDataUpdated = await updateStudentData(studentData);
+  const studentDataUpdated = await updateStudentGrade(studentData);
   if (studentDataUpdated) {
     res.json(studentDataUpdated);
   } else {
@@ -170,10 +174,6 @@ app.get("/api/twoxxcourses", (req, res) => {
   res.json(twoxxRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/toc", (req, res) => {
-  res.json(tocRule.checkRule(studentCourseData, null));
-});
-
 app.get("/api/btp", (req, res) => {
   res.json(btpRule.checkRule(studentCourseData, null));
 });
@@ -204,6 +204,21 @@ app.get("/api/graduation-date", (req, res) => {
 
 app.get("/api/semester-wise-cgpa", (req, res) => {
   res.json(calculateCGPA(studentCourseData));
+});
+
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+  const fileBuffer: Buffer | undefined = req.file?.buffer;
+
+  if (fileBuffer) {
+    const result = await updateStudentDatabase(fileBuffer);
+    if (result) {
+      res.status(200).json({ message: "File uploaded successfully" });
+    } else {
+      res.status(400).json({ error: "File Uploading failed" });
+    }
+  } else {
+    res.status(400).json({ error: "Invalid file or no file provided" });
+  }
 });
 
 if (process.env.NODE_ENV !== "test") {

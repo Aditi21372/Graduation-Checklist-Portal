@@ -1,3 +1,6 @@
+import * as xls from 'xlsx';
+import * as fs from 'fs';
+
 import { db } from "./db";
 import {
   StudentCourse,
@@ -6,6 +9,7 @@ import {
   StudentInfo,
   GraduatedStudent,
 } from "./type";
+
 
 const xlsx = require("xlsx");
 
@@ -88,6 +92,7 @@ export function getStudentDatabase(filePath: string): DatabaseMap {
 
     const course: StudentCourse = {
       courseCode: _courseCode,
+      course: _course,
       grade: _grade,
       semester: _termCode,
       credit: _credit,
@@ -127,6 +132,7 @@ export function preprocessCourseData(studentData: any): StudentInfo {
   studentData.forEach((entry: any) => {
     const course: StudentCourse = {
       courseCode: entry["Course Code"],
+      course: entry["Course"],
       grade: entry["Grade"],
       semester: entry["Batch / Term Code"],
       credit: entry["Credit"],
@@ -204,7 +210,7 @@ export async function searchByRollNo(rollNo: number): Promise<any[]> {
   }
 }
 
-export async function updateStudentData(studentData: any): Promise<any> {
+export async function updateStudentGrade(studentData: any): Promise<any> {
   try {
     const collection = db.collection("StudentDatabase2019");
 
@@ -230,5 +236,24 @@ export async function updateStudentData(studentData: any): Promise<any> {
   } catch (err) {
     console.error(err);
     return [];
+  }
+}
+
+export async function updateStudentDatabase(fileBuffer: Buffer): Promise<any> {
+  const workbook: xls.WorkBook = xls.read(fileBuffer, { type: "buffer" });
+  const sheetName: string = workbook.SheetNames[0];
+  const sheet: xls.WorkSheet = workbook.Sheets[sheetName];
+  const data: any[] = xls.utils.sheet_to_json(sheet);
+  const outputFilePath = './src/data/studentDatabase2.json';
+  fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2));
+
+  try {
+    const collection = db.collection("StudentDatabase2019");
+    const result = await collection.insertMany(data);
+
+    return result.acknowledged;
+  } catch (error) {
+    console.error('Error inserting data into MongoDB:', error);
+    throw error;
   }
 }

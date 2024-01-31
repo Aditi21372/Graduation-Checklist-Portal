@@ -19,7 +19,7 @@
     >
       <td>{{ element.index }}</td>
       <td>{{ element.rule }}</td>
-      <td>{{ element.status }}</td>
+      <td [class.bold-text]="element.status === 'Not Done'">{{ element.status }}</td>
       <td>{{ element.credits }}</td>
       <td>
         <button (click)="navigateToPage(element)" class="button-column">

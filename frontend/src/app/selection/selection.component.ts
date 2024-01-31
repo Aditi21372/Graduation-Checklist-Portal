@@ -9,7 +9,15 @@ import { Router } from '@angular/router';
 export class SelectionComponent {
   constructor(private router: Router) {}
 
-  updateDatabase() {
+  updateStudentGrade() {
+    this.router.navigate(['/update-student-grade']);
+  }
+
+  updateCourseDatabase() {
+
+  }
+
+  updateStudentDatabase() {
     this.router.navigate(['/update-student-database']);
   }
 

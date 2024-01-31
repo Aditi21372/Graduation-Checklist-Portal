@@ -3,10 +3,8 @@ import {
   btpRule,
   thirtyTwoCreditsRule,
   required156CreditsRule,
-  onlineCoursesHonorsRule,
 } from "./rule";
-import { StudentInfo, RuleEntry, RuleData  } from "./type";
-
+import { StudentInfo, RuleEntry, RuleData } from "./type";
 
 export function isHonors(studentCourseData: StudentInfo): RuleData {
   let ruleData: RuleEntry[] = [];
@@ -18,17 +16,10 @@ export function isHonors(studentCourseData: StudentInfo): RuleData {
     studentCourseData,
     "CSE"
   );
-  const onlineCoursesData = onlineCoursesHonorsRule.checkRule(
-    studentCourseData,
-    "CSE"
-  );
   const btpRuleData = btpRule.checkRule(studentCourseData, null);
   const gpaRuleData = calculateCGPA(studentCourseData);
 
-  const extraCredits =
-    extra12CreditsData.data.totalCredits +
-    onlineCoursesData.data.totalCredits -
-    32;
+  const extraCredits = extra12CreditsData.data.totalCredits - 32;
 
   if (extraCredits >= 12) {
     ruleData.push({

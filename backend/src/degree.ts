@@ -28,7 +28,7 @@ export const CSEDegree: IDegree = {
   name: "CSE",
   degreeType: "BTECH",
   minors: ["ECO", "CB"],
-  graduationRules: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  graduationRules: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
 };
 
 export function getGraduationStatus(

@@ -56,7 +56,6 @@ export class ChecklistComponent implements OnInit {
           this.populateIPCredits(),
           this.populateOnlineCourseCredits(),
           this.populateTwoXXCredits(),
-          this.populateTocCredits(),
           this.populateBTP(),
           this.populateHonors(),
           this.populateMinors(),
@@ -87,7 +86,7 @@ export class ChecklistComponent implements OnInit {
           credits: ruleData.data.totalCredits,
           button_text: 'View Core Courses',
         };
-
+        console.log(ruleData.data.coreCourses);
         this.courseData.set('Core_Courses', ruleData.data.coreCourses);
         this.dataSourceTwo.push(newData);
         return null;
@@ -104,6 +103,7 @@ export class ChecklistComponent implements OnInit {
           'Bucket_Courses',
           ruleData.data.studentBucketCourses
         );
+        console.log(ruleData.data.studentBucketCourses);
         this.completedBuckets = ruleData.data.completedBuckets;
       });
     return of(null);
@@ -242,30 +242,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateTocCredits(): Observable<any> {
-    return this.studentService.getTOCCredits().pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 9,
-          rule: 'TOC / Maths of 2xx level or above',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data.totalCredits,
-          button_text: 'View Details',
-        };
-
-        this.courseData.set('TOC', ruleData.data.courses);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
   populateBTP(): Observable<any> {
     return this.studentService.getBTPCredits().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 10,
+          index: 9,
           rule: 'BTP',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -284,7 +265,7 @@ export class ChecklistComponent implements OnInit {
     return this.studentService.getHonors().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 11,
+          index: 10,
           rule: 'Honors',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -302,27 +283,42 @@ export class ChecklistComponent implements OnInit {
   populateMinors(): Observable<any> {
     return this.studentService.getMinors().pipe(
       map((ruleData: any) => {
-        let newData = {
-          index: 12,
-          rule: 'Minors',
-          status: 'Not Done',
-          statusBool: true,
-          credits: 'NA',
-          button_text: 'View Details',
-        };
-        for (const minor of ruleData) {
-          if (minor.isCompleteBool) {
-            newData.statusBool = true;
-            newData.status = 'Complete';
-            break;
-          }
-        }
-
-        this.courseData.set('Minors', ruleData);
-        this.dataSourceTwo.push(newData);
+        this.populateMinorsDetails(ruleData);
         return null;
       })
     );
+  }
+
+  populateMinorsDetails(courseData: any) {
+    for (let i = 0; i < courseData.length; i++) {
+      let credits = 0;
+      let newData = {
+        index: 11,
+        rule: 'Minors in ',
+        status: 'Not Done',
+        statusBool: true,
+        credits: 0,
+        button_text: 'View Details',
+      };
+      for (const course of courseData[i].data.coreCoursesCompleted.data) {
+        credits += course.credits;
+      }
+
+      for (
+        let j = 0;
+        j < courseData[i].data.additionalCreditsCompleted.data.length;
+        j++
+      ) {
+        credits +=
+          courseData[i].data.additionalCreditsCompleted.data[j].credits;
+      }
+      newData.index += i;
+      newData.rule += courseData[i].data.stream;
+      newData.credits = credits;
+      newData.status = courseData[i].isCompleteText;
+      this.courseData.set(courseData[i].data.stream, courseData[i].data);
+      this.dataSourceTwo.push(newData);
+    }
   }
 
   populateIncompleteGrades(): Observable<any> {
@@ -483,25 +479,25 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
-      case 'TOC / Maths of 2xx level or above':
-        let tocCourses = this.courseData.get('TOC');
-        this.router.navigate(['/toc-mth'], {
+      case 'Minors in Computational Biology':
+        let minors = this.courseData.get('Computational Biology');
+        this.router.navigate(['/minors-detail'], {
           queryParams: {
             rollNumber: this.rollNumber,
             branch: this.branch,
-            courseData: JSON.stringify(tocCourses),
+            courseData: JSON.stringify(minors),
             studentName: this.studentName,
             program: this.program,
           },
         });
         break;
-      case 'Minors':
-        let minors = this.courseData.get('Minors');
-        this.router.navigate(['/minors'], {
+      case 'Minors in Economics':
+        let minorsEco = this.courseData.get('Economics');
+        this.router.navigate(['/minors-detail'], {
           queryParams: {
             rollNumber: this.rollNumber,
             branch: this.branch,
-            courseData: JSON.stringify(minors),
+            courseData: JSON.stringify(minorsEco),
             studentName: this.studentName,
             program: this.program,
           },
