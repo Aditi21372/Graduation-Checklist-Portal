@@ -1,5 +1,5 @@
-import { getStudentDatabase, getCourseDatabase } from "./database";
-import { DatabaseMap, CourseMap } from "./type";
+import { getCourseDatabase } from "./database";
+import { CourseMap } from "./type";
 
 import {
   mandatoryCoreRule,
@@ -16,13 +16,9 @@ import {
   required156CreditsRule,
 } from "./rule";
 
-export const studentRecordsFilePath = "src/data/Student_Database_2019.xlsm";
 export const courseListFilePath = "src/data/Course_Codes.xlsm";
 
 export const courseDatabase: CourseMap = getCourseDatabase(courseListFilePath);
-export const studentDatabase: DatabaseMap = getStudentDatabase(
-  studentRecordsFilePath
-);
 
 export const gradeHierarchy = [
   "A+",

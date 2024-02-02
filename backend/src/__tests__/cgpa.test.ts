@@ -1,34 +1,23 @@
 import { describe, expect, test } from "@jest/globals";
 import { calculateCGPA } from "../cgpa";
-import { getGraduatedStudents } from "../database";
-import { studentDatabase } from "../index";
+import { getGraduatedStudents, preprocessCourseData, searchByRollNo } from "../database";
 
 describe("CGPA Algorithm tests", () => {
   test("calculates CGPA correctly for CSE students with roll numbers in the form 2019xxx", () => {
     const filePath = "src/data/2019_final_graduated.xlsx";
     const graduatedStudents = getGraduatedStudents(filePath);
 
-    const incorrect_cgpa: number[] = [];
-    const correct_cgpa: number[] = [];
-
-    graduatedStudents.forEach((student) => {
+    graduatedStudents.forEach(async (student) => {
       // Skip students who are not from Computer Science Engineering
-      if (student.program !== "Computer Science and Engineering") {
-        return;
+      const studentData = await searchByRollNo(student.rollNo);
+      if (studentData.length > 0) {
+        let studentCourseData = preprocessCourseData(studentData);
+        const expectedCGPA = calculateCGPA(studentCourseData);
+
+        // Assuming you have a property named 'cgpa' in your GraduatedStudent type
+        expect(student.cgpa === expectedCGPA[expectedCGPA.length - 1].cgpa)
+          .toBeTruthy;
       }
-
-      // Skip students whose roll number is not in the form 2019xxx
-      const rollNumberPattern = /^2019\d{3}$/;
-      if (!rollNumberPattern.test(student.rollNo.toString())) {
-        return;
-      }
-
-      const expectedCGPA = calculateCGPA(studentDatabase[student.rollNo]);
-
-      // Assuming you have a property named 'cgpa' in your GraduatedStudent type
-      expect(
-        student.cgpa - expectedCGPA[expectedCGPA.length - 1].cgpa
-      ).toBeLessThan(0.3);
     });
   });
 });

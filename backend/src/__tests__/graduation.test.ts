@@ -1,8 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 
-import {
-  getGraduatedStudents,
-} from "../database";
+import { getGraduatedStudents, preprocessCourseData, searchByRollNo } from "../database";
 
 import { getGraduationStatus } from "../degree";
 
@@ -13,17 +11,40 @@ describe("Graduation Algorithm tests", () => {
 
     graduatedStudents.forEach((student) => {
       // Skip students who are not from Computer Science Engineering
-      if (student.program !== "Computer Science and Engineering") {
+      let branch = "";
+      if (student.program === "Computer Science and Engineering") {
+        branch = "CSE";
+      }
+      else if (student.program === "Electronics and Communication Engineering") {
+        branch = "ECE";
+      }
+      else if(student.program === "Computer Science and Applied Mathematics") {
+        branch = "CSAM";
+      }
+      else if(student.program === "Computer Science and Design") {
+        branch = "CSD";
+      }
+      else if(student.program === "Computer Science and Biosciences") {
+        branch = "CSB";
+      }
+      else if(student.program === "Computer Science and Social Sciences") {
+        branch = "CSSS";
+        return;
+      }
+      else if(student.program === "Computer Science and Artificial Intelligence") {
+        branch = "CSAI";
         return;
       }
 
-      // Skip students whose roll number is not in the form 2019xxx
-      const rollNumberPattern = /^2019\d{3}$/;
-      if (!rollNumberPattern.test(student.rollNo.toString())) {
-        return;
-      }
+      const processStudentData = async () => {
+        const studentData = await searchByRollNo(student.rollNo);
+        if (studentData.length > 0) {
+          let studentCourseData = preprocessCourseData(studentData);
+          expect(getGraduationStatus(studentCourseData, branch)).toBeTruthy;
+        }
+      };
 
-      expect(getGraduationStatus(student.rollNo, "CSE")).toBeTruthy;
+      processStudentData();
     });
   });
 });

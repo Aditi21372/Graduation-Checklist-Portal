@@ -34,10 +34,6 @@ export type StudentInfo = {
   courses: StudentCourse[];
 };
 
-export type DatabaseMap = {
-  [key: number]: StudentInfo; // Here, specify the types for keys and values
-};
-
 // Clubs multiple course codes under a category.
 // For example,
 // CourseMap["SSH"] = ["ECO101", "ECO102",]

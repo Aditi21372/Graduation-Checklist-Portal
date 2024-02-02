@@ -1,5 +1,4 @@
 import express from "express";
-import * as fs from "fs";
 import multer from "multer";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
@@ -112,10 +111,6 @@ app.get("/api/:rollNumber/courseinfo", async (req, res) => {
       branch: studentData[0]["Program"],
     };
     studentCourseData = preprocessCourseData(studentData);
-    fs.writeFileSync(
-      "./src/data/studentDatabase2.json",
-      JSON.stringify(studentCourseData, null, 2)
-    );
     res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
