@@ -13,9 +13,7 @@ export class SelectionComponent {
     this.router.navigate(['/update-student-grade']);
   }
 
-  updateCourseDatabase() {
-
-  }
+  updateCourseDatabase() {}
 
   updateStudentDatabase() {
     this.router.navigate(['/update-student-database']);

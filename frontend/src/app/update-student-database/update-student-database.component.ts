@@ -45,13 +45,13 @@ export class UpdateStudentDatabaseComponent {
             // HttpEventType.Sent - Request sent, initialize progress to 0
             this.progress = 0;
           }
-          
+
           if (event.type === HttpEventType.Response) {
             // HttpEventType.Response - Upload completed successfully
             console.log('File uploaded successfully', event.body);
             this.errorMessage = 'File uploaded successfully';
           } else {
-            this.errorMessage = "Processing file..."
+            this.errorMessage = 'Processing file...';
           }
         },
         (error) => {

@@ -68,14 +68,14 @@ export class CoreCoursesListComponent implements OnInit {
     for (let i = 0; i < this.bucketCourseData.length; i++) {
       const newData = [];
 
-      for (let j = 0; j < this.bucketCourseData[i].length; j++) {
+      for (let coreCourse of this.bucketCourseData[i]) {
         newData.push({
-          course: this.bucketCourseData[i][j].course,
-          courseName: this.bucketCourseData[i][j].courseName,
-          semester: this.bucketCourseData[i][j].semester,
-          status: this.bucketCourseData[i][j].status,
-          credits: this.bucketCourseData[i][j].credits,
-          grade: this.bucketCourseData[i][j].grade,
+          course: coreCourse.course,
+          courseName: coreCourse.courseName,
+          semester: coreCourse.semester,
+          status: coreCourse.status,
+          credits: coreCourse.credits,
+          grade: coreCourse.grade,
         });
       }
 

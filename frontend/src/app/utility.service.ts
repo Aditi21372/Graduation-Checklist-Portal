@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class UtilityService {
-
-
   customSort(a: any, b: any): number {
     const order = [
       '1',

@@ -126,24 +126,13 @@ app.get("/api/:rollNumber/courseinfo", async (req, res) => {
 app.get("/api/:branch/mandatory", (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch } = req.params;
-
-  if (branch === "CSE") {
-    res.json(mandatoryCoreRule.checkRule(studentCourseData, branch));
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
+  res.json(mandatoryCoreRule.checkRule(studentCourseData, branch));
 });
 
 app.get("/api/:branch/bucket", (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch } = req.params;
-  if (branch === "CSE") {
-    res.json(mandatoryBucketRule.checkRule(studentCourseData, branch));
-  } else {
-    // If the roll number is not found, return an error response.
-    res.status(404).json({ error: "Student not found" });
-  }
+  res.json(mandatoryBucketRule.checkRule(studentCourseData, branch));
 });
 
 app.get("/api/ssh", (req, res) => {
@@ -158,8 +147,9 @@ app.get("/api/sg", (req, res) => {
   res.json(sgRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/thirtytwocredits", (req, res) => {
-  res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, null));
+app.get("/api/:branch/thirtytwocredits", (req, res) => {
+  const { branch } = req.params;
+  res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, branch));
 });
 
 app.get("/api/ip", (req, res) => {
@@ -170,8 +160,9 @@ app.get("/api/onlinecourses", (req, res) => {
   res.json(onlineCoursesRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/twoxxcourses", (req, res) => {
-  res.json(twoxxRule.checkRule(studentCourseData, null));
+app.get("/api/:branch/twoxxcourses", (req, res) => {
+  const { branch } = req.params;
+  res.json(twoxxRule.checkRule(studentCourseData, branch));
 });
 
 app.get("/api/btp", (req, res) => {
@@ -186,20 +177,23 @@ app.get("/api/required-credits", (req, res) => {
   res.json(required156CreditsRule.checkRule(studentCourseData, "CSE"));
 });
 
-app.get("/api/honors", (req, res) => {
-  res.json(isHonors(studentCourseData));
+app.get("/api/:branch/honors", (req, res) => {
+  const { branch } = req.params;
+  res.json(isHonors(studentCourseData, branch));
 });
 
 app.get("/api/minors", (req, res) => {
   res.json(isMinors(studentCourseData));
 });
 
-app.get("/api/graduation-check", (req, res) => {
-  res.json(getGraduationStatus(studentCourseData, "CSE"));
+app.get("/api/:branch/graduation-check", (req, res) => {
+  const { branch } = req.params;
+  res.json(getGraduationStatus(studentCourseData, branch));
 });
 
-app.get("/api/graduation-date", (req, res) => {
-  res.json(getGraduationDate(studentCourseData));
+app.get("/api/:branch/graduation-date", (req, res) => {
+  const { branch } = req.params;
+  res.json(getGraduationDate(studentCourseData, branch));
 });
 
 app.get("/api/semester-wise-cgpa", (req, res) => {

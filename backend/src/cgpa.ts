@@ -92,6 +92,17 @@ function calculateBestCgpa(
         possibleWorstCredits <= worseCreds
       ) {
         const grades = creditGroups.get(credit)!;
+        while (grades.length > 0) {
+          if (grades[0] === 2) {
+            grades.shift();
+          } else {
+            break;
+          }
+        }
+        if (grades.length < count) {
+          flag = false;
+          break;
+        }
         for (let i = 0; i < count; i++) {
           const grade = grades[i];
           worseGradeSum += grade * credit;
@@ -126,6 +137,7 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     let gradeSum = 0;
     let failCredits = 0;
     let semesterGpa: Grade = { semester: "", sgpa: 0, cgpa: 0 };
+    let repeatedCredits = 0;
     for (let course of studentInfo.courses) {
       if (String(course.semester) === semesters[i]) {
         if (disallowedGrades.includes(course.grade)) continue;
@@ -137,8 +149,13 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
               credit: course.credit,
             };
             coursesTaken.set(course.courseCode, courseGrade);
-            cumulativeGradeSum -= prevGrade * course.credit;
+            repeatedCredits += course.credit;
             gradeSum += gradeMap[course.grade] * course.credit;
+            if (prevGrade === 2) {
+              cumulativeCreditSum += course.credit;
+            } else {
+              cumulativeGradeSum -= prevGrade * course.credit;
+            }
             continue;
           } else continue;
         } else {
@@ -172,7 +189,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
             gradeSum += gradeMap[course.grade] * course.credit;
             continue;
           }
-
           if (
             course.courseCode.startsWith("BIP") ||
             course.courseCode.startsWith("BIS") ||
@@ -203,15 +219,13 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     cumulativeGradeSum += gradeSum - 2 * failCredits;
 
     let sgpa = 0;
-    if (creditSum !== 0) {
-      sgpa = gradeSum / creditSum;
+    if (creditSum + repeatedCredits !== 0) {
+      sgpa = gradeSum / (creditSum + repeatedCredits);
     }
-
     if (!(semesters[i].startsWith("Summer") && sgpa == 0)) {
       cgpa = cumulativeGradeSum / cumulativeCreditSum;
     }
-    
-    
+
     let flag = 0;
     let worseCreds = 0;
     if (
@@ -252,7 +266,6 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
       sgpa: Math.round(sgpa * 100) / 100,
       cgpa: Math.round(cgpa * 100) / 100,
     };
-    console.log(semesterGpa);
     semwiseGpa.push(semesterGpa);
   }
 

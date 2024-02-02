@@ -64,7 +64,6 @@ import { UpdateStudentGradeComponent } from './update-student-grade/update-stude
     HonorsComponent,
     MinorsDetailsComponent,
     UpdateStudentGradeComponent,
-
   ],
   imports: [
     BrowserModule,

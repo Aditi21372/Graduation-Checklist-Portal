@@ -1,5 +1,4 @@
-import * as xls from 'xlsx';
-import * as fs from 'fs';
+import * as xls from "xlsx";
 
 import { db } from "./db";
 import {
@@ -9,7 +8,6 @@ import {
   StudentInfo,
   GraduatedStudent,
 } from "./type";
-
 
 const xlsx = require("xlsx");
 
@@ -101,24 +99,6 @@ export function getStudentDatabase(filePath: string): DatabaseMap {
     // Add the course information to the courses array
     studentDatabase[_rollNo].courses.push(course);
   });
-
-  // const outputFilePath = './src/data/studentDatabase2.json';
-  // const jsonData = xlsx.utils.sheet_to_json(worksheet, { header: 1, range });
-  // const headersRow: Record<string, string> = jsonData[1];
-  // const headers: string[] = Object.values(headersRow);
-  // console.log(headers);
-
-  // // Rest of the code
-  // const mongoDbJson = jsonData.slice(2).map((row: any) => {
-  //   const doc: { [key: string]: any } = {};
-  //   headers.forEach((header: string, index: number) => {
-  //     doc[header] = row[index];
-  //   });
-  //   return doc;
-  // });
-  //   // Write JSON data to a file
-  //
-  // fs.writeFileSync(outputFilePath, JSON.stringify(studentDatabase, null, 2));
   return studentDatabase;
 }
 
@@ -244,8 +224,6 @@ export async function updateStudentDatabase(fileBuffer: Buffer): Promise<any> {
   const sheetName: string = workbook.SheetNames[0];
   const sheet: xls.WorkSheet = workbook.Sheets[sheetName];
   const data: any[] = xls.utils.sheet_to_json(sheet);
-  const outputFilePath = './src/data/studentDatabase2.json';
-  fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2));
 
   try {
     const collection = db.collection("StudentDatabase2019");
@@ -253,7 +231,7 @@ export async function updateStudentDatabase(fileBuffer: Buffer): Promise<any> {
 
     return result.acknowledged;
   } catch (error) {
-    console.error('Error inserting data into MongoDB:', error);
+    console.error("Error inserting data into MongoDB:", error);
     throw error;
   }
 }

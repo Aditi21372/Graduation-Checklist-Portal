@@ -1,20 +1,19 @@
 import { calculateCGPA } from "./cgpa";
-import {
-  btpRule,
-  thirtyTwoCreditsRule,
-  required156CreditsRule,
-} from "./rule";
+import { btpRule, thirtyTwoCreditsRule, required156CreditsRule } from "./rule";
 import { StudentInfo, RuleEntry, RuleData } from "./type";
 
-export function isHonors(studentCourseData: StudentInfo): RuleData {
+export function isHonors(
+  studentCourseData: StudentInfo,
+  branch: string
+): RuleData {
   let ruleData: RuleEntry[] = [];
   const extra12CreditsData = thirtyTwoCreditsRule.checkRule(
     studentCourseData,
-    "CSE"
+    branch
   );
   const requiredCreditsData = required156CreditsRule.checkRule(
     studentCourseData,
-    "CSE"
+    branch
   );
   const btpRuleData = btpRule.checkRule(studentCourseData, null);
   const gpaRuleData = calculateCGPA(studentCourseData);
@@ -30,7 +29,7 @@ export function isHonors(studentCourseData: StudentInfo): RuleData {
   } else {
     ruleData.push({
       rule: "Extra 12 credits",
-      value: extraCredits.toString() as "",
+      value: extraCredits > 0 ? (extraCredits.toString() as "") : ("0" as ""),
       status: "No",
     });
   }
@@ -89,6 +88,5 @@ export function isHonors(studentCourseData: StudentInfo): RuleData {
       break;
     }
   }
-
   return returnData;
 }

@@ -61,9 +61,7 @@ export class MinorsDetailsComponent {
       });
     }
 
-    for (const courseData of 
-      this.courseData.additionalCreditsCompleted.data
-    ) {
+    for (const courseData of this.courseData.additionalCreditsCompleted.data) {
       newData.push({
         type: 'Additional Course',
         courseCode: courseData.course,

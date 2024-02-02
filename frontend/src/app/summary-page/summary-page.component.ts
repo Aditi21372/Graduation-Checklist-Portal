@@ -24,6 +24,7 @@ export class SummaryPageComponent implements OnInit {
   minorsStream: string = 'None';
   studentName: string = '';
   program: string = '';
+  branch: string = '';
 
   constructor(
     private studentService: StudentServiceService,
@@ -37,19 +38,24 @@ export class SummaryPageComponent implements OnInit {
       this.rollNumber = params['rollNumber'];
       this.program = params['program'];
       this.studentName = params['studentName'];
+      this.branch = this.program.slice(
+        this.program.lastIndexOf('/') + 1,
+        this.program.length
+      );
 
       // Create an array of observables for each API call
       const observables = [
-        this.studentService.getGraduationStatus(),
-        this.studentService.getGraduationDate(),
+        this.studentService.getGraduationStatus(this.branch),
+        this.studentService.getGraduationDate(this.branch),
         this.studentService.getRequiredCredits(),
         this.studentService.getSemWiseCGPA(),
         this.studentService.getSGcourses(),
         this.studentService.getCWcourses(),
         this.studentService.getSSHcourses(),
         this.studentService.getBTPCredits(),
-        this.studentService.get32Credits(),
-        this.studentService.getHonors(),
+        this.studentService.get32Credits(this.branch),
+        this.studentService.getHonors(this.branch),
+        this.studentService.getMinors(),
       ];
 
       // Use forkJoin to wait for all observables to complete
@@ -67,9 +73,11 @@ export class SummaryPageComponent implements OnInit {
             btpCredits,
             credits32,
             honors,
+            minors,
           ] = results;
           this.isGraduating = gradStatus ? 'Yes' : 'No';
           this.totalCreditsCompleted = requiredCredits.data;
+          const minorsStream = this.processMinors(minors);
           this.dataSourceTwo = [
             {
               requirement: 'Is the student graduating?',
@@ -112,11 +120,11 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Graduating with Minors',
-              status: 'No', // TODO
+              status: minorsStream.length > 0 ? 'Yes' : 'No',
             },
             {
               requirement: 'Stream of Minors',
-              status: 'None', // TODO
+              status: minorsStream.length > 0 ? minorsStream : 'None',
             },
           ];
         },
@@ -125,6 +133,16 @@ export class SummaryPageComponent implements OnInit {
         }
       );
     });
+  }
+
+  processMinors(minors: any) {
+    const stream = [];
+    for (let i = 0; i < minors.length; i++) {
+      if (minors[i].isCompleteText === 'Complete') {
+        stream.push(minors[i].data.stream);
+      }
+    }
+    return stream;
   }
 
   goBack() {

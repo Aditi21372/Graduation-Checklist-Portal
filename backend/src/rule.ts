@@ -23,49 +23,44 @@ export const mandatoryCoreRule: IRule = {
       },
     };
 
+    context = context ? context : "CSE";
+    const coreCourses = courseDatabase[context];
+    const studentCourses = studentCourseData["courses"];
     let studentCoreCourse = [];
 
-    if (context === "CSE") {
-      const coreCourses = courseDatabase["CSE"];
+    for (const courseCode of coreCourses) {
+      let courseEntry: CourseData = {
+        course: courseCode,
+        courseName: "",
+        semester: "",
+        status: "Incomplete",
+        credits: 0,
+        grade: "",
+      };
 
-      const studentCourses = studentCourseData["courses"];
-
-      for (const courseCode of coreCourses) {
-        let courseEntry: CourseData = {
-          course: courseCode,
-          courseName: "",
-          semester: "",
-          status: "Incomplete",
-          credits: 0,
-          grade: "",
-        };
-
-        for (const studentCourse of studentCourses) {
-          if (studentCourse["courseCode"] === courseCode) {
-            if (!disallowedGrades.includes(studentCourse["grade"])) {
-              courseEntry.status = "Complete";
-              courseEntry.credits = studentCourse["credit"];
-              courseEntry.semester = studentCourse["semester"];
-              courseEntry.courseName = studentCourse["course"];
-              const currentGradeIndex = gradeHierarchy.indexOf(
-                courseEntry.grade
-              );
-              const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
-              if (gradeIndex < currentGradeIndex) {
-                courseEntry.grade = studentCourse["grade"];
-              }
-            } else {
-              if (courseEntry.status == "Complete") continue;
-              courseEntry.status =
-                studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
-              courseEntry.semester = studentCourse["semester"];
-              courseEntry.credits = 0;
+      for (const studentCourse of studentCourses) {
+        if (studentCourse["courseCode"] === courseCode) {
+          if (!disallowedGrades.includes(studentCourse["grade"])) {
+            courseEntry.status = "Complete";
+            courseEntry.credits = studentCourse["credit"];
+            courseEntry.semester = studentCourse["semester"];
+            courseEntry.courseName = studentCourse["course"];
+            const currentGradeIndex = gradeHierarchy.indexOf(courseEntry.grade);
+            const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
+            if (gradeIndex < currentGradeIndex) {
               courseEntry.grade = studentCourse["grade"];
             }
+          } else {
+            if (courseEntry.status == "Complete") continue;
+            courseEntry.status =
+              studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
+            courseEntry.semester = studentCourse["semester"];
+            courseEntry.credits = 0;
+            courseEntry.grade = studentCourse["grade"];
           }
         }
-        studentCoreCourse.push(courseEntry);
       }
+      studentCoreCourse.push(courseEntry);
     }
 
     for (let i = 0; i < studentCoreCourse.length; i++) {
@@ -95,73 +90,65 @@ export const mandatoryBucketRule: IRule = {
       },
     };
 
+    context = context ? context : "CSE";
+    const bucketName = context + " bucket";
+    const mandatoryBuckets = [];
+    const studentCourses = studentCourseData["courses"];
     let studentBucketCourse = [];
+    let completedBuckets = [true, true, true, true, true];
 
-    if (context === "CSE") {
-      // Path to the excel sheet containing courses and their course codes
-      const mandatoryBuckets = [];
-
-      const studentCourses = studentCourseData["courses"];
-
-      for (const key of Object.keys(courseDatabase)) {
-        if (key.startsWith("CSE bucket")) {
-          mandatoryBuckets.push(courseDatabase[key]);
-        }
-      }
-
-      for (const courseBucket of mandatoryBuckets) {
-        let mandateBucket = [];
-        for (const courseCode of courseBucket) {
-          let courseEntry: CourseData = {
-            course: courseCode,
-            courseName: "",
-            semester: "",
-            status: "Incomplete",
-            credits: 0,
-            grade: "",
-          };
-
-          for (const studentCourse of studentCourses) {
-            if (studentCourse["courseCode"] === courseCode) {
-              courseEntry.courseName = studentCourse["course"];
-              if (!disallowedGrades.includes(studentCourse["grade"])) {
-                courseEntry.status = "Complete";
-                courseEntry.credits = studentCourse["credit"];
-                courseEntry.semester = studentCourse["semester"];
-                const currentGradeIndex = gradeHierarchy.indexOf(
-                  courseEntry.grade
-                );
-                const gradeIndex = gradeHierarchy.indexOf(
-                  studentCourse["grade"]
-                );
-                if (gradeIndex < currentGradeIndex) {
-                  courseEntry.grade = studentCourse["grade"];
-                }
-              } else {
-                if (courseEntry.status == "Complete") continue;
-                courseEntry.status =
-                  studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
-                courseEntry.credits = 0;
-                courseEntry.grade = studentCourse["grade"];
-                courseEntry.semester = studentCourse["semester"];
-              }
-            }
-          }
-          console.log(courseEntry);
-          mandateBucket.push(courseEntry);
-        }
-        studentBucketCourse.push(mandateBucket);
+    for (const key of Object.keys(courseDatabase)) {
+      if (key.startsWith(bucketName)) {
+        mandatoryBuckets.push(courseDatabase[key]);
       }
     }
 
-    let completedBuckets = [true, true, true, true, true];
+    for (const courseBucket of mandatoryBuckets) {
+      let mandateBucket = [];
+      for (const courseCode of courseBucket) {
+        let courseEntry: CourseData = {
+          course: courseCode,
+          courseName: "",
+          semester: "",
+          status: "Incomplete",
+          credits: 0,
+          grade: "",
+        };
+        for (const studentCourse of studentCourses) {
+          if (studentCourse["courseCode"] === courseCode) {
+            courseEntry.courseName = studentCourse["course"];
+            if (!disallowedGrades.includes(studentCourse["grade"])) {
+              courseEntry.status = "Complete";
+              courseEntry.credits = studentCourse["credit"];
+              courseEntry.semester = studentCourse["semester"];
+              const currentGradeIndex = gradeHierarchy.indexOf(
+                courseEntry.grade
+              );
+              const gradeIndex = gradeHierarchy.indexOf(studentCourse["grade"]);
+              if (gradeIndex < currentGradeIndex) {
+                courseEntry.grade = studentCourse["grade"];
+              }
+            } else {
+              if (courseEntry.status == "Complete") continue;
+              courseEntry.status =
+                studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
+              courseEntry.credits = 0;
+              courseEntry.grade = studentCourse["grade"];
+              courseEntry.semester = studentCourse["semester"];
+            }
+          }
+        }
+        mandateBucket.push(courseEntry);
+      }
+      studentBucketCourse.push(mandateBucket);
+    }
 
     for (let i = 0; i < studentBucketCourse.length; i++) {
       let atleastOne = false;
 
-      for (let j = 0; j < studentBucketCourse[i].length; j++) {
-        if (studentBucketCourse[i][j].status === "Complete") {
-          returnData.data.totalCredits += studentBucketCourse[i][j].credits;
+      for (let course of studentBucketCourse[i]) {
+        if (course.status === "Complete") {
+          returnData.data.totalCredits += course.credits;
           atleastOne = true;
         }
       }
@@ -169,6 +156,29 @@ export const mandatoryBucketRule: IRule = {
         returnData.isCompleteBool = false;
         returnData.isCompleteText = "Incomplete";
         completedBuckets[i] = false;
+      }
+
+      if ((context === "ECE" || context === "CSD") && !atleastOne) {
+        for (let sshCourse of studentBucketCourse[i]) {
+          if (sshCourse.course === "SSH") {
+            const sshData = sshRule.checkRule(studentCourseData, context);
+            if (
+              (sshData.data.totalCredits >= 16 && context === "ECE") ||
+              (sshData.data.totalCredits >= 20 && context === "CSD")
+            ) {
+              sshCourse.status = "Complete";
+              sshCourse.credits = sshData.data.courses[0].credits;
+              sshCourse.grade = sshData.data.courses[0].grade;
+              sshCourse.semester = sshData.data.courses[0].semester;
+              sshCourse.courseName = sshData.data.courses[0].courseName;
+              sshCourse.course = sshData.data.courses[0].course;
+
+              returnData.isCompleteBool = true;
+              returnData.isCompleteText = "Complete";
+              completedBuckets[i] = true;
+            }
+          }
+        }
       }
     }
 
@@ -325,15 +335,30 @@ export const thirtyTwoCreditsRule: IRule = {
       },
     };
 
+    context = context ? context : "CSE";
+    let major = "CSE"; // Default major is CSE other option in ECE
+    if (context === "ECE") {
+      major = "ECE";
+    }
+    let branch = context; // Default branch is CSE other options are BIO, DES, MTH
+    if (context === "CSB") {
+      branch = "BIO";
+    } else if (context === "CSD") {
+      branch = "DES";
+    } else if (context === "CSAM") {
+      branch = "MTH";
+    }
     const studentCourses = studentCourseData["courses"];
-    let credits = 0;
+    let majorCredits = 0;
+    let contextBranchCredits = 0;
     let coursesTaken = new Map<string, number>();
 
     for (const course of studentCourses) {
       // Doesn't check for a 2xx course.
       // Doesn't check for courses that were Incomplete in the last four semesters.
       if (
-        course["courseCode"].startsWith("CSE2") ||
+        course["courseCode"].startsWith(major + "2") ||
+        course["courseCode"].startsWith(branch + "2") ||
         course["semester"] < "5" ||
         course["semester"].toString().startsWith("Summer Term")
       ) {
@@ -343,7 +368,8 @@ export const thirtyTwoCreditsRule: IRule = {
       if (
         !disallowedGrades.includes(course["grade"]) &&
         !coursesTaken.has(course["courseCode"]) &&
-        course["courseCode"].startsWith("CSE")
+        (course["courseCode"].startsWith(major) ||
+          course["courseCode"].startsWith(branch))
       ) {
         let courseEntry: CourseData = {
           course: course["courseCode"],
@@ -353,7 +379,11 @@ export const thirtyTwoCreditsRule: IRule = {
           credits: course["credit"],
           grade: course["grade"],
         };
-        credits += course["credit"];
+        if (course["courseCode"].startsWith(major)) {
+          majorCredits += course["credit"];
+        } else {
+          contextBranchCredits += course["credit"];
+        }
         coursesTaken.set(course["courseCode"], course["credit"]);
         returnData.data.courseData.push(courseEntry);
       }
@@ -363,9 +393,12 @@ export const thirtyTwoCreditsRule: IRule = {
       studentCourseData,
       context
     );
-    const branch: string = context ? context : "CSE";
+
     for (let course of onlineCourseData.data.courses) {
-      if (course["course"].startsWith(branch)) {
+      if (
+        course["course"].startsWith(branch) ||
+        course["course"].startsWith(major)
+      ) {
         let courseEntry: CourseData = {
           course: course["course"],
           courseName: course["course"],
@@ -374,16 +407,25 @@ export const thirtyTwoCreditsRule: IRule = {
           credits: course["credits"],
           grade: course["grade"],
         };
-        credits += Number(course["credits"]);
+
+        if (course["course"].startsWith(major)) {
+          majorCredits += Number(course["credits"]);
+        } else {
+          contextBranchCredits += Number(course["credits"]);
+        }
         returnData.data.courseData.push(courseEntry);
       }
     }
 
-    if (credits >= 32) {
+    if (
+      majorCredits + contextBranchCredits >= 32 &&
+      majorCredits >= 12 &&
+      (context === major || contextBranchCredits >= 12)
+    ) {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     }
-    returnData.data.totalCredits = credits;
+    returnData.data.totalCredits = majorCredits + contextBranchCredits;
     return returnData;
   },
 };
@@ -499,14 +541,15 @@ export const twoxxRule: IRule = {
       },
     };
 
-    const coreCourses = courseDatabase["CSE"];
-
+    context = context ? context : "CSE";
+    const bucketName = context + " bucket";
+    const coreCourses = courseDatabase[context];
     const studentCourses = studentCourseData["courses"];
+    const mandatoryBuckets = [];
     let credits = 0;
 
-    const mandatoryBuckets = [];
     for (const key of Object.keys(courseDatabase)) {
-      if (key.startsWith("CSE bucket")) {
+      if (key.startsWith(bucketName)) {
         mandatoryBuckets.push(courseDatabase[key]);
       }
     }

@@ -45,7 +45,8 @@ label {
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .go-back-button button:hover {
@@ -130,7 +131,8 @@ td button {
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
   width: 100%;
   max-width: 150px;
 }

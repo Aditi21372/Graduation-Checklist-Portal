@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentServiceService } from '../student-service.service';
-import { UtilityService } from '../utility.service'; 
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-update-student-grade',

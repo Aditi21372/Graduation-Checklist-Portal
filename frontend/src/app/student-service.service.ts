@@ -52,8 +52,8 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'btp');
   }
 
-  getTwoXXCredits(): Observable<any> {
-    return this.http.get(this.apiUrl + 'twoxxcourses');
+  getTwoXXCredits(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/twoxxcourses');
   }
 
   getIPCredits(): Observable<any> {
@@ -64,8 +64,8 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'onlinecourses');
   }
 
-  get32Credits(): Observable<any> {
-    return this.http.get(this.apiUrl + 'thirtytwocredits');
+  get32Credits(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/thirtytwocredits');
   }
 
   getSemWiseCGPA(): Observable<any> {
@@ -80,16 +80,16 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'incompletegrade');
   }
 
-  getGraduationStatus(): Observable<any> {
-    return this.http.get(this.apiUrl + 'graduation-check');
+  getGraduationStatus(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/graduation-check');
   }
 
-  getGraduationDate(): Observable<any> {
-    return this.http.get(this.apiUrl + 'graduation-date');
+  getGraduationDate(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/graduation-date');
   }
 
-  getHonors(): Observable<any> {
-    return this.http.get(this.apiUrl + 'honors');
+  getHonors(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/honors');
   }
 
   getMinors(): Observable<any> {

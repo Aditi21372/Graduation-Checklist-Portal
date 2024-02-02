@@ -19,13 +19,8 @@ export class ChecklistComponent implements OnInit {
   dataSourceTwo: any[] = [];
   courseData: Map<string, any>;
   completedBuckets: any;
-  xyz = {
-    index: 1,
-    rule: 'Core Courses',
-    status: '',
-    credits: Number,
-    button_text: 'View Core Courses',
-  };
+  bucketCredits: number = 0;
+  bucketStatus: boolean = true;
 
   constructor(
     private studentService: StudentServiceService,
@@ -69,24 +64,28 @@ export class ChecklistComponent implements OnInit {
   }
 
   setGraduationStatus() {
-    this.studentService.getGraduationStatus().subscribe((data: any) => {
-      this.studentService.setGraduationStatus(data);
-    });
+    this.studentService
+      .getGraduationStatus(this.branch)
+      .subscribe((data: any) => {
+        this.studentService.setGraduationStatus(data);
+      });
   }
 
   populateMandatory(): Observable<any> {
     return this.studentService.getMandatoryCourses(this.branch).pipe(
       map((ruleData: any) => {
-        let status = ruleData.isCompleteBool ? 'Complete' : 'Incomplete';
+        let status =
+          ruleData.isCompleteBool && this.bucketStatus
+            ? 'Complete'
+            : 'Incomplete';
 
         const newData = {
           index: 1,
           rule: 'Core Courses',
           status: status,
-          credits: ruleData.data.totalCredits,
+          credits: ruleData.data.totalCredits + this.bucketCredits,
           button_text: 'View Core Courses',
         };
-        console.log(ruleData.data.coreCourses);
         this.courseData.set('Core_Courses', ruleData.data.coreCourses);
         this.dataSourceTwo.push(newData);
         return null;
@@ -103,7 +102,8 @@ export class ChecklistComponent implements OnInit {
           'Bucket_Courses',
           ruleData.data.studentBucketCourses
         );
-        console.log(ruleData.data.studentBucketCourses);
+        this.bucketCredits = ruleData.data.totalCredits;
+        this.bucketStatus = ruleData.isCompleteBool;
         this.completedBuckets = ruleData.data.completedBuckets;
       });
     return of(null);
@@ -167,15 +167,15 @@ export class ChecklistComponent implements OnInit {
   }
 
   populate32Credits(): Observable<any> {
-    return this.studentService.get32Credits().pipe(
+    return this.studentService.get32Credits(this.branch).pipe(
       map((ruleData: any) => {
         const newData = {
           index: 5,
-          rule: '32 Credits of CSE Courses',
+          rule: '32 Credits of Discipline Courses',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
           credits: ruleData.data.totalCredits,
-          button_text: 'View CSE Courses',
+          button_text: 'View Courses',
         };
 
         this.courseData.set('32Credits_Courses', ruleData.data.courseData);
@@ -224,7 +224,7 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateTwoXXCredits(): Observable<any> {
-    return this.studentService.getTwoXXCredits().pipe(
+    return this.studentService.getTwoXXCredits(this.branch).pipe(
       map((ruleData: any) => {
         const newData = {
           index: 8,
@@ -262,7 +262,7 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateHonors(): Observable<any> {
-    return this.studentService.getHonors().pipe(
+    return this.studentService.getHonors(this.branch).pipe(
       map((ruleData: any) => {
         const newData = {
           index: 10,
@@ -282,43 +282,39 @@ export class ChecklistComponent implements OnInit {
 
   populateMinors(): Observable<any> {
     return this.studentService.getMinors().pipe(
-      map((ruleData: any) => {
-        this.populateMinorsDetails(ruleData);
+      map((courseData: any) => {
+        for (let i = 0; i < courseData.length; i++) {
+          let credits = 0;
+          let newData = {
+            index: 11,
+            rule: 'Minors in ',
+            status: 'Not Done',
+            statusBool: true,
+            credits: 0,
+            button_text: 'View Details',
+          };
+          for (const course of courseData[i].data.coreCoursesCompleted.data) {
+            credits += course.credits;
+          }
+
+          for (
+            let j = 0;
+            j < courseData[i].data.additionalCreditsCompleted.data.length;
+            j++
+          ) {
+            credits +=
+              courseData[i].data.additionalCreditsCompleted.data[j].credits;
+          }
+          newData.index += i;
+          newData.rule += courseData[i].data.stream;
+          newData.credits = credits;
+          newData.status = courseData[i].isCompleteText;
+          this.courseData.set(courseData[i].data.stream, courseData[i].data);
+          this.dataSourceTwo.push(newData);
+        }
         return null;
       })
     );
-  }
-
-  populateMinorsDetails(courseData: any) {
-    for (let i = 0; i < courseData.length; i++) {
-      let credits = 0;
-      let newData = {
-        index: 11,
-        rule: 'Minors in ',
-        status: 'Not Done',
-        statusBool: true,
-        credits: 0,
-        button_text: 'View Details',
-      };
-      for (const course of courseData[i].data.coreCoursesCompleted.data) {
-        credits += course.credits;
-      }
-
-      for (
-        let j = 0;
-        j < courseData[i].data.additionalCreditsCompleted.data.length;
-        j++
-      ) {
-        credits +=
-          courseData[i].data.additionalCreditsCompleted.data[j].credits;
-      }
-      newData.index += i;
-      newData.rule += courseData[i].data.stream;
-      newData.credits = credits;
-      newData.status = courseData[i].isCompleteText;
-      this.courseData.set(courseData[i].data.stream, courseData[i].data);
-      this.dataSourceTwo.push(newData);
-    }
   }
 
   populateIncompleteGrades(): Observable<any> {
@@ -431,7 +427,7 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
-      case '32 Credits of CSE Courses':
+      case '32 Credits of Discipline Courses':
         let thirtyCreditCourses = this.courseData.get('32Credits_Courses');
         this.router.navigate(['/branch-courses-list'], {
           queryParams: {

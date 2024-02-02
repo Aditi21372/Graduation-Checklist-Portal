@@ -24,7 +24,7 @@ tr:nth-child(even) {
 
 /* Apply red background for specific rows */
 .red-row {
-  background-color: rgb(246, 104, 104);
+  background-color: rgb(246, 104, 104) !important;
   color: white;
 }
 

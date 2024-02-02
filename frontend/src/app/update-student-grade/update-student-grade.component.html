@@ -11,9 +11,11 @@
         required
       />
     </div>
+
     <div *ngIf="showMessage" class="error-message">
       {{ showMessage }}
     </div>
+
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
 </div>
@@ -23,21 +25,33 @@
     <h3>Edit Student's Grade</h3>
     <div>
       <label for="editedGrade">Select Grade:</label>
-      <select id="editedGrade" class="edited-grade-input" [(ngModel)]="selectedGrade" required>
-        <option *ngFor="let grade of grades" [value]="grade">{{ grade }}</option>
+      <select
+        id="editedGrade"
+        class="edited-grade-input"
+        [(ngModel)]="selectedGrade"
+        required
+      >
+        <option *ngFor="let grade of grades" [value]="grade">
+          {{ grade }}
+        </option>
       </select>
     </div>
+
     <div>
-      <button class="edit-buttons" type="button" (click)="submitEdit(selectedGrade)">
+      <button
+        class="edit-buttons"
+        type="button"
+        (click)="submitEdit(selectedGrade)"
+      >
         Save
       </button>
+
       <button class="edit-buttons" type="button" (click)="cancelEdit()">
         Cancel
       </button>
     </div>
   </div>
 </div>
-
 
 <div class="container" *ngIf="showContent">
   <table class="table">
@@ -54,6 +68,7 @@
         <!-- New column for Action -->
       </tr>
     </thead>
+
     <tbody>
       <tr *ngFor="let student of studentDataArray">
         <td>{{ student["Student Name"] }}</td>
