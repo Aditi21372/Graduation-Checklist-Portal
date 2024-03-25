@@ -18,19 +18,20 @@
         <ng-template #incompleteStatus> Graduation Incomplete </ng-template>
       </strong>
     </p>
-
-    <button
-      mat-raised-button
-      color="primary"
-      [routerLink]="['/summary-page']"
-      [queryParams]="{
-        rollNumber: rollNumber,
-        program: branch,
-        studentName: studentName
-      }"
-    >
-      Show Summary
-    </button>
+    <div *ngIf="gradStatus === true">
+      <button
+        mat-raised-button
+        color="primary"
+        [routerLink]="['/summary-page']"
+        [queryParams]="{
+          rollNumber: rollNumber,
+          program: branch,
+          studentName: studentName
+        }"
+      >
+        Show Summary
+      </button>
+    </div>
 
     <button
       mat-raised-button

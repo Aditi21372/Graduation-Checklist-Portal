@@ -21,6 +21,11 @@ import { UpdateStudentDatabaseComponent } from './update-student-database/update
 import { HonorsComponent } from './honors/honors.component';
 import { MinorsDetailsComponent } from './minors-details/minors-details.component';
 import { UpdateStudentGradeComponent } from './update-student-grade/update-student-grade.component';
+import { UpdateCourseDatabaseComponent } from './update-course-database/update-course-database.component';
+import { AiCoursesComponent } from './ai-courses/ai-courses.component';
+import { CsssEcomajorComponent } from './csss-ecomajor/csss-ecomajor.component';
+import { StudentsSummaryComponent } from './students-summary/students-summary.component';
+import { UpdateStudentDetailsComponent } from './update-student-details/update-student-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -48,6 +53,12 @@ const routes: Routes = [
   { path: 'honors', component: HonorsComponent },
   { path: 'minors-detail', component: MinorsDetailsComponent },
   { path: 'update-student-grade', component: UpdateStudentGradeComponent },
+  { path: 'update-course-database', component: UpdateCourseDatabaseComponent },
+  { path: 'ai-courses', component: AiCoursesComponent },
+  { path: 'csss-ecomajor', component: CsssEcomajorComponent },
+  { path: 'students-summary', component: StudentsSummaryComponent },
+  { path: 'update-student-details', component: UpdateStudentDetailsComponent },
+
 ];
 
 @NgModule({

@@ -72,7 +72,6 @@ export class UpdateStudentGradeComponent {
     this.editedStudent = student;
     this.editStudentFormVisible = true;
     this.selectedGrade = student['Grade'];
-    console.log(this.editedStudent, this.editStudentFormVisible);
   }
 
   submitEdit(editedStudentGrade: string) {

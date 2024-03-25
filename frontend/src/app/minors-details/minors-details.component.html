@@ -61,3 +61,53 @@
       [ngClass]="{ 'red-row': row.status !== 'Complete' }"
     ></tr></table
 ></mat-card>
+
+<div *ngIf="showIpButton" class="center-horizontally">
+  <button (click)="countIP()">Include IP</button>
+</div>
+
+<div *ngIf="showApprenticeshipButton" class="center-horizontally">
+  <button (click)="approveApprenticeship()">Approve Apprenticeship</button>
+</div>
+
+<div class="container" *ngIf="showIpData && !selectedCourse">
+  <div *ngIf="ipData.length > 0; else noCourses">
+    <h3>Select a course to include in your minor</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Select</th>
+          <th>Course Code</th>
+          <th>Course Name</th>
+          <th>Semester</th>
+          <th>Credits</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of ipData; let i = index">
+          <td>
+            <input
+              type="radio"
+              name="selectedCourse"
+              id="radio{{ i }}"
+              [(ngModel)]="selectedCourseIndex"
+              [value]="i"
+            />
+          </td>
+          <td>{{ course["Course Code"] }}</td>
+          <td>{{ course.Course }}</td>
+          <td>{{ course["Batch / Term Code"] }}</td>
+          <td>{{ course.Credit }}</td>
+          <td>{{ course.Grade }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button (click)="submitSelection()">Submit Selection</button>
+  </div>
+
+  <ng-template #noCourses>
+    <p>No IP's available.</p>
+  </ng-template>
+</div>

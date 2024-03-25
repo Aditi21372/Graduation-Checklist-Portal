@@ -15,13 +15,6 @@ export class SummaryPageComponent implements OnInit {
   isGraduating: string = 'No';
   totalCreditsCompleted: number = 0;
   finalCGPA: number = 0;
-  completedSGCWCredits: string = 'No';
-  completedSSHCredits: string = 'No';
-  completedBTPCredits: string = 'No';
-  completedDepartmental32Credits: string = 'No';
-  graduatingWithHonors: string = 'No';
-  graduatingWithMinors: string = 'No';
-  minorsStream: string = 'None';
   studentName: string = '';
   program: string = '';
   branch: string = '';
@@ -56,6 +49,8 @@ export class SummaryPageComponent implements OnInit {
         this.studentService.get32Credits(this.branch),
         this.studentService.getHonors(this.branch),
         this.studentService.getMinors(),
+        this.studentService.getEcoMajorCore(),
+        this.studentService.getEcoMajorElective(),
       ];
 
       // Use forkJoin to wait for all observables to complete
@@ -74,6 +69,8 @@ export class SummaryPageComponent implements OnInit {
             credits32,
             honors,
             minors,
+            majorsCore,
+            majorsElective,
           ] = results;
           this.isGraduating = gradStatus ? 'Yes' : 'No';
           this.totalCreditsCompleted = requiredCredits.data;
@@ -124,8 +121,12 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Stream of Minors',
-              status: minorsStream.length > 0 ? minorsStream : 'None',
+              status: minorsStream.length > 0 ? minorsStream.join(", ") : 'None',
             },
+            {
+              requirement: 'Graduating with ECO Major',
+              status: majorsCore.isCompleteBool && majorsElective.isCompleteBool ? 'Yes' : 'No',
+            }
           ];
         },
         (error) => {

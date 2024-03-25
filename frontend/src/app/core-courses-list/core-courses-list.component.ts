@@ -65,6 +65,7 @@ export class CoreCoursesListComponent implements OnInit {
       this.utilityService.customSort(a.semester, b.semester)
     );
 
+
     for (let i = 0; i < this.bucketCourseData.length; i++) {
       const newData = [];
 

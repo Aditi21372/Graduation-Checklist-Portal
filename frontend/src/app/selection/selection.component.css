@@ -1,49 +1,21 @@
-button {
-  margin: 10px 10px;
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  text-decoration: none;
-  background-color: #44b3ad;
-  color: #fff;
-  border: 2px solid #40aca7;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+.button-container {
+  display: flex;
+  justify-content: center; /* Align button containers to center */
+  margin-bottom: 10px;
+  margin-top: 5%;
 }
 
-button:hover {
-  background-color: #367976;
-  border-color: #367976;
-  color: #fff;
-}
-
-/* Add additional styling for the component container if needed */
-div {
+.update-buttons,
+.action-buttons {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
 }
 
-/* If you want to add some margin or spacing around the buttons */
-button:first-child {
-  margin-bottom: 10px;
-}
-
-.logout-button {
-  position: absolute;
-  top: 65px;
-  right: 10px;
-}
-
+/* Adjust styles for buttons */
+.update-button,
+.action-button,
 .logout-button button {
-  margin: 10px 10px;
-  display: inline-block;
+  margin: 5px 10px; /* Reduce vertical margin */
   padding: 10px 20px;
   font-size: 16px;
   font-weight: bold;
@@ -54,12 +26,20 @@ button:first-child {
   border: 2px solid #40aca7;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
+/* Adjust hover effect */
+.update-button:hover,
+.action-button:hover,
 .logout-button button:hover {
   background-color: #367976;
   border-color: #367976;
-  color: #fff;
+}
+
+/* Adjust positioning of logout button */
+.logout-button {
+  padding-top: 10px;
+  padding-right: 10px;
+  text-align: right; /* Align logout button to center */
 }

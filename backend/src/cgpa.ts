@@ -36,9 +36,11 @@ export function calculateCGPA(studentInfo: StudentInfo): Grade[] {
 function getSemesters(studentInfo: StudentInfo): string[] {
   let maxSem = 8;
   let semesters: string[] = [];
+  let checkSummer4 = false;
 
   for (let course of studentInfo.courses) {
     if (Number(course.semester) > maxSem) maxSem = Number(course.semester);
+    if (course.semester === "Summer Term 4") checkSummer4 = true;
   }
 
   for (let i = 1; i <= maxSem; i++) {
@@ -50,7 +52,10 @@ function getSemesters(studentInfo: StudentInfo): string[] {
     }
   }
 
-  semesters.splice(11, 1);
+  if (!checkSummer4 || maxSem === 10) {
+    semesters.splice(11, 1);
+  }
+  console.log(semesters);
   return semesters;
 }
 
@@ -228,29 +233,11 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
 
     let flag = 0;
     let worseCreds = 0;
-    if (
-      (Number(semesters[i]) == 6 || semesters[i] === "Summer Term 3") &&
-      cumulativeCreditSum + onlineCreds > 116
-    ) {
-      const extraCreds = cumulativeCreditSum + onlineCreds - 116;
-      worseCreds = Math.min(8, extraCreds);
-      flag = 1;
-    }
-
-    if (Number(semesters[i]) == 7 && cumulativeCreditSum + onlineCreds > 136) {
-      const extraCreds = cumulativeCreditSum + onlineCreds - 136;
-      worseCreds = Math.min(8, extraCreds);
-      flag = 1;
-    }
-
-    if (
-      (Number(semesters[i]) >= 8 || semesters[i] >= "Summer Term 4") &&
-      cumulativeCreditSum + onlineCreds > 152
-    ) {
-      const extraCreds = cumulativeCreditSum + onlineCreds - 152;
-      worseCreds = Math.min(8, extraCreds);
-      flag = 1;
-    }
+    [flag, worseCreds] = getWorseCreds(
+      semesters,
+      semesters[i],
+      cumulativeCreditSum + onlineCreds
+    );
 
     if (flag == 1) {
       cgpa = calculateBestCgpa(
@@ -261,6 +248,8 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
       );
     }
 
+    console.log(cumulativeCreditSum, onlineCreds, cumulativeGradeSum, cgpa, sgpa, semesters[i]);
+
     semesterGpa = {
       semester: semesters[i],
       sgpa: Math.round(sgpa * 100) / 100,
@@ -270,4 +259,65 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
   }
 
   return semwiseGpa;
+}
+
+function getWorseCreds(
+  semesters: string[],
+  semester: string,
+  cumulativeCreditSum: number
+): [number, number] {
+  let flag = 0;
+  let worseCreds = 0;
+  if (
+    (Number(semester) == 6 || semester === "Summer Term 3") &&
+    cumulativeCreditSum > 116
+  ) {
+    worseCreds = Math.min(8, cumulativeCreditSum - 116);
+    flag = 1;
+  }
+
+  if (Number(semester) == 7 && cumulativeCreditSum > 136) {
+    worseCreds = Math.min(8, cumulativeCreditSum - 136);
+    flag = 1;
+  }
+
+  if (semesters.includes("9")) {
+    if (
+      (Number(semester) == 8 || semester === "Summer Term 4") &&
+      cumulativeCreditSum > 156
+    ) {
+      worseCreds = Math.min(8, cumulativeCreditSum - 156);
+      flag = 1;
+    }
+  } else {
+    if (
+      (Number(semester) == 8 || semester === "Summer Term 4") &&
+      cumulativeCreditSum > 152
+    ) {
+      console.log(cumulativeCreditSum);
+      worseCreds = Math.min(8, cumulativeCreditSum - 152);
+      flag = 1;
+    }
+  }
+
+  if (semesters.includes("10")) {
+    if (Number(semester) == 9 && cumulativeCreditSum > 156) {
+      worseCreds = Math.min(8, cumulativeCreditSum - 156);
+      flag = 1;
+    }
+  } else {
+    if (Number(semester) == 9 && cumulativeCreditSum > 152) {
+      worseCreds = Math.min(8, cumulativeCreditSum - 152);
+      flag = 1;
+    }
+  }
+
+  if (
+    (Number(semester) == 10 || semester === "Summer Term 5") &&
+    cumulativeCreditSum > 156
+  ) {
+    worseCreds = Math.min(8, cumulativeCreditSum - 156);
+    flag = 1;
+  }
+  return [flag, worseCreds];
 }

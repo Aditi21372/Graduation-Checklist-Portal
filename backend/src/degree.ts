@@ -1,4 +1,4 @@
-import { allRules } from "./index";
+import { allRules } from "./rule";
 import { StudentInfo } from "./type";
 
 const semesters: string[] = [
@@ -18,15 +18,32 @@ const semesters: string[] = [
 ];
 
 const graduationRules = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+const graduationRulesCsai = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13];
+const graduationRulesCsss = [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 17];
 
 export function getGraduationStatus(
   studentCourseData: StudentInfo,
   branch: string
 ): Boolean {
   let isGraduated: Boolean = true;
+  let graduationRulesBranch = graduationRules;
+
+  if (branch === "CSAI") {
+    graduationRulesBranch = graduationRulesCsai;
+  } else if (branch === "CSSS") {
+    graduationRulesBranch = graduationRulesCsss;
+  }
 
   for (let rule of allRules) {
-    if (rule.ruleId in graduationRules) {
+    if (graduationRulesBranch.includes(rule.ruleId)) {
+      if (rule.ruleId === 9) {
+        const status = rule.checkRule(studentCourseData, branch).isCompleteText;
+        if (status === "Incomplete" || status === "Done extra credits") {
+          isGraduated = false;
+          continue;
+        }
+      }
+
       if (!rule.checkRule(studentCourseData, branch).isCompleteBool) {
         isGraduated = false;
       }

@@ -26,11 +26,14 @@ export type StudentCourse = {
     | "X";
   semester: string;
   credit: 1 | 2 | 4 | 8 | 12;
+  includedInMinors: string;
 };
 
 export type StudentInfo = {
   studentName: string;
+  rollNumber: number;
   program: string;
+  batch: number;
   courses: StudentCourse[];
 };
 
@@ -56,6 +59,18 @@ export type RuleData = {
     | "Done extra credits"
     | "Incomplete";
   data: any;
+};
+
+export type MinorsComponents = {
+  isCompleteBool: boolean;
+  isCompleteText:
+    | "Done"
+    | "Not Done"
+    | "Complete"
+    | "Done extra credits"
+    | "Incomplete";
+  data: any;
+  totalCredits: number;
 };
 
 export type GraduatedStudent = {

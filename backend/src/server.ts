@@ -2,15 +2,25 @@ import express from "express";
 import multer from "multer";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
+import { calculateCGPA } from "./cgpa";
+import { StudentInfo } from "./type";
+import { isHonors } from "./honors";
+import {
+  isMinors,
+  checkExtraIpForMinors,
+  includeIp,
+  approveApprenticeship,
+} from "./minors";
 import {
   searchByRollNo,
   updateStudentGrade,
   preprocessCourseData,
   updateStudentDatabase,
+  updateCourseDatabase,
+  updateStudentDetails,
+  generateSummary,
+  getSummary,
 } from "./database";
-import { calculateCGPA } from "./cgpa";
-import { StudentInfo } from "./type";
-
 import {
   sshRule,
   cwRule,
@@ -24,9 +34,12 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
   incompleteGradeRule,
+  csaiCoreRule,
+  csaiApplicationRule,
+  ecoMajorCore,
+  ecoMajorElective,
+  sshMajor,
 } from "./rule";
-import { isHonors } from "./honors";
-import { isMinors } from "./minors";
 
 const app = express();
 const port = 3000;
@@ -36,8 +49,12 @@ const upload = multer({ storage: storage });
 let studentCourseData: StudentInfo = {
   studentName: "",
   program: "",
+  rollNumber: 0,
+  batch: 0,
   courses: [],
 };
+
+
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -111,6 +128,7 @@ app.get("/api/:rollNumber/courseinfo", async (req, res) => {
       branch: studentData[0]["Program"],
     };
     studentCourseData = preprocessCourseData(studentData);
+
     res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
@@ -147,6 +165,26 @@ app.get("/api/:branch/thirtytwocredits", (req, res) => {
   res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, branch));
 });
 
+app.get("/api/csai-core", (req, res) => {
+  res.json(csaiCoreRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/csai-application", (req, res) => {
+  res.json(csaiApplicationRule.checkRule(studentCourseData, null));
+});
+
+app.get("/api/eco-major-core", (req, res) => {
+  res.json(ecoMajorCore.checkRule(studentCourseData, null));
+});
+
+app.get("/api/eco-major-elective", (req, res) => {
+  res.json(ecoMajorElective.checkRule(studentCourseData, null));
+});
+
+app.get("/api/ssh-major", (req, res) => {
+  res.json(sshMajor.checkRule(studentCourseData, null));
+});
+
 app.get("/api/ip", (req, res) => {
   res.json(ipRule.checkRule(studentCourseData, null));
 });
@@ -169,7 +207,7 @@ app.get("/api/incompletegrade", (req, res) => {
 });
 
 app.get("/api/required-credits", (req, res) => {
-  res.json(required156CreditsRule.checkRule(studentCourseData, "CSE"));
+  res.json(required156CreditsRule.checkRule(studentCourseData, null));
 });
 
 app.get("/api/:branch/honors", (req, res) => {
@@ -179,6 +217,24 @@ app.get("/api/:branch/honors", (req, res) => {
 
 app.get("/api/minors", (req, res) => {
   res.json(isMinors(studentCourseData));
+});
+
+app.get("/api/:minors/ipMinors", async (req, res) => {
+  const { minors } = req.params;
+  res.json(await checkExtraIpForMinors(studentCourseData, minors));
+});
+
+app.post("/api/updateMinors", async (req, res) => {
+  const Data = req.body;
+  res.json(await includeIp(Data[0], Data[1], studentCourseData["rollNumber"]));
+});
+
+app.get("/api/apprenticeship", async (req, res) => {
+  res.json(await approveApprenticeship(studentCourseData));
+});
+
+app.get("/api/totalcredits", (req, res) => {
+  res.json(required156CreditsRule.checkRule(studentCourseData, null));
 });
 
 app.get("/api/:branch/graduation-check", (req, res) => {
@@ -195,19 +251,78 @@ app.get("/api/semester-wise-cgpa", (req, res) => {
   res.json(calculateCGPA(studentCourseData));
 });
 
-app.post("/api/upload", upload.single("file"), async (req, res) => {
-  const fileBuffer: Buffer | undefined = req.file?.buffer;
+app.post(
+  "/api/upload-student-database",
+  upload.single("file"),
+  async (req, res) => {
+    const fileBuffer: Buffer | undefined = req.file?.buffer;
 
-  if (fileBuffer) {
-    const result = await updateStudentDatabase(fileBuffer);
-    if (result) {
-      res.status(200).json({ message: "File uploaded successfully" });
+    if (fileBuffer) {
+      const result = await updateStudentDatabase(fileBuffer);
+      if (result) {
+        res.status(200).json({ message: "File uploaded successfully" });
+      } else {
+        res.status(400).json({ error: "File Uploading failed" });
+      }
     } else {
-      res.status(400).json({ error: "File Uploading failed" });
+      res.status(400).json({ error: "Invalid file or no file provided" });
     }
-  } else {
-    res.status(400).json({ error: "Invalid file or no file provided" });
   }
+);
+
+app.post(
+  "/api/upload-course-database",
+  upload.single("file"),
+  async (req, res) => {
+    const fileBuffer: Buffer | undefined = req.file?.buffer;
+    const originalFileName: string | undefined = req.file?.originalname;
+
+    if (fileBuffer && originalFileName) {
+      const result = updateCourseDatabase(fileBuffer, originalFileName);
+      if (result) {
+        res.status(200).json({ message: "File uploaded successfully" });
+      } else {
+        res.status(400).json({ error: "File Uploading failed" });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid file or no file provided" });
+    }
+  }
+);
+
+app.post(
+  "/api/upload-students-details",
+  upload.single("file"),
+  async (req, res) => {
+    const fileBuffer: Buffer | undefined = req.file?.buffer;
+
+    if (fileBuffer) {
+      const result = await updateStudentDetails(fileBuffer);
+      if (result) {
+        res.status(200).json({ message: "File uploaded successfully" });
+      } else {
+        res.status(400).json({ error: "File Uploading failed" });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid file or no file provided" });
+    }
+  }
+);
+
+app.get("/api/:batch/summary", async (req, res) => {
+  const { batch } = req.params;
+  const studentData = await getSummary(Number(batch));
+  if (studentData.length > 0) {
+    res.json(studentData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Summary does not Exist" });
+  }
+
+});
+
+app.get("/api/generate-summary", async (req, res) => {
+  res.json(generateSummary());
 });
 
 if (process.env.NODE_ENV !== "test") {

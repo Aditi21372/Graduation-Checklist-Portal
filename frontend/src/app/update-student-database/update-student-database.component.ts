@@ -19,6 +19,7 @@ export class UpdateStudentDatabaseComponent {
   ) {}
 
   onFileChange(event: any) {
+    this.errorMessage = '';
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
       const file: File = fileList[0];
@@ -36,11 +37,11 @@ export class UpdateStudentDatabaseComponent {
   }
 
   uploadFile() {
+
     if (this.selectedFile && this.selectedFile.size > 0) {
       this.errorMessage = '';
-      this.studentService.uploadFile(this.selectedFile).subscribe(
+      this.studentService.uploadStudentDatabaseFile(this.selectedFile).subscribe(
         (event) => {
-          console.log(event.type, event.loaded, event.total);
           if (event.type === HttpEventType.Sent) {
             // HttpEventType.Sent - Request sent, initialize progress to 0
             this.progress = 0;
@@ -48,7 +49,6 @@ export class UpdateStudentDatabaseComponent {
 
           if (event.type === HttpEventType.Response) {
             // HttpEventType.Response - Upload completed successfully
-            console.log('File uploaded successfully', event.body);
             this.errorMessage = 'File uploaded successfully';
           } else {
             this.errorMessage = 'Processing file...';

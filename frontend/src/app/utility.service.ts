@@ -20,9 +20,6 @@ export class UtilityService {
       'Summer Term 4',
       '9',
       '10',
-      'Summer Term 5',
-      '11',
-      '12',
     ];
 
     // Convert a and b to strings if they are numbers

@@ -1,15 +1,31 @@
-<div>
-  <button (click)="updateStudentGrade()">Update Student's Grade</button>
-
-  <button (click)="updateStudentDatabase()">Update Students's Database</button>
-
-  <button (click)="updateCourseDatabase()">Update Course Database</button>
-
-  <button (click)="checkGraduationChecklist()">
-    Check Graduation Checklist
-  </button>
-</div>
-
 <div class="logout-button">
-  <button (click)="logout()">Log Out</button>
+  <button class="logout-button" (click)="logout()">Log Out</button>
 </div>
+
+<div class="button-container">
+  <div class="update-buttons">
+    <button class="update-button" (click)="updateStudentDetails()">
+      Add Students Details
+    </button>
+    <button class="update-button" (click)="updateStudentDatabase()">
+      Add Students Grades
+    </button>
+    <button class="update-button" (click)="updateCourseDatabase()">
+      Update Courses
+    </button>
+  </div>
+
+  <div class="action-buttons">
+    <button class="action-button" (click)="checkGraduationChecklist()">
+      Check Graduation Status
+    </button>
+    <button class="action-button" (click)="updateStudentGrade()">
+      Update Student Grade
+    </button>
+    <button class="action-button" (click)="showSummary()">
+      Show Student Summary
+    </button>
+  </div>
+</div>
+
+

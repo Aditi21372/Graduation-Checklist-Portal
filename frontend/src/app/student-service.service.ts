@@ -68,6 +68,26 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + branch + '/thirtytwocredits');
   }
 
+  getCsaiCore(): Observable<any> {
+    return this.http.get(this.apiUrl + 'csai-core');
+  }
+
+  getCsaiApplication(): Observable<any> {
+    return this.http.get(this.apiUrl + 'csai-application');
+  }
+
+  getEcoMajorCore(): Observable<any> {
+    return this.http.get(this.apiUrl + 'eco-major-core');
+  }
+
+  getEcoMajorElective(): Observable<any> {
+    return this.http.get(this.apiUrl + 'eco-major-elective');
+  }
+
+  getSSHMajor(): Observable<any> {
+    return this.http.get(this.apiUrl + 'ssh-major');
+  }
+
   getSemWiseCGPA(): Observable<any> {
     return this.http.get(this.apiUrl + 'semester-wise-cgpa');
   }
@@ -78,6 +98,10 @@ export class StudentServiceService {
 
   getIncompleteGrade(): Observable<any> {
     return this.http.get(this.apiUrl + 'incompletegrade');
+  }
+
+  getTotalCredits(): Observable<any> {
+    return this.http.get(this.apiUrl + 'totalcredits');
   }
 
   getGraduationStatus(branch: string): Observable<any> {
@@ -96,6 +120,18 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'minors');
   }
 
+  getIpMinors(minors: string): Observable<any> {
+    return this.http.get(this.apiUrl + minors +  '/ipMinors');
+  }
+
+  updateMinors(ipData: any, minorsBranch: string): Observable<any> {
+    return this.http.post(this.apiUrl + 'updateMinors', [ipData, minorsBranch]);
+  }
+
+  approveApprenticeship(): Observable<any> {
+    return this.http.get(this.apiUrl + 'apprenticeship');
+  }
+
   login(username: string, password: string): Observable<any> {
     return this.http.get(
       this.apiUrl + 'login' + '/' + username + '/' + password
@@ -110,14 +146,44 @@ export class StudentServiceService {
     return this.http.post(this.apiUrl + 'updateStudent', student);
   }
 
-  uploadFile(file: File): Observable<any> {
+  uploadStudentDatabaseFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
 
-    const request = new HttpRequest('POST', this.apiUrl + 'upload', formData, {
+    const request = new HttpRequest('POST', this.apiUrl + 'upload-student-database', formData, {
       reportProgress: true,
     });
 
     return this.http.request(request);
+  }
+
+  uploadCourseDatabaseFile(file: File, fileName: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, fileName);
+
+    const request = new HttpRequest('POST', this.apiUrl + 'upload-course-database', formData, {
+      reportProgress: true,
+    });
+
+    return this.http.request(request);
+  }
+
+  uploadStudentsDetailsFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const request = new HttpRequest('POST', this.apiUrl + 'upload-students-details', formData, {
+      reportProgress: true,
+    });
+
+    return this.http.request(request);
+  }
+
+  generateSummary(): Observable<any> {
+   return this.http.get(this.apiUrl + 'generate-summary');
+  }
+
+  getSummary(batch: Number): Observable<any> {
+    return this.http.get(this.apiUrl + batch + '/summary');
   }
 }

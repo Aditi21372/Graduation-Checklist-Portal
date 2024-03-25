@@ -13,7 +13,13 @@ export class SelectionComponent {
     this.router.navigate(['/update-student-grade']);
   }
 
-  updateCourseDatabase() {}
+  updateStudentDetails() {
+    this.router.navigate(['/update-student-details']);
+  }
+
+  updateCourseDatabase() {
+    this.router.navigate(['/update-course-database']);
+  }
 
   updateStudentDatabase() {
     this.router.navigate(['/update-student-database']);
@@ -22,6 +28,10 @@ export class SelectionComponent {
   // Function to handle checking the graduation checklist
   checkGraduationChecklist() {
     this.router.navigate(['/student-info-input']);
+  }
+
+  showSummary(){
+    this.router.navigate(['/students-summary']);
   }
 
   logout() {
