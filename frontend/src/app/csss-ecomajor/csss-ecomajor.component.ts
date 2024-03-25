@@ -2,12 +2,14 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { UtilityService } from '../utility.service';
+
 @Component({
-  selector: 'app-ai-courses',
-  templateUrl: './ai-courses.component.html',
-  styleUrls: ['./ai-courses.component.css'],
+  selector: 'app-csss-ecomajor',
+  templateUrl: './csss-ecomajor.component.html',
+  styleUrls: ['./csss-ecomajor.component.css']
 })
-export class AiCoursesComponent {
+export class CsssEcomajorComponent {
+
   dataSourceCore: MatTableDataSource<any>;
   dataSourceApplication: MatTableDataSource<any>;
   rollNumber: number = 0;
@@ -22,8 +24,8 @@ export class AiCoursesComponent {
     'credits',
     'grade',
   ];
-  aiCoreCourses: any;
-  aiApplicationCourses: any;
+  ecoMajorCoreCourses: any;
+  ecoMajorElectiveCourses: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,15 +42,15 @@ export class AiCoursesComponent {
       this.studentName = params['studentName'];
       this.program = params['program'];
       this.branch = params['branch'];
-      this.aiCoreCourses = JSON.parse(params['aiCoreCourses']);
-      this.aiApplicationCourses = JSON.parse(params['aiApplicationCourses']);
+      this.ecoMajorCoreCourses = JSON.parse(params['ecoMajorCoreCourses']);
+      this.ecoMajorElectiveCourses = JSON.parse(params['ecoMajorElectiveCourses']);
       this.populateCoreCourses();
     });
   }
 
   populateCoreCourses() {
     const newData = [];
-    for (const course of this.aiCoreCourses.courses) {
+    for (const course of this.ecoMajorCoreCourses.courses) {
       newData.push({
         course: course.course,
         courseName: course.courseName,
@@ -65,7 +67,7 @@ export class AiCoursesComponent {
 
     const newData2 = [];
 
-    for (let coreCourse of this.aiApplicationCourses.courses) {
+    for (let coreCourse of this.ecoMajorElectiveCourses.courses) {
       newData2.push({
         course: coreCourse.course,
         courseName: coreCourse.courseName,

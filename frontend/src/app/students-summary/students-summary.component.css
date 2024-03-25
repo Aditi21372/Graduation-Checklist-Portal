@@ -1,0 +1,150 @@
+button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.go-back-button {
+  position: absolute;
+  top: 65px;
+  left: 10px;
+}
+
+.go-back-button button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.go-back-button button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+.container,
+.modal {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+input[type="number"] {
+  width: 330px;
+  padding: 14px 16px 16px 14px;
+  font-size: 17px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #1d2129;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.center-card {
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+mat-card-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px auto;
+  max-width: 800px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #table-container,
+  #table-container * {
+    visibility: visible;
+  }
+  #table-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}
+
+label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1c1e21;
+}

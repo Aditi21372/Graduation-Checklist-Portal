@@ -1,0 +1,73 @@
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { StudentServiceService } from '../student-service.service';
+import { HttpEventType } from '@angular/common/http';
+
+@Component({
+  selector: 'app-update-course-database',
+  templateUrl: './update-course-database.component.html',
+  styleUrls: ['./update-course-database.component.css']
+})
+export class UpdateCourseDatabaseComponent {
+
+  selectedFile: File = new File([], '');
+  fileName: string = '';
+  errorMessage: string = '';
+  progress: number = 0;
+
+  constructor(
+    private studentService: StudentServiceService,
+    private router: Router
+  ) {}
+
+  onFileChange(event: any) {
+    this.errorMessage = '';
+    const fileList: FileList = event.target.files;
+    if (fileList.length > 0) {
+      const file: File = fileList[0];
+      const fileNameParts = file.name.split('.');
+      const fileExtension =
+        fileNameParts[fileNameParts.length - 1].toLowerCase();
+      this.fileName = fileNameParts[0];
+
+      if (fileExtension === 'xlsx') {
+        this.selectedFile = file;
+      } else {
+        this.errorMessage = 'Please select a valid xlsx file.';
+        event.target.value = null;
+      }
+    }
+  }
+
+  uploadFile() {
+
+    if (this.selectedFile && this.selectedFile.size > 0) {
+      this.errorMessage = '';
+      this.studentService.uploadCourseDatabaseFile(this.selectedFile, this.fileName).subscribe(
+        (event) => {
+          if (event.type === HttpEventType.Sent) {
+            // HttpEventType.Sent - Request sent, initialize progress to 0
+            this.progress = 0;
+          }
+
+          if (event.type === HttpEventType.Response) {
+            // HttpEventType.Response - Upload completed successfully
+            this.errorMessage = 'File uploaded successfully';
+          } else {
+            this.errorMessage = 'Processing file...';
+          }
+        },
+        (error) => {
+          console.error('Error uploading file', error);
+          this.errorMessage = 'Error uploading file. Please try again.';
+        }
+      );
+    } else {
+      this.errorMessage = 'Please select a file before uploading.';
+    }
+  }
+
+  goBack() {
+    this.router.navigate(['/selection']);
+  }
+}

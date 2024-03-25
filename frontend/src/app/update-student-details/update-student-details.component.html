@@ -1,0 +1,13 @@
+<div class="form">
+    <h2>Add Students Details</h2>
+    <input type="file" (change)="onFileChange($event)" accept=".xls" />
+    <button (click)="uploadFile()">Upload</button>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
+  <div class="go-back-button">
+    <button (click)="goBack()">← Go Back</button>
+  </div>
+  
