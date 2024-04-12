@@ -41,4 +41,8 @@ export class SelectionComponent {
   includeIp(){
     this.router.navigate(['/update-minors']);
   }
+
+  semLeave(){
+    this.router.navigate(['/sem-leave']);
+  }
 }

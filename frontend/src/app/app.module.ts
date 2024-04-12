@@ -46,6 +46,7 @@ import { UpdateStudentDetailsComponent } from './update-student-details/update-s
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UpdateMinorsComponent } from './update-minors/update-minors.component';
+import { SemLeaveComponent } from './sem-leave/sem-leave.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +80,7 @@ import { UpdateMinorsComponent } from './update-minors/update-minors.component';
     UpdateStudentDetailsComponent,
     LoginAdminComponent,
     UpdateMinorsComponent,
+    SemLeaveComponent,
   ],
   imports: [
     BrowserModule,

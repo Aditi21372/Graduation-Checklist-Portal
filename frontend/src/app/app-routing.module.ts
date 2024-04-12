@@ -28,6 +28,7 @@ import { StudentsSummaryComponent } from './students-summary/students-summary.co
 import { UpdateStudentDetailsComponent } from './update-student-details/update-student-details.component';
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { UpdateMinorsComponent } from './update-minors/update-minors.component';
+import { SemLeaveComponent } from './sem-leave/sem-leave.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -62,6 +63,7 @@ const routes: Routes = [
   { path: 'update-student-details', component: UpdateStudentDetailsComponent },
   { path: 'login-admin', component: LoginAdminComponent },
   { path: 'update-minors', component: UpdateMinorsComponent },
+  { path: 'sem-leave', component: SemLeaveComponent },
 ];
 
 @NgModule({

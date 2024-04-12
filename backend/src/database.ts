@@ -22,12 +22,14 @@ import { isMinors } from "./minors";
 
 export let courseDatabase: CourseMap = {};
 
-export async function preprocessCourseData(studentData: any): Promise<StudentInfo> {
+export async function preprocessCourseData(
+  studentData: any
+): Promise<StudentInfo> {
   const student = await searchByRollNo(studentData[0]["Roll No"]);
   const studentInfo: StudentInfo = {
-    studentName: student['Name'],
+    studentName: student["Name"],
     rollNumber: studentData[0]["Roll No"],
-    program: student['branch'],
+    program: student["branch"],
     batch: studentData[0]["Batch"],
     courses: [],
   };
@@ -115,10 +117,10 @@ export async function searchByRollNo(rollNo: number): Promise<any> {
     }
 
     const studentInfo = {
-      'Roll No': result["Roll No"],
-      'Name': result["Full Name"],
-      'branch': result["branch"],
-    }
+      "Roll No": result["Roll No"],
+      Name: result["Full Name"],
+      branch: result["branch"],
+    };
 
     return studentInfo;
   } catch (err) {
@@ -260,14 +262,16 @@ export async function updateStudentDetails(fileBuffer: Buffer): Promise<any> {
   // Retrieve existing roll numbers from the database
   const existingRollNumbers = await getExistingRollNumbers();
 
-  const updatedData = data.filter((entry) => {
-    // Filter out entries with roll numbers that already exist in the database
-    return !existingRollNumbers.includes(entry["Roll No"]);
-  }).map((entry) => ({
-    ...entry,
-    Password: generateRandomPassword(),
-    branch: mapProgramToBranch(entry["program Specialization"]),
-  }));
+  const updatedData = data
+    .filter((entry) => {
+      // Filter out entries with roll numbers that already exist in the database
+      return !existingRollNumbers.includes(entry["Roll No"]);
+    })
+    .map((entry) => ({
+      ...entry,
+      Password: generateRandomPassword(),
+      branch: mapProgramToBranch(entry["program Specialization"]),
+    }));
 
   if (updatedData.length === 0) {
     return 0; // Or handle this case as needed
@@ -277,7 +281,7 @@ export async function updateStudentDetails(fileBuffer: Buffer): Promise<any> {
     const collection = db.collection("studentsInfo");
     const result = await collection.insertMany(updatedData);
 
-    if(result.acknowledged) {
+    if (result.acknowledged) {
       return 1;
     }
     return -1;
@@ -300,7 +304,6 @@ async function getExistingRollNumbers(): Promise<number[]> {
   }
 }
 
-
 export async function generateSummary(): Promise<any> {
   try {
     const studentsCollection = db.collection("studentsInfo");
@@ -316,7 +319,7 @@ export async function generateSummary(): Promise<any> {
         continue;
       }
       const studentCourseData = await preprocessCourseData(studentData);
-      const branch = studentCourseData["program"]
+      const branch = studentCourseData["program"];
       if (!getGraduationStatus(studentCourseData, branch)) {
         continue;
       }
@@ -466,5 +469,48 @@ function mapProgramToBranch(program: string): string {
       return "CSAI";
     default:
       return "";
+  }
+}
+
+export async function getBtpData(rollNo: Number): Promise<any> {
+  try {
+    const collection = db.collection("studentsGrade");
+    const query = {
+      "Roll No": rollNo,
+      "Course Code": /^BTP/,
+      Grade: { $nin: ["W", "F", "I"] },
+    };
+    const result = await collection.find(query).toArray();
+    if (result.length === 0) {
+      return []; // Return an empty array
+    }
+    return result;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+export async function includeBTP(
+  btpData: any,
+  rollNo: number
+) {
+  const query = {
+    "Roll No": rollNo,
+    "Course Code": btpData["Course Code"],
+    "Batch / Term Code": btpData["Batch / Term Code"],
+  };
+  const update = {
+    $set: {
+      IncludedInMinors: "BTP",
+    },
+  };
+  const collection = db.collection("studentsGrade");
+  try {
+    const result = await collection.updateOne(query, update);
+    return result;
+  } catch (error) {
+    console.error("Error updating IncludedInMinors:", error);
+    throw error;
   }
 }

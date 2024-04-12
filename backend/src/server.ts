@@ -24,6 +24,8 @@ import {
   sendPasswords,
   checkCredentials,
   searchByRollNo,
+  getBtpData,
+  includeBTP
 } from "./database";
 import {
   sshRule,
@@ -108,6 +110,22 @@ app.post("/api/updateStudent", async (req, res) => {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Student not found" });
   }
+});
+
+app.get("/api/btp-sem-leave/:rollNumber", async (req, res) => {
+  const { rollNumber } = req.params;
+  const btpData = await getBtpData(Number(rollNumber));
+  if (btpData.length > 0) {
+    res.json(btpData);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.post("/api/include-btp", async (req, res) => {
+  const data = req.body;
+  res.json(await includeBTP(data[0], data[1]));
 });
 
 app.get("/api/:rollNumber/info", async (req, res) => {

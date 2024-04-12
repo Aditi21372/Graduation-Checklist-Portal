@@ -621,6 +621,7 @@ export const btpRule: IRule = {
     const studentCourses = studentCourseData["courses"];
     let sem = [];
     let credits = 0;
+    let btpSemsToInclude = 0;
 
     for (const course of studentCourses) {
       const courseCodebtp = course["courseCode"].substring(0, 3);
@@ -630,25 +631,30 @@ export const btpRule: IRule = {
       ) {
         credits += course["credit"];
         sem.push(course["semester"]);
-      }
 
-      if (courseCodebtp === "BTP") {
-        let courseEntry: CourseData = {
+        returnData.data.courses.push({
           course: course["courseCode"],
           courseName: course["course"],
           semester: course["semester"],
           status: "Complete",
           credits: course["credit"],
           grade: course["grade"],
-        };
-        returnData.data.courses.push(courseEntry);
+        });
+
+        if (course["includedInMinors"] === "BTP") {
+          btpSemsToInclude += 1;
+        }
       }
     }
+
+    returnData.data.totalCredits = credits;
 
     if (credits == 0) {
       returnData.isCompleteText = "Not Done";
     } else if (credits > 0 && credits < 8) {
       returnData.isCompleteText = "Incomplete";
+    } else if (credits > 12) {
+      returnData.isCompleteText = "Done extra credits";
     } else if (credits >= 8) {
       let semesters = [];
       let pairDifferences = [];
@@ -658,26 +664,35 @@ export const btpRule: IRule = {
           semesters.push(num1);
         }
       }
-      semesters.sort();
+
       if (semesters.length == 1) {
-        returnData.isCompleteText = "Incomplete";
+        returnData.isCompleteText = "Incomplete"; // 8 in 1 or 4 in 1 and 4 in summer
+        return returnData;
       }
+      semesters.sort();
+
       for (let i = 0; i < semesters.length - 1; i++) {
         const num1 = semesters[i];
         const num2 = semesters[i + 1];
-        const difference = Math.abs(num1 - num2); // Calculate the absolute difference
+        const difference = Math.abs(num1 - num2);
         pairDifferences.push(difference);
       }
       const allOnes = pairDifferences.every((element) => element === 1);
+
       if (allOnes && credits <= 12) {
         returnData.isCompleteText = "Complete";
-      } else if (credits >= 12) {
-        returnData.isCompleteText = "Done extra credits";
-      } else if (!allOnes) {
+      } else if (!allOnes && credits <= 12) {
         returnData.isCompleteText = "Incomplete";
+
+        const countNonOnes = pairDifferences.filter(
+          (element) => element !== 1
+        ).length;
+        if (btpSemsToInclude === countNonOnes) {
+          returnData.isCompleteText = "Complete";
+        }
       }
     }
-    returnData.data.totalCredits = credits;
+
     return returnData;
   },
 };

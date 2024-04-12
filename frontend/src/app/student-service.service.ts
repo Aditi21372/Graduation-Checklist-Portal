@@ -201,6 +201,14 @@ export class StudentServiceService {
     return this.http.request(request);
   }
 
+  getBtpForSemLeave(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'btp-sem-leave/' + rollNumber);
+  } 
+
+  updateBtp(data: any, rollNo: Number): Observable<any> {
+    return this.http.post(this.apiUrl + 'include-btp', [data, rollNo]);
+  }
+
   getStudentDetails(): Observable<any> {
     return this.http.get(this.apiUrl + 'get-students-details', {
       responseType: 'arraybuffer',
