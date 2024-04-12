@@ -1,5 +1,6 @@
 import express from "express";
 import multer from "multer";
+import xlsx from "xlsx";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
 import { calculateCGPA } from "./cgpa";
@@ -7,12 +8,12 @@ import { StudentInfo } from "./type";
 import { isHonors } from "./honors";
 import {
   isMinors,
-  checkExtraIpForMinors,
+  checkIpBtpForMinors,
   includeIp,
   approveApprenticeship,
 } from "./minors";
 import {
-  searchByRollNo,
+  getStudentData,
   updateStudentGrade,
   preprocessCourseData,
   updateStudentDatabase,
@@ -20,6 +21,9 @@ import {
   updateStudentDetails,
   generateSummary,
   getSummary,
+  sendPasswords,
+  checkCredentials,
+  searchByRollNo,
 } from "./database";
 import {
   sshRule,
@@ -54,10 +58,8 @@ let studentCourseData: StudentInfo = {
   courses: [],
 };
 
-
-
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.header("Access-Control-Allow-Origin", "http://localhost:40000");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -71,14 +73,24 @@ app.get("/api/login/:username/:password", (req, res) => {
   const { username, password } = req.params;
   if (username === "iiitdadmin" && password === "Admin@2019") {
     res.json(true);
+  } else {
+    res.status(404).json({ error: "User not found" });
   }
+});
 
-  res.status(404).json({ error: "User not found" });
+app.get("/api/student-login/:username/:password", async (req, res) => {
+  const { username, password } = req.params;
+  const rollNo = await checkCredentials(username, password);
+  if (rollNo) {
+    res.json(rollNo);
+  } else {
+    res.status(404).json({ error: "Wrong Credentials" });
+  }
 });
 
 app.get("/api/student/:rollNumber", async (req, res) => {
   const { rollNumber } = req.params;
-  const studentData = await searchByRollNo(Number(rollNumber));
+  const studentData = await getStudentData(Number(rollNumber));
   if (studentData.length > 0) {
     res.json(studentData);
   } else {
@@ -101,15 +113,9 @@ app.post("/api/updateStudent", async (req, res) => {
 app.get("/api/:rollNumber/info", async (req, res) => {
   // Get the rollNumber parameter from the request URL.
   const { rollNumber } = req.params;
-  const studentData = await searchByRollNo(Number(rollNumber));
+  const studentInfo = await searchByRollNo(Number(rollNumber));
   // Check if the roll number exists in the database.
-  if (studentData.length > 0) {
-    const studentInfo = {
-      rollNumber: rollNumber,
-      studentName: studentData[0]["Student Name"],
-      branch: studentData[0]["Program"],
-    };
-
+  if (studentInfo) {
     res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
@@ -119,16 +125,10 @@ app.get("/api/:rollNumber/info", async (req, res) => {
 
 app.get("/api/:rollNumber/courseinfo", async (req, res) => {
   const { rollNumber } = req.params;
-  const studentData = await searchByRollNo(Number(rollNumber));
+  const studentInfo = await searchByRollNo(Number(rollNumber));
   // Check if the roll number exists in the database.
-  if (studentData.length > 0) {
-    const studentInfo = {
-      rollNumber: rollNumber,
-      studentName: studentData[0]["Student Name"],
-      branch: studentData[0]["Program"],
-    };
-    studentCourseData = preprocessCourseData(studentData);
-
+  if (studentInfo) {
+    studentCourseData = await preprocessCourseData(await getStudentData(Number(rollNumber)));
     res.json(studentInfo);
   } else {
     // If the roll number is not found, return an error response.
@@ -219,18 +219,26 @@ app.get("/api/minors", (req, res) => {
   res.json(isMinors(studentCourseData));
 });
 
-app.get("/api/:minors/ipMinors", async (req, res) => {
-  const { minors } = req.params;
-  res.json(await checkExtraIpForMinors(studentCourseData, minors));
-});
-
-app.post("/api/updateMinors", async (req, res) => {
+app.post("/api/update-minors", async (req, res) => {
   const Data = req.body;
   res.json(await includeIp(Data[0], Data[1], studentCourseData["rollNumber"]));
 });
 
-app.get("/api/apprenticeship", async (req, res) => {
-  res.json(await approveApprenticeship(studentCourseData));
+app.post("/api/update-student-minors", async (req, res) => {
+  const { rollNumber, type } = req.body;
+  const studentData = await getStudentData(Number(rollNumber));
+  // Check if the roll number exists in the database.
+  if (studentData.length <= 0) {
+    res.status(404).json({ error: "Student not found" });
+    return;
+  }
+  studentCourseData = await preprocessCourseData(studentData);
+
+  if (type === "IP" || type === "BTP") {
+    res.json(await checkIpBtpForMinors(studentCourseData, type));
+  } else if (type === "Apprenticeship") {
+    res.json(await approveApprenticeship(studentCourseData));
+  }
 });
 
 app.get("/api/totalcredits", (req, res) => {
@@ -245,6 +253,11 @@ app.get("/api/:branch/graduation-check", (req, res) => {
 app.get("/api/:branch/graduation-date", (req, res) => {
   const { branch } = req.params;
   res.json(getGraduationDate(studentCourseData, branch));
+});
+
+app.get("/api/request-provisional/:rollNumber", (req, res) => {
+  const { rollNumber } = req.params;
+  res.json({ message: "Request Sent" });
 });
 
 app.get("/api/semester-wise-cgpa", (req, res) => {
@@ -298,8 +311,10 @@ app.post(
 
     if (fileBuffer) {
       const result = await updateStudentDetails(fileBuffer);
-      if (result) {
+      if (result == 1) {
         res.status(200).json({ message: "File uploaded successfully" });
+      } else if (result == 0) {
+        res.status(400).json({ error: "No new entry to add" });
       } else {
         res.status(400).json({ error: "File Uploading failed" });
       }
@@ -308,6 +323,19 @@ app.post(
     }
   }
 );
+
+app.get("/api/get-students-details", async (req, res) => {
+  const excelBuffer = await sendPasswords();
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  );
+  res.setHeader(
+    "Content-Disposition",
+    "attachment; filename=studentsInfo.xlsx"
+  );
+  res.send(excelBuffer);
+});
 
 app.get("/api/:batch/summary", async (req, res) => {
   const { batch } = req.params;
@@ -318,7 +346,29 @@ app.get("/api/:batch/summary", async (req, res) => {
     // If the roll number is not found, return an error response.
     res.status(404).json({ error: "Summary does not Exist" });
   }
+});
 
+app.get("/api/:batch/download-summary", async (req, res) => {
+  const { batch } = req.params;
+  const studentData = await getSummary(Number(batch));
+  const workbook = xlsx.utils.book_new();
+  const sheet = xlsx.utils.json_to_sheet(studentData);
+  xlsx.utils.book_append_sheet(workbook, sheet, "StudentSummary");
+  const excelBuffer = xlsx.write(workbook, { type: "buffer" });
+  if (studentData.length > 0) {
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=studentsInfo.xlsx"
+    );
+    res.send(excelBuffer);
+  } else {
+    // If the roll number is not found, return an error response.
+    res.status(404).json({ error: "Summary does not Exist" });
+  }
 });
 
 app.get("/api/generate-summary", async (req, res) => {

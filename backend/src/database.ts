@@ -22,11 +22,12 @@ import { isMinors } from "./minors";
 
 export let courseDatabase: CourseMap = {};
 
-export function preprocessCourseData(studentData: any): StudentInfo {
+export async function preprocessCourseData(studentData: any): Promise<StudentInfo> {
+  const student = await searchByRollNo(studentData[0]["Roll No"]);
   const studentInfo: StudentInfo = {
-    studentName: studentData[0]["Student Name"],
+    studentName: student['Name'],
     rollNumber: studentData[0]["Roll No"],
-    program: studentData[0]["Program"],
+    program: student['branch'],
     batch: studentData[0]["Batch"],
     courses: [],
   };
@@ -48,8 +49,8 @@ export function preprocessCourseData(studentData: any): StudentInfo {
     "src/data/student.json",
     JSON.stringify(studentInfo, null, 2)
   );
-  
-  courseDatabase = getCourseDatabase(studentData[0]["Batch"].toString())
+
+  courseDatabase = getCourseDatabase(studentData[0]["Batch"].toString());
 
   return studentInfo;
 }
@@ -104,7 +105,29 @@ export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
   return graduatedStudents;
 }
 
-export async function searchByRollNo(rollNo: number): Promise<any[]> {
+export async function searchByRollNo(rollNo: number): Promise<any> {
+  try {
+    const collection = db.collection("studentsInfo");
+    const query = { "Roll No": rollNo };
+    const result = await collection.findOne(query);
+    if (result === null || result.aknowledged === 0) {
+      return null;
+    }
+
+    const studentInfo = {
+      'Roll No': result["Roll No"],
+      'Name': result["Full Name"],
+      'branch': result["branch"],
+    }
+
+    return studentInfo;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+export async function getStudentData(rollNo: number): Promise<any[]> {
   try {
     const collection = db.collection("studentsGrade");
 
@@ -234,22 +257,49 @@ export async function updateStudentDetails(fileBuffer: Buffer): Promise<any> {
   const sheet: xlsx.WorkSheet = workbook.Sheets[sheetName];
   const data: any[] = xlsx.utils.sheet_to_json(sheet);
 
-  const updatedData = data.map((entry) => ({
+  // Retrieve existing roll numbers from the database
+  const existingRollNumbers = await getExistingRollNumbers();
+
+  const updatedData = data.filter((entry) => {
+    // Filter out entries with roll numbers that already exist in the database
+    return !existingRollNumbers.includes(entry["Roll No"]);
+  }).map((entry) => ({
     ...entry,
-    Password: "",
+    Password: generateRandomPassword(),
+    branch: mapProgramToBranch(entry["program Specialization"]),
   }));
+
+  if (updatedData.length === 0) {
+    return 0; // Or handle this case as needed
+  }
 
   try {
     const collection = db.collection("studentsInfo");
-    await collection.createIndex({ "Roll No": 1 }, { unique: true });
     const result = await collection.insertMany(updatedData);
 
-    return result.acknowledged;
+    if(result.acknowledged) {
+      return 1;
+    }
+    return -1;
   } catch (error) {
     console.error("Error inserting data into MongoDB:", error);
+    return -1;
+  }
+}
+
+// Function to retrieve existing roll numbers from the database
+async function getExistingRollNumbers(): Promise<number[]> {
+  try {
+    const collection = db.collection("studentsInfo");
+    const existingRollNumbers = await collection.distinct("Roll No");
+
+    return existingRollNumbers;
+  } catch (error) {
+    console.error("Error retrieving existing roll numbers:", error);
     throw error;
   }
 }
+
 
 export async function generateSummary(): Promise<any> {
   try {
@@ -261,20 +311,16 @@ export async function generateSummary(): Promise<any> {
     // Loop through each student
     for (const student of studentsInfo) {
       // Extract student's information from studentsGrade collection
-      const studentData = await searchByRollNo(Number(student["Roll No"]));
+      const studentData = await getStudentData(Number(student["Roll No"]));
       if (studentData.length === 0) {
         continue;
       }
-      const studentCourseData = preprocessCourseData(studentData);
-      const branch = studentCourseData["program"].slice(
-        studentCourseData["program"].lastIndexOf("/") + 1,
-        studentCourseData["program"].length
-      );
+      const studentCourseData = await preprocessCourseData(studentData);
+      const branch = studentCourseData["program"]
       if (!getGraduationStatus(studentCourseData, branch)) {
         continue;
       }
-      console.log(studentCourseData);
-      const summary = await calculateSummary(studentCourseData, branch);
+      await calculateSummary(studentCourseData, branch);
     }
 
     return "Summary generation completed.";
@@ -313,7 +359,6 @@ async function calculateSummary(
       majorCore.isCompleteBool && majorElective.isCompleteBool ? "Yes" : "No",
   };
 
-  console.log(majorCore.isCompleteBool && majorElective.isCompleteBool )
   for (let i = 0; i < minors.length; i++) {
     if (minors[i].isCompleteText === "Complete") {
       if (minors[i].data.stream === "Economics") {
@@ -328,11 +373,16 @@ async function calculateSummary(
 
   try {
     const graduationSummaryCollection = db.collection("graduationSummary");
-    const existingDocument = await graduationSummaryCollection.findOne({ "Roll No": studentCourseData.rollNumber });
+    const existingDocument = await graduationSummaryCollection.findOne({
+      "Roll No": studentCourseData.rollNumber,
+    });
 
     if (existingDocument) {
       // If document with same Roll No exists, update it
-      await graduationSummaryCollection.updateOne({ "_id": existingDocument._id }, { $set: summary });
+      await graduationSummaryCollection.updateOne(
+        { _id: existingDocument._id },
+        { $set: summary }
+      );
     } else {
       // If no document with same Roll No exists, insert new document
       await graduationSummaryCollection.insertOne(summary);
@@ -353,5 +403,68 @@ export async function getSummary(batch: Number): Promise<any> {
   } catch (error) {
     console.error("Error fetching data from MongoDB:", error);
     throw error;
+  }
+}
+
+function generateRandomPassword() {
+  const chars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@";
+  let password = "";
+  const length = Math.floor(Math.random() * (10 - 6 + 1)) + 6;
+  for (let i = 0; i < length; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+}
+
+export async function sendPasswords() {
+  const collection = db.collection("studentsInfo");
+  const cursor = collection.find({});
+  const data = await cursor.toArray();
+
+  const workbook = xlsx.utils.book_new();
+  const sheet = xlsx.utils.json_to_sheet(data);
+  xlsx.utils.book_append_sheet(workbook, sheet, "StudentsInfo");
+  const excelBuffer = xlsx.write(workbook, { type: "buffer" });
+  return excelBuffer;
+}
+
+export async function checkCredentials(
+  username: string,
+  password: string
+): Promise<any> {
+  try {
+    const collection = db.collection("studentsInfo");
+    const query = { "Primary Email Id": username, Password: password };
+    const result = await collection.findOne(query);
+    if (result !== null) {
+      return result["Roll No"];
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error fetching data from MongoDB:", error);
+    throw error;
+  }
+}
+
+function mapProgramToBranch(program: string): string {
+  switch (program) {
+    case "Electronics and Communication Engineering":
+      return "ECE";
+    case "Computer Science and Applied Mathematics":
+      return "CSAM";
+    case "Computer Science and Engineering":
+      return "CSE";
+    case "Computer Science and Design":
+      return "CSD";
+    case "Computer Science and Social Sciences":
+      return "CSSS";
+    case "Computer Science and Biosciences":
+      return "CSB";
+    case "Computer Science and Artificial Intelligence":
+      return "CSAI";
+    default:
+      return "";
   }
 }

@@ -10,7 +10,7 @@
       <div class="form-group">
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Email"
           [(ngModel)]="username"
           name="username"
         />
@@ -26,10 +26,8 @@
       <button class="login-button" (click)="onLogin()">Log in</button>
       <div class="response-message">{{ responseMessage }}</div>
       <div class="forgot-password">
-        <a href="#">Forgotten password?</a>
+        <a href="/login-admin">Admin Login?</a>
       </div>
-      <hr class="line" />
     </form>
-    <button class="create-account-button">Create New Account</button>
   </div>
 </div>

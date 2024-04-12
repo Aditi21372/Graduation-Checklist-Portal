@@ -29,6 +29,7 @@ export class StudentInfoInputComponent {
         this.showContent = false;
         this.showMessage = '';
         this.router.navigate(['/dashboard', this.studentRollNumber]);
+        console.log(data);
       },
       (error) => {
         this.showMessage = '';

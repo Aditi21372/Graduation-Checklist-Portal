@@ -17,7 +17,6 @@ export class SummaryPageComponent implements OnInit {
   finalCGPA: number = 0;
   studentName: string = '';
   program: string = '';
-  branch: string = '';
 
   constructor(
     private studentService: StudentServiceService,
@@ -31,23 +30,19 @@ export class SummaryPageComponent implements OnInit {
       this.rollNumber = params['rollNumber'];
       this.program = params['program'];
       this.studentName = params['studentName'];
-      this.branch = this.program.slice(
-        this.program.lastIndexOf('/') + 1,
-        this.program.length
-      );
 
       // Create an array of observables for each API call
       const observables = [
-        this.studentService.getGraduationStatus(this.branch),
-        this.studentService.getGraduationDate(this.branch),
+        this.studentService.getGraduationStatus(this.program),
+        this.studentService.getGraduationDate(this.program),
         this.studentService.getRequiredCredits(),
         this.studentService.getSemWiseCGPA(),
         this.studentService.getSGcourses(),
         this.studentService.getCWcourses(),
         this.studentService.getSSHcourses(),
         this.studentService.getBTPCredits(),
-        this.studentService.get32Credits(this.branch),
-        this.studentService.getHonors(this.branch),
+        this.studentService.get32Credits(this.program),
+        this.studentService.getHonors(this.program),
         this.studentService.getMinors(),
         this.studentService.getEcoMajorCore(),
         this.studentService.getEcoMajorElective(),
@@ -144,6 +139,10 @@ export class SummaryPageComponent implements OnInit {
       }
     }
     return stream;
+  }
+
+  printSummary() {
+    window.print();
   }
 
   goBack() {

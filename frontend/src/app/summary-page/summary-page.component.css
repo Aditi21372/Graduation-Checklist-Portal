@@ -1,11 +1,10 @@
 .container {
   text-align: center;
-  padding: 60px;
+  padding: 20px;
 }
 
 .form {
   max-width: 400px;
-  margin: 0 auto;
   padding: 20px;
   border: 1px solid #dddfe2;
   border-radius: 6px;
@@ -15,7 +14,6 @@
 
 .form-group {
   text-align: left;
-  margin-bottom: 15px;
 }
 
 label {
@@ -57,7 +55,7 @@ label {
 
 .button {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 10px;
   font-size: 18px;
   font-weight: bold;
   text-align: center;
@@ -68,6 +66,13 @@ label {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
+  
+}
+
+.sum {
+  display: flex;
+  justify-content: center;
+  align-items: center
 }
 
 .button:hover {
@@ -75,15 +80,7 @@ label {
   color: #fff;
 }
 
-.error-message {
-  font-size: 14px;
-  color: #1d2129;
-  margin-top: 5px;
-  margin-bottom: 15px;
-}
-
 .mat-card {
-  margin: 20px auto;
   max-width: 600px;
   background-color: #f4f4f4;
   border-radius: 10px;
@@ -92,14 +89,12 @@ label {
 
 h2 {
   font-size: 24px;
-  margin: 20px 0;
   color: #333;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 10px auto;
   max-width: 400px;
 }
 
@@ -120,7 +115,6 @@ tr:nth-child(even) {
 }
 
 td button {
-  margin: 5px;
   padding: 4px 8px;
   font-size: 14px;
   font-weight: normal;
@@ -151,7 +145,6 @@ td.mat-cell.button-column {
 .center-button {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
 }
 
 .scrollable-content {
@@ -164,9 +157,6 @@ td.mat-cell.button-column {
   justify-content: center;
 }
 
-.vertical-spacer {
-  margin-bottom: 50px;
-}
 
 .student-info {
   display: flex;
@@ -175,4 +165,39 @@ td.mat-cell.button-column {
   flex-wrap: nowrap;
   padding: 0 20px 20px 20px;
   font-size: medium;
+}
+
+button {
+  margin: 10px 10px;
+  position: center;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #identity *,
+  #summary * {
+    visibility: visible;
+  }
+  
 }

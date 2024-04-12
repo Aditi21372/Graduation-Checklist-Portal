@@ -15,7 +15,6 @@ export class CsssEcomajorComponent {
   rollNumber: number = 0;
   studentName: string = '';
   program: string = '';
-  branch: string = '';
   displayedColumns: string[] = [
     'course',
     'courseName',
@@ -41,7 +40,6 @@ export class CsssEcomajorComponent {
       this.rollNumber = params['rollNumber'];
       this.studentName = params['studentName'];
       this.program = params['program'];
-      this.branch = params['branch'];
       this.ecoMajorCoreCourses = JSON.parse(params['ecoMajorCoreCourses']);
       this.ecoMajorElectiveCourses = JSON.parse(params['ecoMajorElectiveCourses']);
       this.populateCoreCourses();

@@ -18,10 +18,10 @@ export class LoginComponent {
   ) {}
 
   onLogin() {
-    this.studentService.login(this.username, this.password).subscribe(
+    this.studentService.studentLogin(this.username, this.password).subscribe(
       (response) => {
         // Handle the response from the backend, e.g., redirect to another page;
-        this.router.navigate(['/selection']);
+        this.router.navigate(['/dashboard', response])
       },
       (error) => {
         // Handle any errors, e.g., display an error message

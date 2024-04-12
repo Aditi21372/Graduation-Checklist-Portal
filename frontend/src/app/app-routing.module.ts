@@ -26,6 +26,8 @@ import { AiCoursesComponent } from './ai-courses/ai-courses.component';
 import { CsssEcomajorComponent } from './csss-ecomajor/csss-ecomajor.component';
 import { StudentsSummaryComponent } from './students-summary/students-summary.component';
 import { UpdateStudentDetailsComponent } from './update-student-details/update-student-details.component';
+import { LoginAdminComponent } from './login-admin/login-admin.component';
+import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -58,7 +60,8 @@ const routes: Routes = [
   { path: 'csss-ecomajor', component: CsssEcomajorComponent },
   { path: 'students-summary', component: StudentsSummaryComponent },
   { path: 'update-student-details', component: UpdateStudentDetailsComponent },
-
+  { path: 'login-admin', component: LoginAdminComponent },
+  { path: 'update-minors', component: UpdateMinorsComponent },
 ];
 
 @NgModule({

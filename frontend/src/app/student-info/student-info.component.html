@@ -45,5 +45,14 @@
     >
       Show Semester Wise CGPA
     </button>
+
+    <button
+      *ngIf="gradStatus === true && request === false"
+      mat-raised-button
+      color="accent"
+      (click)="requestProvisional()"
+    >
+      Request Provisional Certificate
+    </button>
   </mat-card-content>
 </mat-card>

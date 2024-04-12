@@ -13,7 +13,6 @@ export class ChecklistComponent implements OnInit {
   @Input() rollNumber: number = 0;
 
   branch: string = '';
-  program: string = '';
   studentName: string = '';
   displayedColumn: string[] = ['index', 'rule', 'status', 'credits', 'action'];
   bucketsRuleCompleted: string = '';
@@ -22,8 +21,6 @@ export class ChecklistComponent implements OnInit {
   completedBuckets: any;
   bucketCredits: number = 0;
   bucketStatus: boolean = true;
-  ipCredits: number = 0;
-  btpCredits: number = 0;
 
   constructor(
     private studentService: StudentServiceService,
@@ -36,12 +33,8 @@ export class ChecklistComponent implements OnInit {
     this.studentService
       .getStudentCourseData(this.rollNumber.toString())
       .subscribe((studentData) => {
-        this.program = studentData.branch;
-        this.studentName = studentData.studentName;
-        this.branch = this.program.slice(
-          this.program.lastIndexOf('/') + 1,
-          this.program.length
-        );
+        this.studentName = studentData['Name'];
+        this.branch = studentData.branch;
         this.setGraduationStatus();
 
         const observables = [
@@ -200,8 +193,7 @@ export class ChecklistComponent implements OnInit {
   populateExtraCourses(): Observable<any> {
     if (this.branch === 'CSAI') {
       return this.populateCsaiCourses();
-    }
-    else {
+    } else {
       return this.populate32Credits();
     }
   }
@@ -244,9 +236,13 @@ export class ChecklistComponent implements OnInit {
         return this.studentService.getCsaiApplication().pipe(
           map((coursesData: any) => {
             newData.credits += coursesData.data.totalCredits;
-            newData.statusBool = ruleData.isCompleteBool && coursesData.isCompleteBool;
+            newData.statusBool =
+              ruleData.isCompleteBool && coursesData.isCompleteBool;
             newData.status = newData.statusBool ? 'Complete' : 'Incomplete';
-            this.courseData.set('csaiCourses', [ruleData.data, coursesData.data]);
+            this.courseData.set('csaiCourses', [
+              ruleData.data,
+              coursesData.data,
+            ]);
             this.dataSourceTwo.push(newData);
             return null;
           })
@@ -254,7 +250,7 @@ export class ChecklistComponent implements OnInit {
       })
     );
   }
-  
+
   populateEcoMajors(): Observable<any> {
     return this.studentService.getEcoMajorCore().pipe(
       mergeMap((ruleData: any) => {
@@ -270,9 +266,13 @@ export class ChecklistComponent implements OnInit {
         return this.studentService.getEcoMajorElective().pipe(
           map((coursesData: any) => {
             newData.credits += coursesData.data.totalCredits;
-            newData.statusBool = ruleData.isCompleteBool && coursesData.isCompleteBool;
+            newData.statusBool =
+              ruleData.isCompleteBool && coursesData.isCompleteBool;
             newData.status = newData.statusBool ? 'Complete' : 'Not Done';
-            this.courseData.set('ecoMajorCourses', [ruleData.data, coursesData.data]);
+            this.courseData.set('ecoMajorCourses', [
+              ruleData.data,
+              coursesData.data,
+            ]);
             this.dataSourceTwo.push(newData);
             return null;
           })
@@ -293,7 +293,6 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Details',
         };
 
-        this.ipCredits = ruleData.data.totalCredits;
         this.courseData.set('IP_Details', ruleData.data.courses);
         this.dataSourceTwo.push(newData);
         return null;
@@ -351,7 +350,6 @@ export class ChecklistComponent implements OnInit {
           button_text: 'View Details',
         };
 
-        this.btpCredits = ruleData.data.totalCredits;
         this.courseData.set('BTP_Details', ruleData.data.courses);
         this.dataSourceTwo.push(newData);
         return null;
@@ -381,6 +379,7 @@ export class ChecklistComponent implements OnInit {
   populateMinors(): Observable<any> {
     return this.studentService.getMinors().pipe(
       map((courseData: any) => {
+
         for (let i = 0; i < courseData.length; i++) {
           let newData = {
             index: 11,
@@ -452,12 +451,11 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/core-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             coreCourseData: JSON.stringify(coreCourses),
             bucketCourseData: JSON.stringify(bucketCourses),
             completedBuckets: JSON.stringify(this.completedBuckets),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -466,10 +464,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/ssh-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(sshCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -478,10 +475,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/ssh-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(sshMajorCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -490,10 +486,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/cw-details'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(cwDetails),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -502,10 +497,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/sg-details'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(sgDetails),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -514,10 +508,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/btp-details'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(btpDetails),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -526,10 +519,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/twoxx-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(twoxxCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -538,10 +530,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/ip-details'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(ipDetails),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -550,25 +541,23 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/branch-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(thirtyCreditCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
-        case '16 Credits of CSE Courses':
-          let sixteenCreditCourses = this.courseData.get('32Credits_Courses');
-          this.router.navigate(['/branch-courses-list'], {
-            queryParams: {
-              rollNumber: this.rollNumber,
-              branch: this.branch,
-              courseData: JSON.stringify(sixteenCreditCourses),
-              studentName: this.studentName,
-              program: this.program,
-            },
-          });
-          break;
+      case '16 Credits of CSE Courses':
+        let sixteenCreditCourses = this.courseData.get('32Credits_Courses');
+        this.router.navigate(['/branch-courses-list'], {
+          queryParams: {
+            rollNumber: this.rollNumber,
+            courseData: JSON.stringify(sixteenCreditCourses),
+            studentName: this.studentName,
+            program: this.branch,
+          },
+        });
+        break;
       case 'AI Core & Application Courses':
         let aiCoreCourses = this.courseData.get('csaiCourses')[0];
         let aiApplicationCourses = this.courseData.get('csaiCourses')[1];
@@ -576,11 +565,10 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/ai-courses'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             aiCoreCourses: JSON.stringify(aiCoreCourses),
             aiApplicationCourses: JSON.stringify(aiApplicationCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -591,11 +579,10 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/csss-ecomajor'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             ecoMajorCoreCourses: JSON.stringify(ecoMajorCoreCourses),
             ecoMajorElectiveCourses: JSON.stringify(ecoMajorElectiveCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -604,10 +591,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/online-courses-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(onlineCourses),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -616,10 +602,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/incomplete-grades-list'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(incompleteGrades),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -628,10 +613,9 @@ export class ChecklistComponent implements OnInit {
         this.router.navigate(['/honors'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            branch: this.branch,
             courseData: JSON.stringify(honors),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -641,11 +625,9 @@ export class ChecklistComponent implements OnInit {
           queryParams: {
             rollNumber: this.rollNumber,
             stream: 'Computational Biology',
-            ipCredits: this.ipCredits,
-            btpCredits: this.btpCredits,
             courseData: JSON.stringify(minorsBio),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -655,11 +637,9 @@ export class ChecklistComponent implements OnInit {
           queryParams: {
             rollNumber: this.rollNumber,
             stream: 'Economics',
-            ipCredits: this.ipCredits,
-            btpCredits: this.btpCredits,
             courseData: JSON.stringify(minorsEco),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;
@@ -669,11 +649,9 @@ export class ChecklistComponent implements OnInit {
           queryParams: {
             rollNumber: this.rollNumber,
             stream: 'Entrepreneurship',
-            ipCredits: this.ipCredits,
-            btpCredits: this.btpCredits,
             courseData: JSON.stringify(minorsEnt),
             studentName: this.studentName,
-            program: this.program,
+            program: this.branch,
           },
         });
         break;

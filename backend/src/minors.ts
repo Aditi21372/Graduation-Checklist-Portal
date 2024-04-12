@@ -15,11 +15,10 @@ export function isMinors(studentInfo: StudentInfo): MinorsComponents[] {
   return minors;
 }
 
-export async function checkExtraIpForMinors(
+export async function checkIpBtpForMinors(
   studentInfo: StudentInfo,
-  minorsBranch: string
+  type: string
 ): Promise<any> {
-  const ipCourses = courseDatabase["IP/IS/UR"];
   const studentCourses = studentInfo["courses"];
   const projection = {
     _id: 0,
@@ -32,7 +31,7 @@ export async function checkExtraIpForMinors(
   };
   const data = [];
 
-  if (minorsBranch === "Entrepreneurship") {
+  if (type === "BTP") {
     for (const course of studentCourses) {
       if (course["courseCode"].substring(0, 3) === "BTP") {
         const query = {
@@ -51,6 +50,8 @@ export async function checkExtraIpForMinors(
       }
     }
   } else {
+    const ipCourses = courseDatabase["IP/IS/UR"];
+
     for (const course of studentCourses) {
       if (ipCourses.includes(course["courseCode"].substring(0, 3))) {
         const query = {
@@ -98,6 +99,15 @@ export async function includeIp(
 
 export async function approveApprenticeship(studentInfo: StudentInfo) {
   const collection = db.collection("studentsGrade");
+
+  const existingDocument = await collection.findOne({
+    "Roll No": studentInfo["rollNumber"],
+    Course: "Apprenticeship"
+  });
+
+  if (existingDocument) {
+    return null;
+  }
 
   const input = {
     "SN.": 0,

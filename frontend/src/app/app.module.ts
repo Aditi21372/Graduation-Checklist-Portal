@@ -43,6 +43,9 @@ import { AiCoursesComponent } from './ai-courses/ai-courses.component';
 import { CsssEcomajorComponent } from './csss-ecomajor/csss-ecomajor.component';
 import { StudentsSummaryComponent } from './students-summary/students-summary.component';
 import { UpdateStudentDetailsComponent } from './update-student-details/update-student-details.component';
+import { LoginAdminComponent } from './login-admin/login-admin.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +77,8 @@ import { UpdateStudentDetailsComponent } from './update-student-details/update-s
     CsssEcomajorComponent,
     StudentsSummaryComponent,
     UpdateStudentDetailsComponent,
+    LoginAdminComponent,
+    UpdateMinorsComponent,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +96,7 @@ import { UpdateStudentDetailsComponent } from './update-student-details/update-s
     RouterModule,
     MatSortModule,
     MatMenuModule,
+    MatSnackBarModule
   ],
   providers: [StudentServiceService],
   bootstrap: [AppComponent],

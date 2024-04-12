@@ -37,4 +37,8 @@ export class SelectionComponent {
   logout() {
     this.router.navigate(['/login']);
   }
+
+  includeIp(){
+    this.router.navigate(['/update-minors']);
+  }
 }

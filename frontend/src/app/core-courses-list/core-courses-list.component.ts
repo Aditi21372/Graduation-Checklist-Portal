@@ -13,7 +13,6 @@ export class CoreCoursesListComponent implements OnInit {
   rollNumber: number = 0;
   studentName: string = '';
   program: string = '';
-  branch: string = '';
   tablesData: MatTableDataSource<any>[] = [];
   displayedColumns: string[] = [
     'course',
@@ -40,7 +39,6 @@ export class CoreCoursesListComponent implements OnInit {
       this.rollNumber = params['rollNumber'];
       this.studentName = params['studentName'];
       this.program = params['program'];
-      this.branch = params['branch'];
       this.coreCourseData = JSON.parse(params['coreCourseData']);
       this.bucketCourseData = JSON.parse(params['bucketCourseData']);
       this.completedBuckets = JSON.parse(params['completedBuckets']);

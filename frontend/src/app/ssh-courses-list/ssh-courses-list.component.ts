@@ -11,7 +11,6 @@ import { UtilityService } from '../utility.service';
 export class SshCoursesListComponent {
   dataSource: MatTableDataSource<any>;
   rollNumber: number = 0;
-  branch: string = '';
   program: string = '';
   studentName: string = '';
   courseData: any;
@@ -37,7 +36,6 @@ export class SshCoursesListComponent {
       this.studentName = params['studentName'];
       this.program = params['program'];
       this.rollNumber = params['rollNumber'];
-      this.branch = params['branch'];
       this.courseData = JSON.parse(params['courseData']);
       this.populateSSHCourses();
     });

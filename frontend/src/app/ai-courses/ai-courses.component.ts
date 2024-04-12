@@ -13,7 +13,6 @@ export class AiCoursesComponent {
   rollNumber: number = 0;
   studentName: string = '';
   program: string = '';
-  branch: string = '';
   displayedColumns: string[] = [
     'course',
     'courseName',
@@ -39,7 +38,6 @@ export class AiCoursesComponent {
       this.rollNumber = params['rollNumber'];
       this.studentName = params['studentName'];
       this.program = params['program'];
-      this.branch = params['branch'];
       this.aiCoreCourses = JSON.parse(params['aiCoreCourses']);
       this.aiApplicationCourses = JSON.parse(params['aiApplicationCourses']);
       this.populateCoreCourses();

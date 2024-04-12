@@ -1,74 +1,74 @@
-<body>
-  <div>
-    <button (click)="processSummary()">Process Student Summary</button>
-    <div>{{ processing }}</div>
-  </div>
+<div>
+  <button (click)="processSummary()">Process Student Summary</button>
+  <div>{{ processing }}</div>
+</div>
 
-  <div class="go-back-button">
-    <button (click)="goBack()">← Go Back</button>
-  </div>
+<div class="go-back-button">
+  <button (click)="goBack()">← Go Back</button>
+</div>
 
-  <div class="container">
-    <form (ngSubmit)="onSubmit()" class="form">
-      <div class="form-group">
-        <label for="batch">Batch</label>
-        <input
-          type="number"
-          id="batch"
-          name="batch"
-          [(ngModel)]="batch"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div *ngIf="showMessage" class="error-message">
-        {{ showMessage }}
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-
-  <div class="container" *ngIf="showContent">
-    <button (click)="printTable()" class="btn btn-primary">Print Table</button>
-    <div id="table-container">
-      <h2>{{ batch }} Student's Summary</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th>S No.</th>
-            <th>Roll Number</th>
-            <th>Student Name</th>
-            <th>Graduation Date</th>
-            <th>Total Credits</th>
-            <th>CGPA</th>
-            <th>BTP</th>
-            <th>Honors</th>
-            <th>ECO Minors</th>
-            <th>CB Minors</th>
-            <th>ENT Minors</th>
-            <th>ECO Major</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let student of studentDataArray; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ student["Roll No"] }}</td>
-            <td>{{ student["Name"] }}</td>
-            <td>{{ student["Graduation Date"] }}</td>
-            <td>{{ student["Total Credits"] }}</td>
-            <td>{{ student["CGPA"] }}</td>
-            <td>{{ student["BTP"] }}</td>
-            <td>{{ student["Honors"] }}</td>
-            <td>{{ student["ECO Minors"] }}</td>
-            <td>{{ student["CB Minors"] }}</td>
-            <td>{{ student["ENT Minors"] }}</td>
-            <td>{{ student["ECO Major"] }}</td>
-          </tr>
-        </tbody>
-      </table>
+<div class="container">
+  <form (ngSubmit)="onSubmit()" class="form">
+    <div class="form-group">
+      <label for="batch">Batch</label>
+      <input
+        type="number"
+        id="batch"
+        name="batch"
+        [(ngModel)]="batch"
+        class="form-control"
+        required
+      />
     </div>
+
+    <div *ngIf="showMessage" class="error-message">
+      {{ showMessage }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+
+<div class="container" *ngIf="showContent">
+  <button (click)="downloadTable()" class="btn btn-primary">
+    Download Table
+  </button>
+  <div id="table-container">
+    <h2>{{ batch }} Student's Summary</h2>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>S No.</th>
+          <th>Roll Number</th>
+          <th>Student Name</th>
+          <th>Graduation Date</th>
+          <th>Total Credits</th>
+          <th>CGPA</th>
+          <th>BTP</th>
+          <th>Honors</th>
+          <th>ECO Minors</th>
+          <th>CB Minors</th>
+          <th>ENT Minors</th>
+          <th>ECO Major</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let student of studentDataArray; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ student["Roll No"] }}</td>
+          <td>{{ student["Name"] }}</td>
+          <td>{{ student["Graduation Date"] }}</td>
+          <td>{{ student["Total Credits"] }}</td>
+          <td>{{ student["CGPA"] }}</td>
+          <td>{{ student["BTP"] }}</td>
+          <td>{{ student["Honors"] }}</td>
+          <td>{{ student["ECO Minors"] }}</td>
+          <td>{{ student["CB Minors"] }}</td>
+          <td>{{ student["ENT Minors"] }}</td>
+          <td>{{ student["ECO Major"] }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</body>
+</div>

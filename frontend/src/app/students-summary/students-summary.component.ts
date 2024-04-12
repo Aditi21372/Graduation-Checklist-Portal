@@ -55,7 +55,20 @@ export class StudentsSummaryComponent {
     this.router.navigate(['/selection']);
   }
 
-  printTable() {
-    window.print(); // Trigger browser's print functionality
+  downloadTable() {
+    this.studentService.donwloadSummary(Number(this.batch)).subscribe((data: ArrayBuffer) => {
+      console.log(data);
+      const blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = window.URL.createObjectURL(blob);
+  
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'studentSummary.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
   }
 }

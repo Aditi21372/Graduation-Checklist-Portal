@@ -11,7 +11,6 @@ import { UtilityService } from '../utility.service';
 export class HonorsComponent {
   dataSource: MatTableDataSource<any>;
   rollNumber: number = 0;
-  branch: string = '';
   program: string = '';
   studentName: string = '';
   courseData: any;
@@ -30,7 +29,6 @@ export class HonorsComponent {
       this.studentName = params['studentName'];
       this.program = params['program'];
       this.rollNumber = params['rollNumber'];
-      this.branch = params['branch'];
       this.courseData = JSON.parse(params['courseData']);
       this.populateHonors();
     });
