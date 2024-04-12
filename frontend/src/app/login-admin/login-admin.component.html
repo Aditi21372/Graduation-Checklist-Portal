@@ -1,0 +1,33 @@
+<div class="login-container">
+  <img
+    src="/assets/images/IIITD.jpeg"
+    alt="IIITD Logo"
+    class="background-image"
+  />
+
+  <div class="login-box">
+    <form>
+      <div class="form-group">
+        <input
+          type="text"
+          placeholder="Username"
+          [(ngModel)]="username"
+          name="username"
+        />
+      </div>
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          name="password"
+        />
+      </div>
+      <button class="login-button" (click)="onLogin()">Log in</button>
+      <div class="response-message">{{ responseMessage }}</div>
+      <div class="forgot-password">
+        <a href="/login">Student Login?</a>
+      </div>
+    </form>
+  </div>
+</div>
