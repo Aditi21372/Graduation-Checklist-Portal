@@ -29,6 +29,8 @@ import { UpdateStudentDetailsComponent } from './update-student-details/update-s
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 import { SemLeaveComponent } from './sem-leave/sem-leave.component';
+import { ProvisionalRequestsComponent } from './provisional-requests/provisional-requests.component';
+import { ProvisionalCertificateComponent } from './provisional-certificate/provisional-certificate.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -64,6 +66,8 @@ const routes: Routes = [
   { path: 'login-admin', component: LoginAdminComponent },
   { path: 'update-minors', component: UpdateMinorsComponent },
   { path: 'sem-leave', component: SemLeaveComponent },
+  { path: 'provisional-requests', component: ProvisionalRequestsComponent },
+  { path: 'provisional-certificate/:rollNumber', component: ProvisionalCertificateComponent },
 ];
 
 @NgModule({

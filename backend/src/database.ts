@@ -1,6 +1,7 @@
 import * as xlsx from "xlsx";
 import * as fs from "fs";
 import { db } from "./db";
+
 import {
   StudentCourse,
   CourseMap,
@@ -19,6 +20,7 @@ import {
 import { calculateCGPA } from "./cgpa";
 import { isHonors } from "./honors";
 import { isMinors } from "./minors";
+import exp from "constants";
 
 export let courseDatabase: CourseMap = {};
 
@@ -271,6 +273,7 @@ export async function updateStudentDetails(fileBuffer: Buffer): Promise<any> {
       ...entry,
       Password: generateRandomPassword(),
       branch: mapProgramToBranch(entry["program Specialization"]),
+      prefix: entry["Gender"] == "Male" ? "Mr" : "Ms",
     }));
 
   if (updatedData.length === 0) {
@@ -491,10 +494,7 @@ export async function getBtpData(rollNo: Number): Promise<any> {
   }
 }
 
-export async function includeBTP(
-  btpData: any,
-  rollNo: number
-) {
+export async function includeBTP(btpData: any, rollNo: number) {
   const query = {
     "Roll No": rollNo,
     "Course Code": btpData["Course Code"],
@@ -512,5 +512,55 @@ export async function includeBTP(
   } catch (error) {
     console.error("Error updating IncludedInMinors:", error);
     throw error;
+  }
+}
+
+export async function addToProvisional(rollNo: Number): Promise<any> {
+  const collection = db.collection("provisionalRequests");
+  const query = { "Roll No": rollNo };
+  if (await collection.findOne(query)) {
+    return "Request already exists";
+  }
+  try {
+    await collection.insertOne({ "Roll No": rollNo });
+    return "Request In Progress";
+  } catch (error) {
+    console.error("Error adding to provisional requests:", error);
+    return "Error adding to provisional requests";
+  }
+}
+
+export async function getAllProvisional(): Promise<any> {
+  const collection = db.collection("provisionalRequests");
+  try {
+    const result = await collection.find({}).toArray();
+    return result;
+  } catch (error) {
+    console.error("Error fetching provisional requests:", error);
+    throw error;
+  }
+}
+
+export async function generateProvisionalDegree(rollNo: string): Promise<any> {
+  const collection = db.collection("studentsInfo");
+  const query = { "Roll No": Number(rollNo) };
+  try {
+    const student = await collection.findOne(query);
+    if (!student) {
+      return "Student not found";
+    }
+
+    const data = {
+      Prefix: student.prefix,
+      "Full Name": student["Full Name"],
+      "Roll No": student["Roll No"],
+      "program Specialization": student["program Specialization"],
+      branch: student.branch,
+    };
+
+    return data;
+  } catch (error) {
+    console.error("Error generating provisional degree:", error);
+    return "Error generating provisional degree";
   }
 }

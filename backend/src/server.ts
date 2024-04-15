@@ -25,7 +25,10 @@ import {
   checkCredentials,
   searchByRollNo,
   getBtpData,
-  includeBTP
+  includeBTP,
+  addToProvisional,
+  getAllProvisional,
+  generateProvisionalDegree
 } from "./database";
 import {
   sshRule,
@@ -273,9 +276,21 @@ app.get("/api/:branch/graduation-date", (req, res) => {
   res.json(getGraduationDate(studentCourseData, branch));
 });
 
-app.get("/api/request-provisional/:rollNumber", (req, res) => {
+app.get("/api/request-provisional/:rollNumber", async (req, res) => {
   const { rollNumber } = req.params;
-  res.json({ message: "Request Sent" });
+  
+  res.json({ message: await addToProvisional(Number(rollNumber)) });
+});
+
+app.get("/api/provisional-requests", async (req, res) => {
+  res.json(await getAllProvisional());
+});
+
+app.get("/api/accept-request/:rollNumber", async (req, res) => {
+  const { rollNumber } = req.params;
+  const studentData = await generateProvisionalDegree(rollNumber);
+
+  res.send(studentData);
 });
 
 app.get("/api/semester-wise-cgpa", (req, res) => {

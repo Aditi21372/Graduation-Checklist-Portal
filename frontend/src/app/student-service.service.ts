@@ -232,4 +232,12 @@ export class StudentServiceService {
   requestProvisional(rollNumber: string): Observable<any> {
     return this.http.get(this.apiUrl + 'request-provisional/' + rollNumber);
   }
+
+  getProvisionalRequests(): Observable<any> {
+    return this.http.get(this.apiUrl + 'provisional-requests');
+  }
+
+  acceptProvisionalRequest(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'accept-request/' + rollNumber);
+  }
 }

@@ -47,6 +47,8 @@ import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 import { SemLeaveComponent } from './sem-leave/sem-leave.component';
+import { ProvisionalRequestsComponent } from './provisional-requests/provisional-requests.component';
+import { ProvisionalCertificateComponent } from './provisional-certificate/provisional-certificate.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +83,8 @@ import { SemLeaveComponent } from './sem-leave/sem-leave.component';
     LoginAdminComponent,
     UpdateMinorsComponent,
     SemLeaveComponent,
+    ProvisionalRequestsComponent,
+    ProvisionalCertificateComponent,
   ],
   imports: [
     BrowserModule,

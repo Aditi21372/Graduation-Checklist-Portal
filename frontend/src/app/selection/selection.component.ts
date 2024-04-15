@@ -45,4 +45,8 @@ export class SelectionComponent {
   semLeave(){
     this.router.navigate(['/sem-leave']);
   }
+
+  provisonalRequests(){
+    this.router.navigate(['/provisional-requests']);
+  }
 }

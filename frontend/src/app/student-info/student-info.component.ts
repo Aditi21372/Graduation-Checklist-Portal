@@ -49,7 +49,7 @@ export class StudentInfoComponent implements OnInit {
       .requestProvisional(this.rollNumber.toString())
       .subscribe((data: any) => {
         // Handle the response from the backend, e.g., display a success message
-        this.snackBar.open('Request Sent', '', {
+        this.snackBar.open(data.message, '', {
           duration: 5000,
           horizontalPosition: 'center',
           verticalPosition: 'bottom',
