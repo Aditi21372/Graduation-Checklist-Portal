@@ -1,0 +1,80 @@
+.certificate {
+  text-align: center;
+}
+
+.certificate p:nth-of-type(2) strong {
+  text-decoration: underline;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: center; /* Align items horizontally in the center */
+  position: absolute;
+}
+
+.footer p {
+  margin: 0 10px; /* Add spacing between the elements */
+  font-family: "Segoe UI"; /* Set the font family */
+  font-size: 8px; /* Set the font size */
+  align-self: baseline; /* Align the text to the baseline */
+}
+
+.a4-container {
+  width: 210mm;
+  height: 297mm;
+  margin: 0 auto; /* Center the container horizontally */
+  border: 1px solid #000; /* Border for visualization */
+  padding: 20px; /* Add padding to the content */
+  box-sizing: border-box; /* Include padding and border in the width and height */
+}
+
+/* Certificate content */
+.certificate p {
+  margin-top: 2em;
+  margin-bottom: 10px; /* Add bottom margin between paragraphs */
+  font-family: "Times New Roman", Times, serif; /* Set the font family */
+  font-size: 13px; /* Set the font size */
+  padding-left: 66px; /* Add padding to the content */
+  padding-right: 66px;
+}
+
+/* Bold prefix and full name */
+.bold-name {
+  font-weight: bold; /* Make the text bold */
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3em;
+}
+
+.file-number {
+  margin-right: auto; /* Aligns File No to the left */
+}
+
+.date {
+  margin-left: auto; /* Aligns the date to the right */
+}
+
+.right-align {
+  text-align: right;
+  margin-top: 5em; /* Adjust this value to leave 5-6 empty lines */
+  justify-content: flex-end;
+}
+.right-align p {
+  margin: 0; /* Remove default paragraph margins */
+}
+
+.position {
+  margin: 0 auto;
+  display: inline-block;
+}
+
+.provisional-certificate {
+  font-weight: bold; /* Make the text bold */
+  text-decoration: underline; /* Underline the text */
+  font-size: 12pt; /* Set the font size to 12pt */
+  font-family: 'Times New Roman', Times, serif;
+}
