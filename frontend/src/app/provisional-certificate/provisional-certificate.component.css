@@ -27,6 +27,7 @@
   border: 1px solid #000; /* Border for visualization */
   padding: 20px; /* Add padding to the content */
   box-sizing: border-box; /* Include padding and border in the width and height */
+  position: relative;
 }
 
 /* Certificate content */
@@ -77,4 +78,30 @@
   text-decoration: underline; /* Underline the text */
   font-size: 12pt; /* Set the font size to 12pt */
   font-family: 'Times New Roman', Times, serif;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.small-image {
+  width: calc(10cm * 96 / 2.54); /* Convert centimeters to pixels based on 96 PPI */
+  height: auto; /* Let the height adjust proportionally */
+}
+
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1em; /* Adjust as needed */
+  margin-bottom: 2em; /* Adjust as needed */
+}
+
+.header img {
+  height: auto;
+  width: auto;
+  max-height: 100px; /* Adjust as needed */
 }
