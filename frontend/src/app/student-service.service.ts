@@ -100,10 +100,6 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'incompletegrade');
   }
 
-  getTotalCredits(): Observable<any> {
-    return this.http.get(this.apiUrl + 'totalcredits');
-  }
-
   getGraduationStatus(branch: string): Observable<any> {
     return this.http.get(this.apiUrl + branch + '/graduation-check');
   }
@@ -121,7 +117,10 @@ export class StudentServiceService {
   }
 
   updateMinors(ipData: any, minorsBranch: string): Observable<any> {
-    return this.http.post(this.apiUrl + 'update-minors', [ipData, minorsBranch]);
+    return this.http.post(this.apiUrl + 'update-minors', [
+      ipData,
+      minorsBranch,
+    ]);
   }
 
   login(username: string, password: string): Observable<any> {
@@ -144,10 +143,7 @@ export class StudentServiceService {
     return this.http.post(this.apiUrl + 'updateStudent', student);
   }
 
-  updateStudentMinors(
-    rollNumber: string,
-    type: string
-  ): Observable<any> {
+  updateStudentMinors(rollNumber: string, type: string): Observable<any> {
     return this.http.post(this.apiUrl + 'update-student-minors', {
       rollNumber: rollNumber,
       type: type,
@@ -203,10 +199,10 @@ export class StudentServiceService {
 
   getBtpForSemLeave(rollNumber: string): Observable<any> {
     return this.http.get(this.apiUrl + 'btp-sem-leave/' + rollNumber);
-  } 
+  }
 
-  updateBtp(data: any, rollNo: Number): Observable<any> {
-    return this.http.post(this.apiUrl + 'include-btp', [data, rollNo]);
+  updateBtp(data: any, rollNumber: Number): Observable<any> {
+    return this.http.post(this.apiUrl + 'include-btp', [data, rollNumber]);
   }
 
   getStudentDetails(): Observable<any> {
@@ -239,5 +235,27 @@ export class StudentServiceService {
 
   acceptProvisionalRequest(rollNumber: string): Observable<any> {
     return this.http.get(this.apiUrl + 'accept-request/' + rollNumber);
+  }
+
+  getStudentTwiceFailCourses(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + 'twice-fail/' + rollNumber);
+  }
+
+  getSubsituteCourses(rollNumber: string, course: string): Observable<any> {
+    return this.http.get(
+      this.apiUrl + 'substitute-twice-fail/' + rollNumber + '/' + course
+    );
+  }
+
+  updateTwiceFailCourses(
+    rollNumber: string,
+    failCourse: String,
+    subCourse: String
+  ): Observable<any> {
+    return this.http.post(this.apiUrl + 'update-twice-fail', [
+      rollNumber,
+      failCourse,
+      subCourse,
+    ]);
   }
 }

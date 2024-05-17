@@ -31,6 +31,7 @@ import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 import { SemLeaveComponent } from './sem-leave/sem-leave.component';
 import { ProvisionalRequestsComponent } from './provisional-requests/provisional-requests.component';
 import { ProvisionalCertificateComponent } from './provisional-certificate/provisional-certificate.component';
+import { UpdateTwiceFailComponent } from './update-twice-fail/update-twice-fail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -68,6 +69,7 @@ const routes: Routes = [
   { path: 'sem-leave', component: SemLeaveComponent },
   { path: 'provisional-requests', component: ProvisionalRequestsComponent },
   { path: 'provisional-certificate/:rollNumber', component: ProvisionalCertificateComponent },
+  { path: 'update-twice-fail', component: UpdateTwiceFailComponent },
 ];
 
 @NgModule({

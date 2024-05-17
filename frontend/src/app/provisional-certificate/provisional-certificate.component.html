@@ -1,40 +1,42 @@
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-</head>
-<body>
-  <div class="a4-container">
-    <div class="header">
-      <img src="/assets/images/iiitd_full_logo.png" alt="Left Image">
-      <img src="/assets/images/iiitd_logo.png" alt="Right Image" class="small-image">
+<button (click)="goBack()">← Go Back</button>
+
+<button (click)="printDiv('divId')">Print</button>
+
+<div class="a4-container" id="divId">
+  <div class="header">
+    <img src="/assets/images/iiitd_full_logo.png" alt="Left Image" />
+    <img
+      src="/assets/images/iiitd_logo.png"
+      alt="Right Image"
+      class="small-image"
+    />
+  </div>
+
+  <div class="certificate">
+    <div class="row">
+      <p class="file-number">File No: {{ data.fileNumber }}</p>
+      <p class="date">{{ data.date }}</p>
     </div>
 
-    <div class="certificate">
-      <div class="row">
-        <p class="file-number">File No: {{ data.fileNumber }}</p>
-        <p class="date">{{ data.date }}</p>
-      </div>
+    <p class="provisional-certificate">PROVISIONAL CERTIFICATE</p>
 
-      <p class="provisional-certificate">PROVISIONAL CERTIFICATE</p>
-
-      <div>
-        <p>
-          This is to certify that
-          <span class="bold-name">{{ data.prefix }}. {{ data.fullName }}</span>
-          (Roll No. {{ data.rollNo }}) has successfully completed all the
-          graduation requirements for the award of the degree of Bachelor of
-          Technology in {{ data.programSpecialization }}. He will be awarded the
-          B.Tech. ({{ data.branch }}) degree in the forthcoming convocation of
-          IIIT-Delhi.
-        </p>
-      </div>
-      <div class="right-align">
-        <p>Dr. Deepika Bhaskar</p>
-        <p class="position">Registrar</p>
-      </div>
-
-      <hr />
+    <div class="content">
+      <p>
+        This is to certify that
+        <span class="bold-name">{{ data.prefix }}. {{ data.fullName }}</span>
+        (Roll No. {{ data.rollNo }}) has successfully completed all the
+        graduation requirements for the award of the Bachelor of Technology in
+        {{ data.programSpecialization }} degree. He will be awarded the B.Tech.
+        ({{ data.branch }}) degree in the forthcoming convocation of IIIT-Delhi.
+      </p>
     </div>
+    <div class="right-align">
+      <p>Dr. Deepika Bhaskar</p>
+      <p class="position">Registrar</p>
+    </div>
+  </div>
+  <div class="end">
+    <hr />
     <div class="footer">
       <p>Okhla Industrial Estate, Phase-III, New Delhi-110020, INDIA</p>
       <p>T +91 11 2690 7400-7404</p>
@@ -42,4 +44,4 @@
       <p>www.iiitd.ac.in</p>
     </div>
   </div>
-</body>
+</div>

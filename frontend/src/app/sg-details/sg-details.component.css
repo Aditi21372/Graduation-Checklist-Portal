@@ -31,13 +31,12 @@ tr.mat-cell-header {
   background-color: rgb(229, 229, 229);
 }
 
-/* Adjust the button styles within the table cell */
 td button {
-  margin: 3px; /* Adjust margin for space around the button */
-  padding: 4px 6px; /* Adjust padding to make the button smaller */
-  font-size: 14px; /* Increased font size for buttons */
-  font-weight: normal; /* Use normal font weight */
-  text-align: center; /* Center the button within the cell */
+  margin: 3px; 
+  padding: 4px 6px; 
+  font-size: 14px; 
+  font-weight: normal; 
+  text-align: center; 
   text-decoration: none;
   background-color: #44b3ad;
   color: #fff;
@@ -46,8 +45,8 @@ td button {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
-  width: 100%; /* Make the button occupy the full width of the cell */
-  max-width: 80px; /* Set a maximum width for the button */
+  width: 100%;
+  max-width: 80px; 
 }
 
 td button:hover {
@@ -56,13 +55,11 @@ td button:hover {
   color: #fff;
 }
 
-/* Adjust the minimum width for the button column only */
 th.mat-header-cell.button-column,
 td.mat-cell.button-column {
-  width: 1%; /* Set a minimum width for the button column */
+  width: 1%; 
 }
 
-/* Center the button vertically and horizontally */
 .center-button {
   display: flex;
   justify-content: center;

@@ -6,17 +6,23 @@
   text-decoration: underline;
 }
 
+.end {
+  margin-top: 480px;
+}
+
 .footer {
-  margin-top: auto;
   display: flex;
-  justify-content: center; /* Align items horizontally in the center */
+  /* justify-content: center; Align items horizontally in the center */
+
   position: absolute;
 }
 
 .footer p {
-  margin: 0 10px; /* Add spacing between the elements */
+  margin-right: 20px; /* Add spacing between the elements */
+  margin-left: 25px;
+  margin-top: 0px;
   font-family: "Segoe UI"; /* Set the font family */
-  font-size: 8px; /* Set the font size */
+  font-size: 8pt; /* Set the font size */
   align-self: baseline; /* Align the text to the baseline */
 }
 
@@ -30,16 +36,16 @@
   position: relative;
 }
 
-/* Certificate content */
-.certificate p {
-  margin-top: 2em;
+.content {
+  text-align: justify;
+  margin-top: 3em;
   margin-bottom: 10px; /* Add bottom margin between paragraphs */
   font-family: "Times New Roman", Times, serif; /* Set the font family */
-  font-size: 13px; /* Set the font size */
-  padding-left: 66px; /* Add padding to the content */
-  padding-right: 66px;
+  font-size: 13pt; /* Set the font size */
+  margin-left: 30px;
+  margin-right: 30px;
+  line-height: 1.75;
 }
-
 /* Bold prefix and full name */
 .bold-name {
   font-weight: bold; /* Make the text bold */
@@ -49,48 +55,62 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 3em;
+  font-size: 11pt;
+  font-family: "Times New Roman", Times, serif;
 }
 
 .file-number {
-  margin-right: auto; /* Aligns File No to the left */
+  margin-left: 30px;
+  margin-right: 30px;
 }
 
 .date {
-  margin-left: auto; /* Aligns the date to the right */
+  margin-left: 30px;
+  margin-right: 50px;
 }
 
 .right-align {
   text-align: right;
-  margin-top: 5em; /* Adjust this value to leave 5-6 empty lines */
+  margin-top: 7em; /* Adjust this value to leave 5-6 empty lines */
   justify-content: flex-end;
+  margin-right: 40px;
+  align-items: center;
 }
+
 .right-align p {
-  margin: 0; /* Remove default paragraph margins */
+  margin: 0 10px; /* Remove default paragraph margins */
 }
 
 .position {
   margin: 0 auto;
   display: inline-block;
+  justify-content: center;
+  padding-right: 35px;
 }
 
 .provisional-certificate {
+  margin-top: 60px;
+  margin-bottom: 40px;
   font-weight: bold; /* Make the text bold */
   text-decoration: underline; /* Underline the text */
   font-size: 12pt; /* Set the font size to 12pt */
-  font-family: 'Times New Roman', Times, serif;
+  font-family: "Times New Roman", Times, serif;
+  line-height: 1.5;
 }
+
 .header {
+  margin-top: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-
 .small-image {
-  width: calc(10cm * 96 / 2.54); /* Convert centimeters to pixels based on 96 PPI */
+  width: calc(
+    10cm * 96 / 2.54
+  ); /* Convert centimeters to pixels based on 96 PPI */
   height: auto; /* Let the height adjust proportionally */
 }
-
 
 .header {
   display: flex;
@@ -105,3 +125,64 @@
   width: auto;
   max-height: 100px; /* Adjust as needed */
 }
+
+button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+@media print {
+  html, body{
+    height: auto;
+    overflow: hidden;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .a4-container * {
+    visibility: visible;
+  }
+
+  hr {
+    padding: 0 10px; /* Adjust padding as needed */
+  }
+
+  @page :first {
+    margin-top: 0;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;    /* this affects the margin in the printer settings */
+  }
+
+  .print:last-child {
+     page-break-after: auto;
+}
+}
+

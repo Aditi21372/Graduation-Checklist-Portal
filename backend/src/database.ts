@@ -16,11 +16,11 @@ import {
   btpRule,
   ecoMajorCore,
   ecoMajorElective,
+  disallowedGrades,
 } from "./rule";
 import { calculateCGPA } from "./cgpa";
 import { isHonors } from "./honors";
 import { isMinors } from "./minors";
-import exp from "constants";
 
 export let courseDatabase: CourseMap = {};
 
@@ -49,13 +49,7 @@ export async function preprocessCourseData(
     studentInfo.courses.push(course);
   });
 
-  fs.writeFileSync(
-    "src/data/student.json",
-    JSON.stringify(studentInfo, null, 2)
-  );
-
   courseDatabase = getCourseDatabase(studentData[0]["Batch"].toString());
-
   return studentInfo;
 }
 
@@ -72,10 +66,6 @@ export function getCourseDatabase(batch: string): CourseMap {
       courseDatabase[category] = courses;
     }
   }
-  fs.writeFileSync(
-    "src/data/course.json",
-    JSON.stringify(courseDatabase, null, 2)
-  );
   return courseDatabase;
 }
 
@@ -562,5 +552,135 @@ export async function generateProvisionalDegree(rollNo: string): Promise<any> {
   } catch (error) {
     console.error("Error generating provisional degree:", error);
     return "Error generating provisional degree";
+  }
+}
+
+export async function twiceFailCourses(rollNumber: number): Promise<any> {
+  const student = await searchByRollNo(rollNumber);
+  if (!student) {
+    return "Student not found";
+  }
+  const branch = student["branch"];
+  const studentData = await getStudentData(rollNumber);
+  const studentCourseData = await preprocessCourseData(studentData);
+  const failedCourses = new Map();
+
+  for (const course of studentCourseData.courses) {
+    if (course.includedInMinors.length >= 6) {
+      return `Student has already included ${course.courseCode} in ${course.includedInMinors}.`;
+    }
+  }
+
+  const mandateCourses = courseDatabase[branch];
+  for(const key of Object.keys(courseDatabase)){
+    if (key.startsWith(branch + " bucket")){
+      mandateCourses.push(...courseDatabase[key]);
+    }
+  }
+
+  for (const mandateCourse of mandateCourses) {
+    for (const course of studentCourseData.courses) {
+      if (mandateCourse === course.courseCode && course.grade === "F") {
+        if (failedCourses.has(course.courseCode)) {
+          failedCourses.set(
+            course.courseCode,
+            failedCourses.get(course.courseCode) + 1
+          );
+        } else {
+          failedCourses.set(course.courseCode, 1);
+        }
+      }
+    }
+  }
+
+  const failedCoursesTwice = [];
+
+  for (const failedCourse of failedCourses) {
+    if (failedCourse[1] < 2) {
+      failedCourses.delete(failedCourse[0]);
+    }
+    for (const course of studentCourseData.courses) {
+      if (
+        failedCourse[0] === course.courseCode &&
+        !disallowedGrades.includes(course.grade)
+      ) {
+        failedCourses.delete(failedCourse[0]);
+      }
+    }
+  }
+
+  if (failedCourses.size === 0) {
+    return "No failed courses found";
+  }
+
+  for (const failedCourse of failedCourses) {
+    failedCoursesTwice.push({
+      courseCode: failedCourse[0],
+      count: failedCourse[1],
+    });
+  }
+
+  return failedCoursesTwice;
+}
+
+export async function substituteCourses(
+  rollNumber: number,
+  courseCode: string
+): Promise<any> {
+  const student = await searchByRollNo(rollNumber);
+  if (!student) {
+    return "Student not found";
+  }
+  const branch = student["branch"];
+  const studentData = await getStudentData(rollNumber);
+  const studentCourseData = await preprocessCourseData(studentData);
+  const substituteCourses = [];
+
+  for (const course of studentCourseData.courses) {
+    if (
+      course.courseCode.substring(0, 3) === courseCode.substring(0, 3) &&
+      !disallowedGrades.includes(course.grade) &&
+      Number(course.courseCode.charAt(3)) > 2 &&
+      !courseDatabase[branch].includes(course.courseCode)
+    ) {
+      substituteCourses.push({
+        courseCode: course.courseCode,
+        course: course.course,
+        grade: course.grade,
+      });
+    }
+  }
+
+  if (substituteCourses.length === 0) {
+    return "No substitute courses found";
+  }
+  return substituteCourses;
+}
+
+export async function updateTwiceFail(
+  rollNumber: Number,
+  failCourse: string,
+  subCourse: string
+): Promise<any> {
+  const collection = db.collection("studentsGrade");
+  const query = {
+    "Roll No": rollNumber,
+    "Course Code": subCourse,
+  };
+  const update = {
+    $set: {
+      IncludedInMinors: failCourse,
+    },
+  };
+
+  try {
+    const result = await collection.updateOne(query, update);
+    if (result.modifiedCount === 0) {
+      return "Error updating student grade";
+    }
+    return "Student grade updated successfully";
+  } catch (error) {
+    console.error("Error updating IncludedInMinors:", error);
+    throw error;
   }
 }

@@ -66,13 +66,12 @@ label {
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  
 }
 
 .sum {
   display: flex;
   justify-content: center;
-  align-items: center
+  align-items: center;
 }
 
 .button:hover {
@@ -157,7 +156,6 @@ td.mat-cell.button-column {
   justify-content: center;
 }
 
-
 .student-info {
   display: flex;
   justify-content: space-between;
@@ -199,5 +197,4 @@ button:hover {
   #summary * {
     visibility: visible;
   }
-  
 }

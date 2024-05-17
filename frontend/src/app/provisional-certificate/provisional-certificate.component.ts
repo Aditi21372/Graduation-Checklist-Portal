@@ -1,25 +1,33 @@
 import { Component } from '@angular/core';
 import { StudentServiceService } from '../student-service.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-provisional-certificate',
   templateUrl: './provisional-certificate.component.html',
-  styleUrls: ['./provisional-certificate.component.css']
+  styleUrls: ['./provisional-certificate.component.css'],
 })
 export class ProvisionalCertificateComponent {
   data = {
     fileNumber: 'IIITD/ACAD/PC/01/2024/',
-    date: new Date(Date.now()).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+    date: new Date(Date.now()).toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+      year: 'numeric',
+    }),
     prefix: 'Mr.',
     fullName: 'John Doe',
     rollNo: '123456',
     programSpecialization: 'Computer Science',
-    branch: 'CSE'
+    branch: 'CSE',
   };
   rollNumber: string = '';
 
-  constructor(private studentService: StudentServiceService, private route: ActivatedRoute) {}
+  constructor(
+    private studentService: StudentServiceService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -27,16 +35,29 @@ export class ProvisionalCertificateComponent {
       console.log(this.rollNumber);
     });
 
-    this.studentService.acceptProvisionalRequest(this.rollNumber).subscribe((response) => {
-      // data = data;
-      console.log(response);
-      this.data.fullName = response['Full Name'];
-      this.data.rollNo = this.rollNumber;
-      this.data.programSpecialization = response['program Specialization'];
-      this.data.branch = response.branch;
-      this.data.prefix = response.Prefix;
-
-    });
+    this.studentService
+      .acceptProvisionalRequest(this.rollNumber)
+      .subscribe((response) => {
+        this.data.fullName = response['Full Name'];
+        this.data.rollNo = this.rollNumber;
+        this.data.programSpecialization = response['program Specialization'];
+        this.data.branch = response.branch;
+        this.data.prefix = response.Prefix;
+      });
   }
 
+  printDiv(divId: string) {
+    var printContents = document.getElementById(divId)?.innerHTML;
+    var originalContents = document.body.innerHTML;
+    if (printContents == null) {
+      return;
+    }
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+  }
+
+  goBack() {
+    this.router.navigate(['/provisional-requests']);
+  }
 }

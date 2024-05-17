@@ -116,12 +116,16 @@ export class SummaryPageComponent implements OnInit {
             },
             {
               requirement: 'Stream of Minors',
-              status: minorsStream.length > 0 ? minorsStream.join(", ") : 'None',
+              status:
+                minorsStream.length > 0 ? minorsStream.join(', ') : 'None',
             },
             {
               requirement: 'Graduating with ECO Major',
-              status: majorsCore.isCompleteBool && majorsElective.isCompleteBool ? 'Yes' : 'No',
-            }
+              status:
+                majorsCore.isCompleteBool && majorsElective.isCompleteBool
+                  ? 'Yes'
+                  : 'No',
+            },
           ];
         },
         (error) => {

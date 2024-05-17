@@ -424,7 +424,7 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateTotalCredits(): Observable<any> {
-    return this.studentService.getTotalCredits().pipe(
+    return this.studentService.getRequiredCredits().pipe(
       map((ruleData: any) => {
         const newData = {
           index: 16,

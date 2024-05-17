@@ -30,7 +30,7 @@ export class SelectionComponent {
     this.router.navigate(['/student-info-input']);
   }
 
-  showSummary(){
+  showSummary() {
     this.router.navigate(['/students-summary']);
   }
 
@@ -38,15 +38,19 @@ export class SelectionComponent {
     this.router.navigate(['/login']);
   }
 
-  includeIp(){
+  includeIp() {
     this.router.navigate(['/update-minors']);
   }
 
-  semLeave(){
+  semLeave() {
     this.router.navigate(['/sem-leave']);
   }
 
-  provisonalRequests(){
+  provisonalRequests() {
     this.router.navigate(['/provisional-requests']);
+  }
+
+  update2fail() {
+    this.router.navigate(['/update-twice-fail']);
   }
 }

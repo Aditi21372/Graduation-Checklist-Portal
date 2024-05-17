@@ -1,5 +1,6 @@
 import { StudentInfo, RuleData, CourseData } from "./type";
 import { courseDatabase } from "./database";
+import e from "express";
 
 export const gradeHierarchy = [
   "A+",
@@ -76,6 +77,24 @@ export const mandatoryCoreRule: IRule = {
       studentCoreCourse.push(courseEntry);
     }
 
+    for (const course of studentCourses) {
+      if (course.includedInMinors.length >= 6) {
+        const index = studentCoreCourse.findIndex(
+          (element) => element.course === course.includedInMinors
+        );
+        if (index != -1) {
+          studentCoreCourse[index].status = "Complete";
+          studentCoreCourse[index].credits = course.credit;
+          studentCoreCourse[index].grade = course.grade;
+          studentCoreCourse[index].semester = course.semester;
+          studentCoreCourse[index].courseName = course.course;
+          studentCoreCourse[index].course =
+            course.courseCode + "/" + course.includedInMinors;
+          returnData.data.totalCredits += course.credit;
+        }
+      }
+    }
+
     for (let i = 0; i < studentCoreCourse.length; i++) {
       if (studentCoreCourse[i].status !== "Complete") {
         returnData.isCompleteBool = false;
@@ -84,8 +103,8 @@ export const mandatoryCoreRule: IRule = {
         returnData.data.totalCredits += studentCoreCourse[i].credits;
       }
     }
-    returnData.data.coreCourses = studentCoreCourse;
 
+    returnData.data.coreCourses = studentCoreCourse;
     return returnData;
   },
 };
@@ -142,12 +161,30 @@ export const mandatoryBucketRule: IRule = {
                 courseEntry.grade = studentCourse["grade"];
               }
             } else {
-              if (courseEntry.status == "Complete") continue;
-              courseEntry.status =
-                studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
-              courseEntry.credits = 0;
-              courseEntry.grade = studentCourse["grade"];
-              courseEntry.semester = studentCourse["semester"];
+              if (studentCourse.grade === "F") {
+                const index = studentCourses.findIndex(
+                  (element) => element.includedInMinors === courseEntry.course
+                );
+                if (index != -1) {
+                  courseEntry.status = "Complete";
+                  courseEntry.credits = studentCourses[index].credit;
+                  courseEntry.grade = studentCourses[index].grade;
+                  courseEntry.semester = studentCourses[index].semester;
+                  courseEntry.courseName = studentCourses[index].course;
+                  courseEntry.course =
+                    studentCourses[index].courseCode +
+                    "/" +
+                    studentCourses[index].includedInMinors;
+                  returnData.data.totalCredits += studentCourses[index].credit;
+                }
+              }
+              if (courseEntry.status != "Complete") {
+                courseEntry.status =
+                  studentCourse["grade"] === "F" ? "Failed" : "Incomplete";
+                courseEntry.credits = 0;
+                courseEntry.grade = studentCourse["grade"];
+                courseEntry.semester = studentCourse["semester"];
+              }
             }
           }
         }
@@ -364,6 +401,7 @@ export const thirtyTwoCreditsRule: IRule = {
       if (
         !disallowedGrades.includes(course["grade"]) &&
         !coursesTaken.has(course["courseCode"]) &&
+        course["includedInMinors"].length < 3 &&
         (course["courseCode"].startsWith(major) ||
           course["courseCode"].startsWith(branch) ||
           extraCoursesMajor.includes(course["courseCode"]) ||

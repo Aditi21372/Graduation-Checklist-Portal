@@ -49,6 +49,7 @@ import { UpdateMinorsComponent } from './update-minors/update-minors.component';
 import { SemLeaveComponent } from './sem-leave/sem-leave.component';
 import { ProvisionalRequestsComponent } from './provisional-requests/provisional-requests.component';
 import { ProvisionalCertificateComponent } from './provisional-certificate/provisional-certificate.component';
+import { UpdateTwiceFailComponent } from './update-twice-fail/update-twice-fail.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +86,7 @@ import { ProvisionalCertificateComponent } from './provisional-certificate/provi
     SemLeaveComponent,
     ProvisionalRequestsComponent,
     ProvisionalCertificateComponent,
+    UpdateTwiceFailComponent,
   ],
   imports: [
     BrowserModule,
