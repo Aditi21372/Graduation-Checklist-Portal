@@ -102,7 +102,7 @@ export async function approveApprenticeship(studentInfo: StudentInfo) {
 
   const existingDocument = await collection.findOne({
     "Roll No": studentInfo["rollNumber"],
-    Course: "Apprenticeship"
+    Course: "Apprenticeship",
   });
 
   if (existingDocument) {

@@ -1,6 +1,5 @@
 import { StudentInfo, RuleData, CourseData } from "./type";
 import { courseDatabase } from "./database";
-import e from "express";
 
 export const gradeHierarchy = [
   "A+",

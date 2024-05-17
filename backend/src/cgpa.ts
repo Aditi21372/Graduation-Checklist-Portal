@@ -284,8 +284,7 @@ function getWorseCreds(
         worseCreds = Math.min(8, cumulativeCreditSum - 156);
         flag = 1;
       }
-    }
-    else{
+    } else {
       if (cumulativeCreditSum > 152) {
         worseCreds = Math.min(8, cumulativeCreditSum - 152);
         flag = 1;

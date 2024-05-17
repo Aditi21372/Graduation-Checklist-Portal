@@ -572,8 +572,8 @@ export async function twiceFailCourses(rollNumber: number): Promise<any> {
   }
 
   const mandateCourses = courseDatabase[branch];
-  for(const key of Object.keys(courseDatabase)){
-    if (key.startsWith(branch + " bucket")){
+  for (const key of Object.keys(courseDatabase)) {
+    if (key.startsWith(branch + " bucket")) {
       mandateCourses.push(...courseDatabase[key]);
     }
   }

@@ -31,7 +31,7 @@ import {
   generateProvisionalDegree,
   twiceFailCourses,
   substituteCourses,
-  updateTwiceFail
+  updateTwiceFail,
 } from "./database";
 import {
   sshRule,
@@ -50,7 +50,7 @@ import {
   csaiApplicationRule,
   ecoMajorCore,
   ecoMajorElective,
-  sshMajor
+  sshMajor,
 } from "./rule";
 
 const app = express();
@@ -366,9 +366,9 @@ app.post("/api/update-student-minors", async (req, res) => {
 app.get("/api/twice-fail/:rollNumber", async (req, res) => {
   const { rollNumber } = req.params;
   const failCourses = await twiceFailCourses(Number(rollNumber));
-  if (typeof failCourses === "string"){
+  if (typeof failCourses === "string") {
     res.status(404).json({ error: failCourses });
-    return
+    return;
   }
   return res.json(failCourses);
 });
@@ -376,9 +376,9 @@ app.get("/api/twice-fail/:rollNumber", async (req, res) => {
 app.get("/api/substitute-twice-fail/:rollNumber/:course", async (req, res) => {
   const { rollNumber, course } = req.params;
   const subCourses = await substituteCourses(Number(rollNumber), course);
-  if (typeof subCourses === "string"){
+  if (typeof subCourses === "string") {
     res.status(404).json({ error: subCourses });
-    return
+    return;
   }
   return res.json(subCourses);
 });
@@ -386,8 +386,12 @@ app.get("/api/substitute-twice-fail/:rollNumber/:course", async (req, res) => {
 app.post("/api/update-twice-fail", async (req, res) => {
   const requestBody = req.body;
   console.log(requestBody);
-  const result = await updateTwiceFail(requestBody[0], requestBody[1], requestBody[2]);
-  res.json({'result': result});
+  const result = await updateTwiceFail(
+    requestBody[0],
+    requestBody[1],
+    requestBody[2]
+  );
+  res.json({ result: result });
 });
 
 app.post(
