@@ -1,0 +1,227 @@
+.container,
+.modal {
+  text-align: center;
+  padding-top: 20px;
+}
+
+.form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+label {
+  font-size: 16px;
+  font-weight: bold;
+  color: #1c1e21;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+input[type="number"] {
+  width: 330px;
+  padding: 14px 16px 16px 14px;
+  font-size: 17px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.logout-button {
+  position: absolute;
+  top: 65px;
+  right: 10px;
+}
+
+.logout-button button,
+button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.logout-button button {
+  margin: 10px 10px;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+}
+
+button {
+  background-color: #39aea8;
+  color: #fff;
+  border: none;
+  padding: 10px;
+}
+
+button:hover {
+  background-color: #367976;
+  color: #fff;
+}
+
+.error-message {
+  font-size: 14px;
+  color: #1d2129;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.center-card {
+  width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+mat-card-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.graduated {
+  color: green;
+}
+
+.incomplete {
+  color: red;
+}
+
+.table {
+  width: 100%;
+  margin: 10px auto;
+  max-width: 800px;
+  position: center;
+  justify-content: center;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.edited-grade-input {
+  width: 30%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.edit-buttons {
+  align-items: center;
+  padding: 10px;
+  margin: 10px;
+}
+
+.go-back-button {
+  position: absolute;
+  top: 65px;
+  left: 10px;
+}
+
+.go-back-button button {
+  margin: 10px 10px;
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  background-color: #44b3ad;
+  color: #fff;
+  border: 2px solid #40aca7;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.go-back-button button:hover {
+  background-color: #367976;
+  border-color: #367976;
+  color: #fff;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal h3 {
+  margin-top: 0;
+}
+
+.edited-grade-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.edit-buttons {
+  padding: 10px;
+  margin: 5px;
+}
+
+.form-group-2 {
+  width: 30%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #dddfe2;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.container {
+  /* display: flex; */
+  justify-content: center; /* Center the container horizontally */
+  align-items: center; /* Center the container vertically */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin: 16px;
+  width: 70%;
+  margin-left: auto; /* Add this to center the container */
+  margin-right: auto; /* Add this to center the container */
+}
+
