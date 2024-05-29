@@ -71,9 +71,9 @@ export function getGraduationDate(
     }
   }
   if (isGraduated) {
-    if (maxSem === 10) return "June 21, 2023";
-    else if (maxSem === 11) return "September 21, 2023";
-    else if (maxSem === 12) return "January 21, 2024";
+    if (maxSem === 10) return "June 21, " + (studentCourseData["batch"] + 4);
+    else if (maxSem === 11) return "September 21, " + (studentCourseData["batch"] + 4);
+    else if (maxSem === 12) return "January 21, " + (studentCourseData["batch"] + 5);
   }
   return "Not Graduated";
 }
