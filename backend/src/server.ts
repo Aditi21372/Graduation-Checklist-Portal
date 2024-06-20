@@ -67,7 +67,7 @@ let studentCourseData: StudentInfo = {
 };
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+  res.header("Access-Control-Allow-Origin", "http://localhost:40000");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
@@ -385,7 +385,6 @@ app.get("/api/substitute-twice-fail/:rollNumber/:course", async (req, res) => {
 
 app.post("/api/update-twice-fail", async (req, res) => {
   const requestBody = req.body;
-  console.log(requestBody);
   const result = await updateTwiceFail(
     requestBody[0],
     requestBody[1],

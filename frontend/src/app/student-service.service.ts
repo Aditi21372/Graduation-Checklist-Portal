@@ -21,6 +21,7 @@ export class StudentServiceService {
   constructor(private http: HttpClient) {}
 
   getStudentData(rollNumber: string): Observable<any> {
+    
     return this.http.get(this.apiUrl + String(rollNumber) + '/info');
   }
 

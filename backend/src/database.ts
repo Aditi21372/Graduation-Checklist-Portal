@@ -343,6 +343,7 @@ async function calculateSummary(
     Batch: studentCourseData.batch,
     Name: studentCourseData.studentName,
     "Roll No": studentCourseData.rollNumber,
+    "Branch": branch,
     "Graduation Date": gradDate,
     "Total Credits": credits.data,
     CGPA: gpa["10"].cgpa,
@@ -460,6 +461,8 @@ function mapProgramToBranch(program: string): string {
       return "CSB";
     case "Computer Science and Artificial Intelligence":
       return "CSAI";
+    case "Information Technology and Social Sciences":
+      return "CSSS";
     default:
       return "";
   }

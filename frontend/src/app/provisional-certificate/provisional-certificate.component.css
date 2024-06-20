@@ -106,9 +106,12 @@
 }
 
 .small-image {
-  width: calc(
-    10cm * 96 / 2.54
-  ); /* Convert centimeters to pixels based on 96 PPI */
+  width: 100px; /* Convert centimeters to pixels based on 96 PPI */
+  height: auto; /* Let the height adjust proportionally */
+}
+
+.left-image {
+  width: 280px; /* Convert centimeters to pixels based on 96 PPI */
   height: auto; /* Let the height adjust proportionally */
 }
 
@@ -116,15 +119,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1em; /* Adjust as needed */
+  padding-left: 10px;
+  padding-right: 30px;
   margin-bottom: 2em; /* Adjust as needed */
 }
 
-.header img {
-  height: auto;
-  width: auto;
-  max-height: 100px; /* Adjust as needed */
-}
 
 button {
   margin: 10px 10px;

@@ -124,10 +124,12 @@ function calculateBestCgpa(
     }
     counter++;
   }
+  console.log("Worst Credits Used: ", possibleWorstCreditsPairs[gpaAfterRemoval.indexOf(Math.max(...gpaAfterRemoval))]);
   return Math.max(...gpaAfterRemoval);
 }
 
 function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
+  console.log(studentInfo.rollNumber, studentInfo.studentName);
   let semwiseGpa = [];
   let cumulativeGradeSum = 0;
   let cumulativeCreditSum = 0;
@@ -239,6 +241,7 @@ function calculateSGPA(studentInfo: StudentInfo, semesters: string[]): Grade[] {
     );
 
     if (flag == 1) {
+      console.log("semester: ", semesters[i]);
       cgpa = calculateBestCgpa(
         cumulativeGradeSum,
         cumulativeCreditSum,
