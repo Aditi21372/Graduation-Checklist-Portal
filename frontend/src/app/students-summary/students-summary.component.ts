@@ -57,7 +57,6 @@ export class StudentsSummaryComponent {
 
   downloadTable() {
     this.studentService.donwloadSummary(Number(this.batch)).subscribe((data: ArrayBuffer) => {
-      console.log(data);
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });

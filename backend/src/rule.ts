@@ -221,6 +221,7 @@ export const sshRule: IRule = {
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     const sshCourses = courseDatabase["SSH Courses"];
     const studentCourses = studentCourseData["courses"];
+    const branch = context ? context : "CSE";
     let coursesTaken = new Map<string, number>();
     let credits = 0;
     let returnData: RuleData = {
@@ -253,7 +254,11 @@ export const sshRule: IRule = {
         }
       }
     }
-    if (credits >= 12) {
+
+    if (
+      (credits >= 12 && branch != "CSD") ||
+      (branch == "CSD" && credits >= 16)
+    ) {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     }
@@ -363,6 +368,7 @@ export const thirtyTwoCreditsRule: IRule = {
     };
 
     context = context ? context : "CSE";
+    const coreCourses = courseDatabase[context];
     let major = "CSE"; // Default major is CSE other option in ECE
     let extraCoursesMajor = courseDatabase["CSE 32"];
     let extraCoursesBranch: string[] = [];
@@ -379,6 +385,9 @@ export const thirtyTwoCreditsRule: IRule = {
     } else if (context === "CSAM") {
       branch = "MTH";
       extraCoursesBranch = courseDatabase["CSAM 32"];
+    }
+    else if (context === "CSAI"){
+      branch = "CSE";
     }
     const studentCourses = studentCourseData["courses"];
     let majorCredits = 0;
@@ -835,8 +844,62 @@ export const required156CreditsRule: IRule = {
   },
 };
 
-export const csaiCoreRule: IRule = {
+export const csaiCseCoreRule: IRule = {
   ruleId: 12,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Complete",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const studentCourses = studentCourseData["courses"];
+    const csaiCseCore = courseDatabase["CSAI CSE CORE"];
+    let csaiCseCoreCredits = 8;
+    let credits = 0;
+
+    for (const course of csaiCseCore) {
+      let options = [];
+      if (course.length > 6) {
+        const splitOptions = course.split("/");
+        options.push(...splitOptions);
+      }
+      for (const studentCourse of studentCourses) {
+        if (
+          (studentCourse["courseCode"] === course ||
+            (options.length > 0 &&
+              options.includes(studentCourse["courseCode"]))) &&
+          !disallowedGrades.includes(studentCourse["grade"])
+        ) {
+          let courseEntry: CourseData = {
+            course: studentCourse["courseCode"],
+            courseName: studentCourse["course"],
+            semester: studentCourse["semester"],
+            status: "Complete",
+            credits: studentCourse["credit"],
+            grade: studentCourse["grade"],
+          };
+          returnData.data.courses.push(courseEntry);
+          credits += studentCourse["credit"];
+          csaiCseCoreCredits -= studentCourse["credit"];
+        }
+      }
+    }
+
+    if (csaiCseCoreCredits > 0) {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Incomplete";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
+export const csaiCoreRule: IRule = {
+  ruleId: 13,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -890,7 +953,7 @@ export const csaiCoreRule: IRule = {
 };
 
 export const csaiApplicationRule: IRule = {
-  ruleId: 13,
+  ruleId: 14,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -917,7 +980,7 @@ export const csaiApplicationRule: IRule = {
           (studentCourse["courseCode"] === course ||
             (options.length > 0 &&
               options.includes(studentCourse["courseCode"]))) &&
-          !disallowedGrades.includes(studentCourse["grade"])
+          (!disallowedGrades.includes(studentCourse["grade"]) || studentCourse["grade"] == 'S')
         ) {
           let courseEntry: CourseData = {
             course: studentCourse["courseCode"],
@@ -943,8 +1006,62 @@ export const csaiApplicationRule: IRule = {
   },
 };
 
+export const csaiMathsCoreRule: IRule = {
+  ruleId: 15,
+  checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
+    let returnData: RuleData = {
+      isCompleteBool: true,
+      isCompleteText: "Complete",
+      data: {
+        totalCredits: 0,
+        courses: [],
+      },
+    };
+
+    const studentCourses = studentCourseData["courses"];
+    const csaiMathCore = courseDatabase["CSAI MATH CORE"];
+    let csaiMathCredits = 4;
+    let credits = 0;
+
+    for (const course of csaiMathCore) {
+      let options = [];
+      if (course.length > 6) {
+        const splitOptions = course.split("/");
+        options.push(...splitOptions);
+      }
+      for (const studentCourse of studentCourses) {
+        if (
+          (studentCourse["courseCode"] === course ||
+            (options.length > 0 &&
+              options.includes(studentCourse["courseCode"]))) &&
+          !disallowedGrades.includes(studentCourse["grade"])
+        ) {
+          let courseEntry: CourseData = {
+            course: studentCourse["courseCode"],
+            courseName: studentCourse["course"],
+            semester: studentCourse["semester"],
+            status: "Complete",
+            credits: studentCourse["credit"],
+            grade: studentCourse["grade"],
+          };
+          returnData.data.courses.push(courseEntry);
+          credits += studentCourse["credit"];
+          csaiMathCredits -= studentCourse["credit"];
+        }
+      }
+    }
+
+    if (csaiMathCredits > 0) {
+      returnData.isCompleteBool = false;
+      returnData.isCompleteText = "Incomplete";
+    }
+    returnData.data.totalCredits = credits;
+    return returnData;
+  },
+};
+
 export const ecoMajorCore: IRule = {
-  ruleId: 14,
+  ruleId: 16,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -1002,7 +1119,7 @@ export const ecoMajorCore: IRule = {
 };
 
 export const ecoMajorElective: IRule = {
-  ruleId: 15,
+  ruleId: 17,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -1055,7 +1172,7 @@ export const ecoMajorElective: IRule = {
 };
 
 export const sshMajor: IRule = {
-  ruleId: 16,
+  ruleId: 19,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -1105,7 +1222,7 @@ export const sshMajor: IRule = {
 };
 
 export const combinesCsssRule: IRule = {
-  ruleId: 17,
+  ruleId: 20,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
     let returnData: RuleData = {
       isCompleteBool: true,
@@ -1148,8 +1265,10 @@ export const allRules = [
   btpRule,
   incompleteGradeRule,
   required156CreditsRule,
+  csaiCseCoreRule,
   csaiCoreRule,
   csaiApplicationRule,
+  csaiMathsCoreRule,
   ecoMajorCore,
   ecoMajorElective,
   sshMajor,

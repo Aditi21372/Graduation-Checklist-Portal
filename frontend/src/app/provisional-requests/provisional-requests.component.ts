@@ -35,7 +35,6 @@ export class ProvisionalRequestsComponent {
 
   acceptRequest(rollNumber: string) {
     this.rn = rollNumber;
-    console.log('Request accepted for roll number: ' + rollNumber);
     this.router.navigate(['/provisional-certificate', this.rn]);
   }
 }

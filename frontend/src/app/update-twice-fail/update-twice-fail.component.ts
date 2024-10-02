@@ -59,7 +59,6 @@ export class UpdateTwiceFailComponent {
         this.failCoursesList[this.selectedFailCourse]['courseCode']
       )
       .subscribe((response) => {
-        console.log(response);
         this.substituteCoursesList = response;
         this.showSubCourses = true;
       });
@@ -70,18 +69,15 @@ export class UpdateTwiceFailComponent {
       this.showMessage = 'Please select a course';
       return;
     }
-    console.log(
-      this.failCoursesList[this.selectedFailCourse]['courseCode'],
-      this.substituteCoursesList[this.selectedSubstituteCourse]['courseCode']
-    );
     this.studentService
       .updateTwiceFailCourses(
         this.studentRollNumber,
         this.failCoursesList[this.selectedFailCourse]['courseCode'],
         this.substituteCoursesList[this.selectedSubstituteCourse]['courseCode'],
       )
-      setTimeout(() => {
-        this.ngOnInit();
-      }, 5000);
+      .subscribe((response) => {
+        this.showMessage = response;
+      });
+      
   }
 }

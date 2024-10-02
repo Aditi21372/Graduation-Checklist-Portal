@@ -148,6 +148,7 @@ export async function updateStudentGrade(studentData: any): Promise<any> {
       "Roll No": studentData["Roll No"],
       "Batch / Term Code": studentData["Batch / Term Code"],
       "Course Code": studentData["Course Code"],
+      "Grade": { $ne: studentData["Grade"] } 
     };
 
     const existingStudent = await collection.findOne(query);
@@ -160,7 +161,6 @@ export async function updateStudentGrade(studentData: any): Promise<any> {
     if (result.modifiedCount === 0) {
       return []; // Document not updated
     }
-
     return existingStudent; // Document updated successfully
   } catch (err) {
     console.error(err);
@@ -313,9 +313,9 @@ export async function generateSummary(): Promise<any> {
       }
       const studentCourseData = await preprocessCourseData(studentData);
       const branch = studentCourseData["program"];
-      if (!getGraduationStatus(studentCourseData, branch)) {
-        continue;
-      }
+      // if (!getGraduationStatus(studentCourseData, branch)) {
+      //   continue;
+      // }
       await calculateSummary(studentCourseData, branch);
     }
 

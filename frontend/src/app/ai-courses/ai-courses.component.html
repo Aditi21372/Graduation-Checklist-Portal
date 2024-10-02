@@ -12,105 +12,56 @@
     </div>
   </mat-card>
 </div>
+<ng-container *ngFor="let category of courseCategories">
+  <mat-card>
+    <div class="center-horizontally">
+      <h1
+        [ngClass]="{
+          'green-text': category.status,
+          'red-text': !category.status
+        }"
+      >
+      {{ category.title }}
+      </h1>
+    </div>
 
-<mat-card>
-  <div class="center-horizontally">
-    <h1
-      [ngClass]="{
-        'green-text': aiCoreCourses.totalCredits >= 8,
-        'red-text': aiCoreCourses.totalCredits < 8
-      }"
-    >
-      AI Core Courses
-    </h1>
-  </div>
+    <table mat-table [dataSource]="category.courses">
+      <ng-container matColumnDef="course">
+        <th mat-header-cell *matHeaderCellDef>Course Code</th>
+        <td mat-cell *matCellDef="let element">{{ element.course }}</td>
+      </ng-container>
 
-  <table mat-table [dataSource]="dataSourceCore">
-    <ng-container matColumnDef="course">
-      <th mat-header-cell *matHeaderCellDef>Course Code</th>
-      <td mat-cell *matCellDef="let element">{{ element.course }}</td>
-    </ng-container>
+      <ng-container matColumnDef="courseName">
+        <th mat-header-cell *matHeaderCellDef>Course Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.courseName }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="courseName">
-      <th mat-header-cell *matHeaderCellDef>Course Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.courseName }}</td>
-    </ng-container>
+      <ng-container matColumnDef="semester">
+        <th mat-header-cell *matHeaderCellDef>Semester</th>
+        <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="semester">
-      <th mat-header-cell *matHeaderCellDef>Semester</th>
-      <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
-    </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let element">{{ element.status }}</td>
-    </ng-container>
+      <ng-container matColumnDef="credits">
+        <th mat-header-cell *matHeaderCellDef>Credits</th>
+        <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="credits">
-      <th mat-header-cell *matHeaderCellDef>Credits</th>
-      <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
-    </ng-container>
+      <ng-container matColumnDef="grade">
+        <th mat-header-cell *matHeaderCellDef>Grade</th>
+        <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="grade">
-      <th mat-header-cell *matHeaderCellDef>Grade</th>
-      <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ 'red-row': row.status !== 'Complete' }"
-    ></tr>
-  </table>
-
-  <div class="center-horizontally">
-    <h1
-      [ngClass]="{
-        'green-text': aiApplicationCourses.totalCredits >= 16,
-        'red-text': aiApplicationCourses.totalCredits < 16
-      }"
-    >
-      AI Application Courses
-    </h1>
-  </div>
-
-  <table mat-table [dataSource]="dataSourceApplication">
-    <ng-container matColumnDef="course">
-      <th mat-header-cell *matHeaderCellDef>Course Code</th>
-      <td mat-cell *matCellDef="let element">{{ element.course }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="courseName">
-      <th mat-header-cell *matHeaderCellDef>Course Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.courseName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="semester">
-      <th mat-header-cell *matHeaderCellDef>Semester</th>
-      <td mat-cell *matCellDef="let element">{{ element.semester }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let element">{{ element.status }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="credits">
-      <th mat-header-cell *matHeaderCellDef>Credits</th>
-      <td mat-cell *matCellDef="let element">{{ element.credits }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="grade">
-      <th mat-header-cell *matHeaderCellDef>Grade</th>
-      <td mat-cell *matCellDef="let element">{{ element.grade }}</td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-      [ngClass]="{ 'red-row': row.status !== 'Complete' }"
-    ></tr>
-  </table>
-</mat-card>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        [ngClass]="{ 'red-row': row.status !== 'Complete' }"
+      ></tr>
+    </table>
+  </mat-card>
+</ng-container>

@@ -81,6 +81,7 @@ export async function includeIp(
   const query = {
     "Roll No": rollNo,
     "Course Code": ipData["Course Code"],
+    "Grade": ipData["Grade"]
   };
   const update = {
     $set: {

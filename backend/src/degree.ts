@@ -18,8 +18,8 @@ const semesters: string[] = [
 ];
 
 const graduationRules = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-const graduationRulesCsai = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13];
-const graduationRulesCsss = [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 17];
+const graduationRulesCsai = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+const graduationRulesCsss = [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 20];
 
 export function getGraduationStatus(
   studentCourseData: StudentInfo,
@@ -65,7 +65,7 @@ export function getGraduationDate(
     let semester = course["semester"].toString();
     if (semesters.includes(semester)) {
       const semesterIndex = semesters.indexOf(semester); // Add type assertion
-      if (semesterIndex > maxSem) {
+      if (semesterIndex > maxSem && course['grade'] != 'Withdrawn') {
         maxSem = semesterIndex;
       }
     }

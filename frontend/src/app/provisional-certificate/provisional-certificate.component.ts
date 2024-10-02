@@ -32,7 +32,6 @@ export class ProvisionalCertificateComponent {
   ngOnInit() {
     this.route.params.subscribe((params) => {
       this.rollNumber = params['rollNumber'];
-      console.log(this.rollNumber);
     });
 
     this.studentService

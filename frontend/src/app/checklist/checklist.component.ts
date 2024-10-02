@@ -39,20 +39,20 @@ export class ChecklistComponent implements OnInit {
 
         const observables = [
           this.populateBuckets(),
-          this.populateMandatory(),
-          this.populateSSHRule(),
-          this.populateCW(),
-          this.populateSG(),
-          this.populateExtraCourses(),
-          this.populateIPCredits(),
-          this.populateOnlineCourseCredits(),
-          this.populateTwoXXCredits(),
-          this.populateBTP(),
-          this.populateHonors(),
-          this.populateMinors(),
-          this.populateEcoMajors(),
-          this.populateIncompleteGrades(),
-          this.populateTotalCredits(),
+          this.populateMandatory(1),
+          this.populateSSHRule(2),
+          this.populateCW(3),
+          this.populateSG(4),
+          this.populateExtraCourses(5),
+          this.populateIPCredits(6),
+          this.populateOnlineCourseCredits(7),
+          this.populateTwoXXCredits(8),
+          this.populateBTP(9),
+          this.populateHonors(10),
+          this.populateMinors(11),
+          this.populateEcoMajors(14),
+          this.populateIncompleteGrades(15),
+          this.populateTotalCredits(16),
         ];
 
         forkJoin(observables).subscribe(() => {
@@ -69,7 +69,7 @@ export class ChecklistComponent implements OnInit {
       });
   }
 
-  populateMandatory(): Observable<any> {
+  populateMandatory(index: number): Observable<any> {
     return this.studentService.getMandatoryCourses(this.branch).pipe(
       map((ruleData: any) => {
         let status =
@@ -78,7 +78,7 @@ export class ChecklistComponent implements OnInit {
             : 'Incomplete';
 
         const newData = {
-          index: 1,
+          index: index,
           rule: 'Core Courses',
           status: status,
           credits: ruleData.data.totalCredits + this.bucketCredits,
@@ -107,19 +107,22 @@ export class ChecklistComponent implements OnInit {
     return of(null);
   }
 
-  populateSSHRule(): Observable<any> {
+  populateSSHRule(index: number): Observable<any> {
     if (this.branch === 'CSSS') {
-      return this.populateSSHMajor();
+      return this.populateSSHMajor(index);
     }
-    return this.populateSSH();
+    return this.populateSSH(index);
   }
 
-  populateSSH(): Observable<any> {
-    return this.studentService.getSSHcourses().pipe(
+  populateSSH(index: number): Observable<any> {
+    return this.studentService.getSSHcourses(this.branch).pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 2,
-          rule: '12 credits of SSH courses',
+          index: index,
+          rule:
+            this.branch != 'CSD'
+              ? '12 credits of SSH courses'
+              : '16 credits of SSH courses',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
           credits: ruleData.data.totalCredits,
@@ -133,11 +136,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateSSHMajor(): Observable<any> {
+  populateSSHMajor(index: number): Observable<any> {
     return this.studentService.getSSHMajor().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 2,
+          index: index,
           rule: '28 credits of SSH courses',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -152,11 +155,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateCW(): Observable<any> {
+  populateCW(index: number): Observable<any> {
     return this.studentService.getCWcourses().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 3,
+          index: index,
           rule: '2 credits of Community Work',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -171,11 +174,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateSG(): Observable<any> {
+  populateSG(index: number): Observable<any> {
     return this.studentService.getSGcourses().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 4,
+          index: index,
           rule: '2 credits of Self Growth',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -190,19 +193,19 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateExtraCourses(): Observable<any> {
+  populateExtraCourses(index: number): Observable<any> {
     if (this.branch === 'CSAI') {
-      return this.populateCsaiCourses();
+      return this.populateCsaiCourses(index);
     } else {
-      return this.populate32Credits();
+      return this.populate32Credits(index);
     }
   }
 
-  populate32Credits(): Observable<any> {
+  populate32Credits(index: number): Observable<any> {
     return this.studentService.get32Credits(this.branch).pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 5,
+          index: index,
           rule: '32 Credits of Discipline Courses',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -221,41 +224,153 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateCsaiCourses(): Observable<any> {
-    return this.studentService.getCsaiCore().pipe(
-      mergeMap((ruleData: any) => {
+  populateCsaiCourses(index: number): Observable<any> {
+    return this.studentService.getCsai().pipe(
+      map((ruleData: any) => {
         const newData = {
-          index: 5,
+          index: index,
           rule: 'AI Core & Application Courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.totalCredits,
+          button_text: 'View Courses',
+        };
+        this.courseData.set('csaiCourses', ruleData.courses);
+        this.dataSourceTwo.push(newData);
+      })
+    );
+  }
+
+  populateIPCredits(index: number): Observable<any> {
+    return this.studentService.getIPCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: index,
+          rule: 'Atmost 8 credits of IP/IS/UR',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
+
+        this.courseData.set('IP_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateOnlineCourseCredits(index: number): Observable<any> {
+    return this.studentService.getOnlineCourseCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: index,
+          rule: 'Atmost 8 credits of online courses',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Online Courses',
+        };
+
+        this.courseData.set('Online_Courses', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateTwoXXCredits(index: number): Observable<any> {
+    return this.studentService.getTwoXXCredits(this.branch).pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: index,
+          rule: 'Atmost two 2xx level courses',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
           credits: ruleData.data.totalCredits,
           button_text: 'View Courses',
         };
 
-        return this.studentService.getCsaiApplication().pipe(
-          map((coursesData: any) => {
-            newData.credits += coursesData.data.totalCredits;
-            newData.statusBool =
-              ruleData.isCompleteBool && coursesData.isCompleteBool;
-            newData.status = newData.statusBool ? 'Complete' : 'Incomplete';
-            this.courseData.set('csaiCourses', [
-              ruleData.data,
-              coursesData.data,
-            ]);
-            this.dataSourceTwo.push(newData);
-            return null;
-          })
-        );
+        this.courseData.set('2XX_Courses', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
       })
     );
   }
 
-  populateEcoMajors(): Observable<any> {
+  populateBTP(index: number): Observable<any> {
+    return this.studentService.getBTPCredits().pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: index,
+          rule: 'BTP',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data.totalCredits,
+          button_text: 'View Details',
+        };
+
+        this.courseData.set('BTP_Details', ruleData.data.courses);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateHonors(index: number): Observable<any> {
+    return this.studentService.getHonors(this.branch).pipe(
+      map((ruleData: any) => {
+        const newData = {
+          index: index,
+          rule: 'Honors',
+          status: ruleData.isCompleteText,
+          statusBool: ruleData.isCompleteBool,
+          credits: ruleData.data[1].value,
+          button_text: 'View Details',
+        };
+
+        this.courseData.set('Honors', ruleData.data);
+        this.dataSourceTwo.push(newData);
+        return null;
+      })
+    );
+  }
+
+  populateMinors(index: number): Observable<any> {
+    return this.studentService.getMinors().pipe(
+      map((courseData: any) => {
+        let finalNumber = 0;
+        for (let i = 0; i < courseData.length; i++) {
+          let newData = {
+            index: index,
+            rule: 'Minors in ',
+            status: 'Not Done',
+            statusBool: true,
+            credits: 0,
+            button_text: 'View Details',
+          };
+
+          newData.index += i;
+          newData.rule += courseData[i].data.stream;
+          newData.credits = courseData[i].totalCredits;
+          newData.status = courseData[i].isCompleteText;
+
+          courseData[i].data['credits'] = courseData[i].totalCredits;
+          this.courseData.set(courseData[i].data.stream, courseData[i].data);
+          this.dataSourceTwo.push(newData);
+          finalNumber = newData.index;
+        }
+        return finalNumber;
+      })
+    );
+  }
+
+  populateEcoMajors(index: number): Observable<any> {
     return this.studentService.getEcoMajorCore().pipe(
       mergeMap((ruleData: any) => {
+        
         const newData = {
-          index: 14,
+          index: index,
           rule: 'ECO Major',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -265,6 +380,9 @@ export class ChecklistComponent implements OnInit {
 
         return this.studentService.getEcoMajorElective().pipe(
           map((coursesData: any) => {
+            if (this.branch != 'CSSS'){
+              return index;
+            }
             newData.credits += coursesData.data.totalCredits;
             newData.statusBool =
               ruleData.isCompleteBool && coursesData.isCompleteBool;
@@ -281,134 +399,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateIPCredits(): Observable<any> {
-    return this.studentService.getIPCredits().pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 6,
-          rule: 'Atmost 8 credits of IP/IS/UR',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data.totalCredits,
-          button_text: 'View Details',
-        };
-
-        this.courseData.set('IP_Details', ruleData.data.courses);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
-  populateOnlineCourseCredits(): Observable<any> {
-    return this.studentService.getOnlineCourseCredits().pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 7,
-          rule: 'Atmost 8 credits of online courses',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data.totalCredits,
-          button_text: 'View Online Courses',
-        };
-
-        this.courseData.set('Online_Courses', ruleData.data.courses);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
-  populateTwoXXCredits(): Observable<any> {
-    return this.studentService.getTwoXXCredits(this.branch).pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 8,
-          rule: 'Atmost two 2xx level courses',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data.totalCredits,
-          button_text: 'View Courses',
-        };
-
-        this.courseData.set('2XX_Courses', ruleData.data.courses);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
-  populateBTP(): Observable<any> {
-    return this.studentService.getBTPCredits().pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 9,
-          rule: 'BTP',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data.totalCredits,
-          button_text: 'View Details',
-        };
-
-        this.courseData.set('BTP_Details', ruleData.data.courses);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
-  populateHonors(): Observable<any> {
-    return this.studentService.getHonors(this.branch).pipe(
-      map((ruleData: any) => {
-        const newData = {
-          index: 10,
-          rule: 'Honors',
-          status: ruleData.isCompleteText,
-          statusBool: ruleData.isCompleteBool,
-          credits: ruleData.data[1].value,
-          button_text: 'View Details',
-        };
-
-        this.courseData.set('Honors', ruleData.data);
-        this.dataSourceTwo.push(newData);
-        return null;
-      })
-    );
-  }
-
-  populateMinors(): Observable<any> {
-    return this.studentService.getMinors().pipe(
-      map((courseData: any) => {
-
-        for (let i = 0; i < courseData.length; i++) {
-          let newData = {
-            index: 11,
-            rule: 'Minors in ',
-            status: 'Not Done',
-            statusBool: true,
-            credits: 0,
-            button_text: 'View Details',
-          };
-
-          newData.index += i;
-          newData.rule += courseData[i].data.stream;
-          newData.credits = courseData[i].totalCredits;
-          newData.status = courseData[i].isCompleteText;
-
-          courseData[i].data['credits'] = courseData[i].totalCredits;
-          this.courseData.set(courseData[i].data.stream, courseData[i].data);
-          this.dataSourceTwo.push(newData);
-        }
-        return null;
-      })
-    );
-  }
-
-  populateIncompleteGrades(): Observable<any> {
+  populateIncompleteGrades(index: number): Observable<any> {
     return this.studentService.getIncompleteGrade().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 15,
+          index: this.branch == 'CSSS'? index : index - 1,
           rule: 'Incomplete Grade on Transcript',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -423,11 +418,11 @@ export class ChecklistComponent implements OnInit {
     );
   }
 
-  populateTotalCredits(): Observable<any> {
+  populateTotalCredits(index: number): Observable<any> {
     return this.studentService.getRequiredCredits().pipe(
       map((ruleData: any) => {
         const newData = {
-          index: 16,
+          index: this.branch == 'CSSS'? index : index - 1,
           rule: 'Total Credits',
           status: ruleData.isCompleteText,
           statusBool: ruleData.isCompleteBool,
@@ -559,14 +554,12 @@ export class ChecklistComponent implements OnInit {
         });
         break;
       case 'AI Core & Application Courses':
-        let aiCoreCourses = this.courseData.get('csaiCourses')[0];
-        let aiApplicationCourses = this.courseData.get('csaiCourses')[1];
+        let aiCourses = this.courseData.get('csaiCourses');
 
         this.router.navigate(['/ai-courses'], {
           queryParams: {
             rollNumber: this.rollNumber,
-            aiCoreCourses: JSON.stringify(aiCoreCourses),
-            aiApplicationCourses: JSON.stringify(aiApplicationCourses),
+            aiCourses: JSON.stringify(aiCourses),
             studentName: this.studentName,
             program: this.branch,
           },

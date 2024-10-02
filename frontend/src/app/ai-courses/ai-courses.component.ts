@@ -8,8 +8,6 @@ import { UtilityService } from '../utility.service';
   styleUrls: ['./ai-courses.component.css'],
 })
 export class AiCoursesComponent {
-  dataSourceCore: MatTableDataSource<any>;
-  dataSourceApplication: MatTableDataSource<any>;
   rollNumber: number = 0;
   studentName: string = '';
   program: string = '';
@@ -21,66 +19,58 @@ export class AiCoursesComponent {
     'credits',
     'grade',
   ];
-  aiCoreCourses: any;
-  aiApplicationCourses: any;
+  aiCourses: any;
+  courseCategories: any = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private utilityService: UtilityService
-  ) {
-    this.dataSourceCore = new MatTableDataSource();
-    this.dataSourceApplication = new MatTableDataSource();
-  }
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.rollNumber = params['rollNumber'];
       this.studentName = params['studentName'];
       this.program = params['program'];
-      this.aiCoreCourses = JSON.parse(params['aiCoreCourses']);
-      this.aiApplicationCourses = JSON.parse(params['aiApplicationCourses']);
+      this.aiCourses = JSON.parse(params['aiCourses']);
       this.populateCoreCourses();
     });
   }
 
   populateCoreCourses() {
-    const newData = [];
-    for (const course of this.aiCoreCourses.courses) {
-      newData.push({
-        course: course.course,
-        courseName: course.courseName,
-        semester: course.semester,
-        status: course.status,
-        credits: course.credits,
-        grade: course.grade,
-      });
-    }
-    this.dataSourceCore.data = [...this.dataSourceCore.data, ...newData];
-    this.dataSourceCore.data.sort((a: any, b: any) =>
-      this.utilityService.customSort(a.semester, b.semester)
-    );
-
-    const newData2 = [];
-
-    for (let coreCourse of this.aiApplicationCourses.courses) {
-      newData2.push({
-        course: coreCourse.course,
-        courseName: coreCourse.courseName,
-        semester: coreCourse.semester,
-        status: coreCourse.status,
-        credits: coreCourse.credits,
-        grade: coreCourse.grade,
-      });
-    }
-
-    this.dataSourceApplication.data = [
-      ...this.dataSourceApplication.data,
-      ...newData2,
+    const titles = [
+      'CSE CORE (8)',
+      'CSAI CORE (8)',
+      'CSAI APPLICATION(16)',
+      'MATHS CORE(4)',
     ];
-    this.dataSourceApplication.data.sort((a: any, b: any) =>
-      this.utilityService.customSort(a.semester, b.semester)
-    );
+    let count = -1;
+    for (const ai of this.aiCourses) {
+      count += 1;
+      const newData = [];
+      for (const course of ai.data.courses) {
+        newData.push({
+          course: course.course,
+          courseName: course.courseName,
+          semester: course.semester,
+          status: course.status,
+          credits: course.credits,
+          grade: course.grade,
+        });
+      }
+      let category = new MatTableDataSource();
+      category.data = [...category.data, ...newData];
+      category.data = category.data.sort((a: any, b: any) =>
+        this.utilityService.customSort(a.semester, b.semester)
+      );
+
+      this.courseCategories.push({
+        title: titles[count],
+        status: ai.isCompleteBool,
+        courses: category,
+      });
+    }
   }
 
   goBack() {

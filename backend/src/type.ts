@@ -23,7 +23,8 @@ export type StudentCourse = {
     | "S"
     | "I"
     | "W"
-    | "X";
+    | "X"
+    | "Withdrawn";
   semester: string;
   credit: 1 | 2 | 4 | 8 | 12;
   includedInMinors: string;

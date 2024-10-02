@@ -37,8 +37,8 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + branch + '/bucket');
   }
 
-  getSSHcourses(): Observable<any> {
-    return this.http.get(this.apiUrl + 'ssh');
+  getSSHcourses(branch: string): Observable<any> {
+    return this.http.get(this.apiUrl + branch + '/ssh');
   }
 
   getCWcourses(): Observable<any> {
@@ -69,12 +69,8 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + branch + '/thirtytwocredits');
   }
 
-  getCsaiCore(): Observable<any> {
-    return this.http.get(this.apiUrl + 'csai-core');
-  }
-
-  getCsaiApplication(): Observable<any> {
-    return this.http.get(this.apiUrl + 'csai-application');
+  getCsai(): Observable<any> {
+    return this.http.get(this.apiUrl + 'csai');
   }
 
   getEcoMajorCore(): Observable<any> {

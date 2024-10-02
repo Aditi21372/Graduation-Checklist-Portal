@@ -46,8 +46,10 @@ import {
   onlineCoursesRule,
   thirtyTwoCreditsRule,
   incompleteGradeRule,
+  csaiCseCoreRule,
   csaiCoreRule,
   csaiApplicationRule,
+  csaiMathsCoreRule,
   ecoMajorCore,
   ecoMajorElective,
   sshMajor,
@@ -131,8 +133,10 @@ app.get("/api/:branch/bucket", (req, res) => {
   res.json(mandatoryBucketRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/ssh", (req, res) => {
-  res.json(sshRule.checkRule(studentCourseData, null));
+app.get("/api/:branch/ssh", (req, res) => {
+  // Get the branch parameter from the request URL.
+  const { branch } = req.params;
+  res.json(sshRule.checkRule(studentCourseData, branch));
 });
 
 app.get("/api/cw", (req, res) => {
@@ -148,12 +152,23 @@ app.get("/api/:branch/thirtytwocredits", (req, res) => {
   res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/csai-core", (req, res) => {
-  res.json(csaiCoreRule.checkRule(studentCourseData, null));
-});
+app.get("/api/csai", (req, res) => {
+  const csaiCseCore = csaiCseCoreRule.checkRule(studentCourseData, null);
+  const csaiCore = csaiCoreRule.checkRule(studentCourseData, null);
+  const csaiApplication = csaiApplicationRule.checkRule(studentCourseData, null);
+  const csaiMathCore  = csaiMathsCoreRule.checkRule(studentCourseData, null);
+  const courses = [csaiCseCore, csaiCore, csaiApplication, csaiMathCore];
+  const status = courses.every(x => x.isCompleteBool);
+  const credits = courses.reduce((sum, course) => sum + course.data.totalCredits, 0);
 
-app.get("/api/csai-application", (req, res) => {
-  res.json(csaiApplicationRule.checkRule(studentCourseData, null));
+  const responseJson = {
+    courses: courses,
+    isCompleteBool: status,
+    isCompleteText: status ? 'Complete' : 'Incomplete',
+    totalCredits: credits
+  }
+
+  res.json(responseJson);
 });
 
 app.get("/api/eco-major-core", (req, res) => {

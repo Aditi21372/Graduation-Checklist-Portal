@@ -39,7 +39,7 @@ export class SummaryPageComponent implements OnInit {
         this.studentService.getSemWiseCGPA(),
         this.studentService.getSGcourses(),
         this.studentService.getCWcourses(),
-        this.studentService.getSSHcourses(),
+        this.studentService.getSSHcourses(this.program),
         this.studentService.getBTPCredits(),
         this.studentService.get32Credits(this.program),
         this.studentService.getHonors(this.program),
