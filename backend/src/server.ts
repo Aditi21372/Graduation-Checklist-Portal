@@ -56,7 +56,7 @@ import {
 } from "./rule";
 
 const app = express();
-const port = 3000;
+const port = 3002;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -69,7 +69,7 @@ let studentCourseData: StudentInfo = {
 };
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:40000");
+  res.header("Access-Control-Allow-Origin", "http://localhost:40002");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

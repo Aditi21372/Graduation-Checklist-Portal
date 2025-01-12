@@ -3,7 +3,7 @@ import { StudentServiceService } from '../student-service.service';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of, map } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
+import * as XLSX from 'xlsx';
 @Component({
   selector: 'app-checklist',
   templateUrl: './checklist.component.html',
@@ -57,9 +57,59 @@ export class ChecklistComponent implements OnInit {
 
         forkJoin(observables).subscribe(() => {
           this.dataSourceTwo.sort((a, b) => a.index - b.index);
+          console.log('dataSourceTwo:', this.dataSourceTwo);
         });
+        
       });
   }
+  
+
+  saveDataToFile() {
+  // Log dataSourceTwo to check its content
+  console.log('dataSourceTwo:', this.dataSourceTwo);
+
+  // Prepare the headers
+  const headers = ['Student Name', 'Roll Number'];
+  
+  // Add course details headers dynamically based on the number of courses
+  this.dataSourceTwo.forEach((entry, index) => {
+    headers.push(`Course ${index + 1} Rule`, `Course ${index + 1} Credits`, `Course ${index + 1} Status`);
+  });
+
+  // Prepare the row data (student name, roll number, and all course details in the same row)
+  const rowData = [
+    this.studentName, 
+    this.rollNumber,
+    ...this.dataSourceTwo.flatMap(entry => [entry.rule, entry.credits, entry.status]) // Flattening the course details into the same row
+  ];
+
+  // Combine the headers and rowData into a 2D array for the sheet
+  const data = [
+    headers, // First row will be headers
+    rowData  // Second row will be the actual data
+  ];
+
+  // Create a new worksheet and workbook
+  const worksheet = XLSX.utils.aoa_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Student Data');
+
+  // Write the workbook and trigger download
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+  // Create a link element to download the Excel file
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = `${this.rollNumber}.xlsx`;
+
+  // Trigger the download by clicking the link
+  link.click();
+
+  // Clean up the URL after download
+  window.URL.revokeObjectURL(link.href);
+}
+
 
   setGraduationStatus() {
     this.studentService
@@ -135,6 +185,7 @@ export class ChecklistComponent implements OnInit {
       })
     );
   }
+
 
   populateSSHMajor(index: number): Observable<any> {
     return this.studentService.getSSHMajor().pipe(
@@ -398,6 +449,7 @@ export class ChecklistComponent implements OnInit {
       })
     );
   }
+  
 
   populateIncompleteGrades(index: number): Observable<any> {
     return this.studentService.getIncompleteGrade().pipe(
@@ -465,6 +517,17 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
+      case '16 credits of SSH courses':
+        let sshCoursesCSD = this.courseData.get('SSH_Courses');
+        this.router.navigate(['/ssh-courses-list'], {
+          queryParams: {
+            rollNumber: this.rollNumber,
+            courseData: JSON.stringify(sshCoursesCSD),
+            studentName: this.studentName,
+            program: this.branch,
+          },
+        });
+        break; 
       case '28 credits of SSH courses':
         let sshMajorCourses = this.courseData.get('SSH_Courses');
         this.router.navigate(['/ssh-courses-list'], {
