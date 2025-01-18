@@ -1,0 +1,35 @@
+<table>
+  <button (click)="saveDataToFile()">Download</button>
+  <thead>
+    <tr>
+      <th>SNo.</th>
+      <th>Requirement</th>
+      <th>Status</th>
+      <th>Credits</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr
+      *ngFor="let element of dataSourceTwo"
+      [ngClass]="{
+        'red-row':
+          element.status === 'Incomplete' ||
+          element.status === 'Done extra credits'
+      }"
+    >
+      <td>{{ element.index }}</td>
+      <td>{{ element.rule }}</td>
+      <td [class.bold-text]="element.status === 'Not Done'">
+        {{ element.status }}
+      </td>
+      <td>{{ element.credits }}</td>
+      <td>
+        <button (click)="navigateToPage(element)" class="button-column">
+          {{ element.button_text }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

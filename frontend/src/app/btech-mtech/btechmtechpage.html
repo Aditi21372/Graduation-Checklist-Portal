@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B.Tech and M.Tech Options</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            font-size: 3rem;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btech-button {
+            background-color: #007BFF;
+            color: white;
+        }
+        .btech-button:hover {
+            background-color: #0056b3;
+        }
+        .mtech-button {
+            background-color: #28A745;
+            color: white;
+        }
+        .mtech-button:hover {
+            background-color: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <h1>Choose Your Program</h1>
+    <div class="button-container">
+        <button class="btech-button" onclick="location.href='btech.html'">B.Tech</button>
+        <button class="mtech-button" onclick="location.href='mtech.html'">M.Tech</button>
+    </div>
+</body>
+</html>
