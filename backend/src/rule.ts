@@ -398,6 +398,8 @@ export const thirtyTwoCreditsRule: IRule = {
       // Doesn't check for a 2xx coursec
       // Doesn't check for courses that were Incomplete in the last four semesters.
       if (
+        course["courseCode"].startsWith(major + "1")||
+        course["courseCode"].startsWith(branch + "1")||
         course["courseCode"].startsWith(major + "2") ||
         course["courseCode"].startsWith(branch + "2") ||
         course["semester"] < "5" ||
