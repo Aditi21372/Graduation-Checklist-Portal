@@ -270,7 +270,8 @@
     "CSE340/CSE540/ECE340",
     "CSE665",
     "ECE351",
-    "CSE573"
+    "CSE573",
+    "CSE999A"
   ],
   "CSAI MATH CORE": [
     "MTH204",
@@ -342,6 +343,7 @@
     "SOC211",
     "SOC212",
     "SOC213",
+    "SOC216",
     "SOC302",
     "SOC307",
     "SOC308",
@@ -456,6 +458,27 @@
     "MTH2",
     "DES2",
     "ENT2",
-    "MGT2"
+    "MGT2",
+    "SSH2",
+    "ECO2",
+    "PSY2",
+    "SOC2"
+  ],
+
+  "QuantumMinor1":[
+    "CSE422",
+    "CSE622",
+    "ECE524",
+    "ECE525",
+    "ECE545",
+    "MTH551"
+  ],
+  "QuantumMinor2": [
+    "ECE530",
+    "ECE517",
+    "ECE501",
+    "MTH514",
+    "CSE526",
+    "ECE613"
   ]
 }

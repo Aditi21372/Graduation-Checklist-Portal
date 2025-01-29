@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component';
 import { StudentInfoInputComponent } from './student-info-input/student-info-input.component';
 import { ChecklistComponent } from './checklist/checklist.component';
 import { CgpaPageComponent } from './cgpa-page/cgpa-page.component';
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'dashboard/:rollNumber', component: DashboardComponent },
+  { path: 'student-dashboard', component: StudentDashboardComponent },
   { path: 'student-info-input', component: StudentInfoInputComponent },
   { path: 'checklist', component: ChecklistComponent },
   { path: 'cgpa-page', component: CgpaPageComponent },
@@ -70,6 +72,8 @@ const routes: Routes = [
   { path: 'provisional-requests', component: ProvisionalRequestsComponent },
   { path: 'provisional-certificate/:rollNumber', component: ProvisionalCertificateComponent },
   { path: 'update-twice-fail', component: UpdateTwiceFailComponent },
+  { path: 'student-view-checkList', component: ChecklistComponent },
+
 ];
 
 @NgModule({

@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
   styleUrls: ['./checklist.component.css'],
 })
 export class ChecklistComponent implements OnInit {
-  @Input() rollNumber: number = 0;
+  @Input() rollNumber: number = 2021393;
 
   branch: string = '';
   studentName: string = '';

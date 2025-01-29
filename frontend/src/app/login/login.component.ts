@@ -21,12 +21,17 @@ export class LoginComponent {
     this.studentService.studentLogin(this.username, this.password).subscribe(
       (response) => {
         // Handle the response from the backend, e.g., redirect to another page;
-        this.router.navigate(['/dashboard', response])
+        this.router.navigate(['/dashboard', response]);
       },
       (error) => {
         // Handle any errors, e.g., display an error message
         this.responseMessage = "The password that you've entered is incorrect.";
       }
     );
+  }
+
+  onLoginAsStudent() {
+    // Navigate to the student view
+    this.router.navigate(['/student-view-checkList']);
   }
 }

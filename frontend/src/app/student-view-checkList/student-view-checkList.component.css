@@ -1,0 +1,99 @@
+/* Apply the same container styling */
+table .red-row {
+    background-color: rgb(246, 104, 104);
+    color: white;
+  }
+  
+  .mat-card {
+    margin: 20px auto;
+    max-width: 600px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px auto;
+    max-width: 800px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  th,
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgb(229, 229, 229);
+  }
+  
+  tr.mat-cell-header {
+    background-color: rgb(229, 229, 229);
+  }
+  
+  /* Adjust the button styles within the table cell */
+  td button {
+    margin: 5px;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    text-decoration: none;
+    background-color: #44b3ad;
+    color: #fff;
+    border: 2px solid #40aca7;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease;
+    width: 100%;
+    max-width: 150px;
+  }
+  
+  td button:hover {
+    background-color: #367976;
+    border-color: #367976;
+    color: #fff;
+  }
+  
+  /* Add styling for the button column */
+  .button-column {
+    width: 1%;
+    white-space: nowrap;
+  }
+  
+  /* Style the button within the button column */
+  .button-column button {
+    margin: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: center;
+    text-decoration: none;
+    background-color: #44b3ad;
+    color: #fff;
+    border: 2px solid #40aca7;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  
+  .button-column button:hover {
+    background-color: #367976;
+    border-color: #367976;
+    color: #fff;
+  }
+  
+  .bold-text {
+    font-weight: bold;
+  }

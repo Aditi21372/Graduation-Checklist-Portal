@@ -642,3 +642,5 @@ export class EntrepreneurshipMinors implements Minors {
     return minorsComponent;
   }
 }
+
+
