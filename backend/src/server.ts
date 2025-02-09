@@ -1,3 +1,5 @@
+// This file contains the server code for the backend of the Graduation Checklist application.Is is used to handle the API requests from the frontend and interact with the database.
+
 import express from "express";
 import multer from "multer";
 import xlsx from "xlsx";
@@ -69,7 +71,7 @@ let studentCourseData: StudentInfo = {
 };
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:40002");
+res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"

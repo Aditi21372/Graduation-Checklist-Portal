@@ -85,6 +85,8 @@ export type GraduatedStudent = {
   minorInCB: string;
   minorInEco: string;
   minorInENT: string;
+  // This line will be removed minorInQuantum string;
+  minorInDesign: string;
   ecoMajor: string;
   btp: string;
   credits: number;

@@ -87,10 +87,12 @@ export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
       minorInCB: worksheet[`H${row + 1}`]?.v,
       minorInEco: worksheet[`I${row + 1}`]?.v,
       minorInENT: worksheet[`J${row + 1}`]?.v,
-      ecoMajor: worksheet[`K${row + 1}`]?.v,
-      btp: worksheet[`L${row + 1}`]?.v,
-      credits: worksheet[`M${row + 1}`]?.v,
-      cgpa: worksheet[`N${row + 1}`]?.v,
+      //minorInQuantum: worksheet[`K${row + 1}`]?.v,
+      minorInDesign: worksheet[`K${row + 1}`]?.v,
+      ecoMajor: worksheet[`L${row + 1}`]?.v,
+      btp: worksheet[`M${row + 1}`]?.v,
+      credits: worksheet[`N${row + 1}`]?.v,
+      cgpa: worksheet[`O${row + 1}`]?.v,
     };
 
     graduatedStudents.push(student);
@@ -352,8 +354,11 @@ async function calculateSummary(
     "ECO Minors": "No",
     "CB Minors": "No",
     "ENT Minors": "No",
+    //"Quantum Minors": "No",
+    "Design Minors": "No",
     "ECO Major":
       majorCore.isCompleteBool && majorElective.isCompleteBool ? "Yes" : "No",
+    
   };
 
   for (let i = 0; i < minors.length; i++) {
@@ -364,6 +369,10 @@ async function calculateSummary(
         summary["CB Minors"] = "Yes";
       } else if (minors[i].data.stream === "Entrepreneurship") {
         summary["ENT Minors"] = "Yes";
+        } //else if (minors[i].data.stream === "Quantum") {
+        //summary["Quantum Minors"] = "Yes";} 
+      else if (minors[i].data.stream === "Design") {
+        summary["Design Minors"] = "Yes";
       }
     }
   }

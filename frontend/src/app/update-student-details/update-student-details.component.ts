@@ -64,22 +64,31 @@ export class UpdateStudentDetailsComponent {
     }
   }
 
-  downloadData() {
-    this.studentService.getStudentDetails().subscribe((data: ArrayBuffer) => {
-      const blob = new Blob([data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const url = window.URL.createObjectURL(blob);
+  // downloadData() {
+  //   this.studentService.getStudentDetails().subscribe((data: ArrayBuffer) => {
+  //     const blob = new Blob([data], {
+  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //     });
+  //     const url = window.URL.createObjectURL(blob);
   
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'studentsInfo.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    });
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = 'studentsInfo.xlsx';
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //   });
+  // }
+
+  downloadFileFormat() {
+    const fileUrl = 'assets/files/sample.csv'; // Adjust path accordingly
+    const a = document.createElement('a');
+    a.href = fileUrl;
+    a.download = 'StudentData.csv'; 
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
-  
 
   goBack() {
     this.router.navigate(['/selection']);

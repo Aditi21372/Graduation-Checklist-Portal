@@ -50,10 +50,26 @@ export class ChecklistComponent implements OnInit {
           this.populateBTP(9),
           this.populateHonors(10),
           this.populateMinors(11),
-          this.populateEcoMajors(14),
-          this.populateIncompleteGrades(15),
-          this.populateTotalCredits(16),
+          this.populateEcoMajors(16),
+          this.populateIncompleteGrades(17),
+          this.populateTotalCredits(18),
         ];
+        // this.dataSourceTwo.push({
+        //   index: 17,
+        //   rule: 'Minors in Quantum',
+        //   status: 'Not Done',
+        //   credits: 0,
+        //   button_text: 'View Details',
+        // });
+
+        // this.dataSourceTwo.push({
+        //   index: 18,
+        //   rule: 'Minors in Design',
+        //   status: 'Not Done',
+        //   credits: 0,
+        //   button_text: 'View Details',
+        // });
+    
 
         forkJoin(observables).subscribe(() => {
           this.dataSourceTwo.sort((a, b) => a.index - b.index);
@@ -388,6 +404,7 @@ export class ChecklistComponent implements OnInit {
   }
 
   populateMinors(index: number): Observable<any> {
+    console.log('Minorsss:', this.courseData);
     return this.studentService.getMinors().pipe(
       map((courseData: any) => {
         let finalNumber = 0;
@@ -405,6 +422,8 @@ export class ChecklistComponent implements OnInit {
           newData.rule += courseData[i].data.stream;
           newData.credits = courseData[i].totalCredits;
           newData.status = courseData[i].isCompleteText;
+
+          console.log('Course Data:', courseData[i].data.stream);
 
           courseData[i].data['credits'] = courseData[i].totalCredits;
           this.courseData.set(courseData[i].data.stream, courseData[i].data);
@@ -711,6 +730,30 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
+        // case 'Minors in Quantum':
+        //   let minorsQuantum = this.courseData.get('Quantum');
+        //   this.router.navigate(['/minors-detail'], {
+        //     queryParams: {
+        //       rollNumber: this.rollNumber,
+        //       stream: "Quantum",
+        //       courseData: JSON.stringify(minorsQuantum),
+        //       studentName: this.studentName,
+        //       program: this.branch,
+        //     },
+        //   });
+        // break;
+        case 'Minors in Design':
+          let minorsDesign = this.courseData.get('Design');
+          this.router.navigate(['/minors-detail'], {
+            queryParams: {
+              rollNumber: this.rollNumber,
+              stream: "Design",
+              courseData: JSON.stringify(minorsDesign),
+              studentName: this.studentName,
+              program: this.branch,
+            },
+          });
+          break;
     }
   }
 }
