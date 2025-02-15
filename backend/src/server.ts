@@ -4,7 +4,7 @@ import express from "express";
 import multer from "multer";
 import xlsx from "xlsx";
 import { courseDatabase } from "./database";
-import { disallowedGrades } from "./rule";
+import { disallowedGrades, allRules } from "./rule";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
 import { calculateCGPA } from "./cgpa";
@@ -109,6 +109,35 @@ app.get("/api/:rollNumber/info", async (req, res) => {
     res.json(studentInfo);
   } else {
     res.status(404).json({ error: "Student not found" });
+  }
+});
+
+app.get("/api/:rollNumber/checklist", async (req, res) => {
+  const { rollNumber } = req.params;
+  const studentInfo = await searchByRollNo(Number(rollNumber));
+  
+  if (!studentInfo) {
+    res.status(404).json({ error: "Student not found" });
+    return;
+  }
+
+  try {
+    const studentData = await preprocessCourseData(
+      await getStudentData(Number(rollNumber))
+    );
+    
+    const checklistResults = allRules.map(rule => ({
+      ruleId: rule.ruleId,
+      result: rule.checkRule(studentData, studentInfo.program)
+    }));
+    
+    res.json({
+      studentInfo,
+      checklistResults
+    });
+  } catch (error) {
+    console.error("Error processing checklist:", error);
+    res.status(500).json({ error: "Error processing checklist" });
   }
 });
 

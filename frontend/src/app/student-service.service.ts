@@ -136,6 +136,10 @@ export class StudentServiceService {
     return this.http.get(this.apiUrl + 'student' + '/' + rollNumber);
   }
 
+  getChecklist(rollNumber: string): Observable<any> {
+    return this.http.get(this.apiUrl + rollNumber + '/checklist');
+  }
+
   updateStudent(student: any): Observable<any> {
     return this.http.post(this.apiUrl + 'updateStudent', student);
   }
