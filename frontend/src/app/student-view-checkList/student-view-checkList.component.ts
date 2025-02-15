@@ -711,6 +711,17 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
+      case 'Minors in Design':
+        let minorsDesign = this.courseData.get('Design');
+        this.router.navigate(['/minors-detail'], {
+          queryParams: {
+            rollNumber: this.rollNumber,
+            stream: 'Design',
+            courseData: JSON.stringify(minorsDesign),
+            studentName: this.studentName,
+            program: this.branch,
+            },
+            });
     }
   }
 }

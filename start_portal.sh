@@ -1,4 +1,6 @@
-#!/bin/bash
+# Kill any existing processes on ports 3002 and 40002
+kill $(lsof -t -i:3002) 2>/dev/null
+kill $(lsof -t -i:40002) 2>/dev/null
 
 # Activate the Conda environment
 conda activate GraduationChecklist
@@ -21,7 +23,7 @@ echo "Press Ctrl+C to stop the servers"
 read -p "Press Enter to stop the servers..."
 
 # Kill the processes
-kill $(lsof -t -i:3000)
-kill $(lsof -t -i:40000)
+kill $(lsof -t -i:3002)
+kill $(lsof -t -i:40002)
 
 echo "Servers stopped."

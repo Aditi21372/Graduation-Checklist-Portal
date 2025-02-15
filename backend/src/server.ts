@@ -3,10 +3,12 @@
 import express from "express";
 import multer from "multer";
 import xlsx from "xlsx";
+import { courseDatabase } from "./database";
+import { disallowedGrades } from "./rule";
 
 import { getGraduationStatus, getGraduationDate } from "./degree";
 import { calculateCGPA } from "./cgpa";
-import { StudentInfo } from "./type";
+import { StudentInfo, CourseData } from "./type";
 import { isHonors } from "./honors";
 import {
   isMinors,
@@ -122,6 +124,7 @@ app.get("/api/:rollNumber/courseinfo", async (req, res) => {
     res.status(404).json({ error: "Student not found" });
   }
 });
+
 
 app.get("/api/:branch/mandatory", (req, res) => {
   // Get the branch parameter from the request URL.

@@ -703,7 +703,7 @@ export class DesignMinors implements Minors {
 
     return {
       isCompleteBool: totalCredits === totalCreditsPossible,
-      isCompleteText: totalCredits === totalCreditsPossible ? "Complete" : "Not Done",
+      isCompleteText: totalCredits === totalCreditsPossible ? "Done" : "Not Done",
       totalCredits,
       data: courses,
     };

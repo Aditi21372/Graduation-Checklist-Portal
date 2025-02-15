@@ -25,3 +25,6 @@ Thumbs.db
 
 # Angular cache
 frontend/.angular/cache 
+
+# tar
+*.tar.gz

@@ -44,12 +44,10 @@ export class UpdateStudentDetailsComponent {
         .subscribe(
           (event) => {
             if (event.type === HttpEventType.Sent) {
-              // HttpEventType.Sent - Request sent, initialize progress to 0
               this.progress = 0;
             }
 
             if (event.type === HttpEventType.Response) {
-              // HttpEventType.Response - Upload completed successfully
               this.errorMessage = 'File uploaded successfully';
             } else {
               this.errorMessage = 'Processing file...';
@@ -64,27 +62,11 @@ export class UpdateStudentDetailsComponent {
     }
   }
 
-  // downloadData() {
-  //   this.studentService.getStudentDetails().subscribe((data: ArrayBuffer) => {
-  //     const blob = new Blob([data], {
-  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  //     });
-  //     const url = window.URL.createObjectURL(blob);
-  
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'studentsInfo.xlsx';
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //   });
-  // }
-
   downloadFileFormat() {
-    const fileUrl = 'assets/files/sample.csv'; // Adjust path accordingly
+    const fileUrl = '/studentdata_format.xlsx'; // Updated to relative path
     const a = document.createElement('a');
     a.href = fileUrl;
-    a.download = 'StudentData.csv'; 
+    a.download = 'studentdata_format.xlsx'; 
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
