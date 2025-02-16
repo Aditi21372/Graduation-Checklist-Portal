@@ -354,7 +354,7 @@ async function calculateSummary(
     "ECO Minors": "No",
     "CB Minors": "No",
     "ENT Minors": "No",
-    //"Quantum Minors": "No",
+    "Quantum Minors": "No",
     "Design Minors": "No",
     "ECO Major":
       majorCore.isCompleteBool && majorElective.isCompleteBool ? "Yes" : "No",
@@ -369,8 +369,8 @@ async function calculateSummary(
         summary["CB Minors"] = "Yes";
       } else if (minors[i].data.stream === "Entrepreneurship") {
         summary["ENT Minors"] = "Yes";
-        } //else if (minors[i].data.stream === "Quantum") {
-        //summary["Quantum Minors"] = "Yes";} 
+        } else if (minors[i].data.stream === "Quantum") {
+        summary["Quantum Minors"] = "Yes";} 
       else if (minors[i].data.stream === "Design") {
         summary["Design Minors"] = "Yes";
       }

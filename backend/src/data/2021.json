@@ -438,7 +438,21 @@
   "Minor in BIO": [
     "BIO213"
   ],
-  "Minor in QT": [],
+  "Minor in QT": [
+    "ECExxx",
+    "CSE422",
+    "CSE622",
+    "ECE524",
+    "ECE545",
+    "MTHxxx",
+    "ECExxx",
+    "CSExxx",
+    "ECE517",
+    "ECE501",
+    "MTH514",
+    "CSE526",
+    "Advanced Solid State Devices"
+  ],
   "Minor in Design": [
     "DES534",
     "DES529",
@@ -474,7 +488,7 @@
     "DES205",
     "DES204",
     "DES202",
-    "DES201]"
+    "DES201"
   ],
   "CW Course": [
     "MSC491",

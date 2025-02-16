@@ -54,21 +54,6 @@ export class ChecklistComponent implements OnInit {
           this.populateIncompleteGrades(17),
           this.populateTotalCredits(18),
         ];
-        // this.dataSourceTwo.push({
-        //   index: 17,
-        //   rule: 'Minors in Quantum',
-        //   status: 'Not Done',
-        //   credits: 0,
-        //   button_text: 'View Details',
-        // });
-
-        // this.dataSourceTwo.push({
-        //   index: 18,
-        //   rule: 'Minors in Design',
-        //   status: 'Not Done',
-        //   credits: 0,
-        //   button_text: 'View Details',
-        // });
     
 
         forkJoin(observables).subscribe(() => {
@@ -423,6 +408,11 @@ export class ChecklistComponent implements OnInit {
           newData.credits = courseData[i].totalCredits;
           newData.status = courseData[i].isCompleteText;
 
+          // Special handling for Quantum minors
+          if (courseData[i].data.stream === 'Quantum') {
+            newData.rule = 'Minors in Quantum Technologies';
+          }
+
           console.log('Course Data:', courseData[i].data.stream);
 
           courseData[i].data['credits'] = courseData[i].totalCredits;
@@ -730,18 +720,18 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
-        // case 'Minors in Quantum':
-        //   let minorsQuantum = this.courseData.get('Quantum');
-        //   this.router.navigate(['/minors-detail'], {
-        //     queryParams: {
-        //       rollNumber: this.rollNumber,
-        //       stream: "Quantum",
-        //       courseData: JSON.stringify(minorsQuantum),
-        //       studentName: this.studentName,
-        //       program: this.branch,
-        //     },
-        //   });
-        // break;
+        case 'Minors in Quantum':
+          let minorsQuantum = this.courseData.get('Quantum');
+          this.router.navigate(['/minors-detail'], {
+            queryParams: {
+              rollNumber: this.rollNumber,
+              stream: "Quantum",
+              courseData: JSON.stringify(minorsQuantum),
+              studentName: this.studentName,
+              program: this.branch,
+            },
+          });
+          break;
         case 'Minors in Design':
           let minorsDesign = this.courseData.get('Design');
           this.router.navigate(['/minors-detail'], {
