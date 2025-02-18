@@ -438,20 +438,22 @@
   "Minor in BIO": [
     "BIO213"
   ],
-  "Minor in QT": [
-    "ECExxx",
+  "Minor in Quant bucket 1": [
+    "ECE525",
     "CSE422",
     "CSE622",
     "ECE524",
     "ECE545",
-    "MTHxxx",
-    "ECExxx",
-    "CSExxx",
+    "MTH551"],
+
+  "Minor in Quant bucket 2": [
+    "ECE530",
     "ECE517",
     "ECE501",
+    "ECE517",
     "MTH514",
     "CSE526",
-    "Advanced Solid State Devices"
+    "ECE613"
   ],
   "Minor in Design": [
     "DES534",

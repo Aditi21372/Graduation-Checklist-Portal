@@ -12,8 +12,6 @@ export function isMinors(studentInfo: StudentInfo): MinorsComponents[] {
   minors.push(ecoMinors.checkMinorsCompleted(studentInfo));
   const entMinors = new EntrepreneurshipMinors();
   minors.push(entMinors.checkMinorsCompleted(studentInfo));
-  //const quantMinors = new QuantMinors()
-  //minors.push(quantMinors.checkMinorsCompleted(studentInfo));
   const designMinors = new DesignMinors();
   minors.push(designMinors.checkMinorsCompleted(studentInfo));
   const quantumMinors = new QuantumMinors();
@@ -653,27 +651,13 @@ export class EntrepreneurshipMinors implements Minors {
 
 
 
-export class QuantumMinors implements Minors {
-  coreCourses: string[] = [
-    "ECExxx", 
-    "CSE422", 
-    "CSE622", 
-    "ECE524", 
-    "ECE545", 
-    "MTHxxx"  
-  ];
-  
-  electiveCourses: string[] = [
-    "ECExxx", 
-    "CSExxx", 
-    "ECE517", 
-    "ECE501", 
-    "MTH514", 
-    "CSE526", 
-  ];
+/*export class QuantumMinors implements Minors {
+  coreCourses: string[] = courseDatabase["Minor in Quant bucket 1"] || [];
+  electiveCourses: string[] = courseDatabase["Minor in Quant bucket 2"] || [];
+  doneCourses: string[] = [];
 
   checkSameBranch(studentInfo: StudentInfo): boolean {
-    return studentInfo.program.includes("ECE");
+    return studentInfo.program.includes("none");
   }
 
   checkMandatoryCourses(studentInfo: StudentInfo): MinorsComponents {
@@ -848,7 +832,161 @@ export class QuantumMinors implements Minors {
       },
     };
   }
+}*/
+
+export class QuantumMinors implements Minors {
+  coreCourses: string[] = courseDatabase["Minor in Quant bucket 1"] || [];
+  electiveCourses: string[] = courseDatabase["Minor in Quant bucket 2"] || [];
+  doneCourses: string[] = [];
+
+  // Quantum Minor can be taken by anyone, so we return false here
+  checkSameBranch(studentInfo: StudentInfo): boolean {
+    return false;
+  }
+
+  // Checking core course completion (12 credits from Bucket 1)
+  checkMandatoryCourses(studentInfo: StudentInfo): MinorsComponents {
+    const courses = [];
+    let totalCredits = 0;
+    const totalCreditsPossible = 12;
+
+    for (const coreCourse of this.coreCourses) {
+      let courseEntry: CourseData = {
+        course: coreCourse,
+        courseName: "",
+        semester: "",
+        status: "Not Done",
+        credits: 0,
+        grade: "",
+      };
+
+      for (const course of studentInfo.courses) {
+        if (course.courseCode === coreCourse && !disallowedGrades.includes(course.grade)) {
+          courseEntry.courseName = course.course;
+          courseEntry.semester = course.semester;
+          courseEntry.status = "Complete";
+          courseEntry.credits = course.credit;
+          courseEntry.grade = course.grade;
+          totalCredits += course.credit;
+        }
+      }
+      courses.push(courseEntry);
+    }
+
+    return {
+      isCompleteBool: totalCredits >= totalCreditsPossible,
+      isCompleteText: totalCredits >= totalCreditsPossible ? "Complete" : "Not Done",
+      totalCredits: totalCredits,
+      data: courses,
+    };
+  }
+
+  // Checking elective course completion (4 credits from Bucket 2)
+  checkAdditionalCredits(studentInfo: StudentInfo): MinorsComponents {
+    const creditsToComplete = 4;
+    let creditsCompleted = 0;
+    const courses = [];
+
+    for (const electiveCourse of this.electiveCourses) {
+      for (const course of studentInfo.courses) {
+        if (course.courseCode === electiveCourse && !disallowedGrades.includes(course.grade)) {
+          courses.push({
+            course: course.courseCode,
+            courseName: course.course,
+            semester: course.semester,
+            status: "Complete",
+            credits: course.credit,
+            grade: course.grade,
+          });
+
+          creditsCompleted += course.credit;
+          if (creditsCompleted >= creditsToComplete) break; // Stop when 4 credits are completed
+        }
+      }
+      if (creditsCompleted >= creditsToComplete) break;
+    }
+
+    return {
+      isCompleteBool: creditsCompleted >= creditsToComplete,
+      isCompleteText: creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
+      totalCredits: creditsCompleted,
+      data: courses,
+    };
+  }
+
+  // Checking IP/BTP/UR/IS credits (minimum 4 credits)
+  includeIp(studentInfo: StudentInfo): MinorsComponents {
+    const ipCourses = courseDatabase["IP/IS/UR"] || [];
+    const courses = [];
+    let totalCredits = 0;
+
+    for (const course of studentInfo.courses) {
+      if (
+        (ipCourses.includes(course.courseCode.substring(0, 3)) || course.courseCode.substring(0, 3) === "BTP") &&
+        !disallowedGrades.includes(course.grade) &&
+        course.includedInMinors === "Quantum"
+      ) {
+        courses.push({
+          course: course.courseCode,
+          courseName: course.course,
+          semester: course.semester,
+          status: "Complete",
+          credits: course.credit,
+          grade: course.grade,
+        });
+        totalCredits += course.credit;
+      }
+    }
+
+    return {
+      isCompleteBool: totalCredits >= 4, // Should be at least 4 credits from IP/IS/UR/BTP
+      isCompleteText: totalCredits >= 4 ? "Complete" : "Not Done",
+      totalCredits: totalCredits,
+      data: courses,
+    };
+  }
+
+  // Final check if the minor is completed
+  checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
+    const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
+    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
+    const ipIncluded = this.includeIp(studentInfo);
+
+    const totalCredits = coreCoursesCompleted.totalCredits + 
+                         additionalCreditsCompleted.totalCredits + 
+                         ipIncluded.totalCredits;
+
+    const isMinorComplete = totalCredits >= 20; // Total requirement is 20 credits
+
+    return {
+      isCompleteBool: isMinorComplete,
+      isCompleteText: isMinorComplete ? "Complete" : "Incomplete",
+      totalCredits: totalCredits,
+      data: {
+        stream: "Quantum Technologies",
+        coreCoursesCompleted: {
+          isCompleteBool: coreCoursesCompleted.isCompleteBool,
+          isCompleteText: coreCoursesCompleted.isCompleteText,
+          totalCredits: coreCoursesCompleted.totalCredits,
+          data: coreCoursesCompleted.data
+        },
+        additionalCreditsCompleted: {
+          isCompleteBool: additionalCreditsCompleted.isCompleteBool,
+          isCompleteText: additionalCreditsCompleted.isCompleteText,
+          totalCredits: additionalCreditsCompleted.totalCredits,
+          data: additionalCreditsCompleted.data
+        },
+        ipIncluded: {
+          isCompleteBool: ipIncluded.isCompleteBool,
+          isCompleteText: ipIncluded.isCompleteText,
+          totalCredits: ipIncluded.totalCredits,
+          data: ipIncluded.data
+        }
+      },
+    };
+  }
 }
+
 
 export class DesignMinors implements Minors {
   coreCourses: string[] = courseDatabase["Minor in Design"];

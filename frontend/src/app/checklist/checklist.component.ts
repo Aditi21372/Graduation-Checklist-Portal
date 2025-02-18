@@ -146,7 +146,7 @@ export class ChecklistComponent implements OnInit {
     this.studentService
       .getBucketCourses(this.branch)
       .subscribe((ruleData: any) => {
-        this.bucketsRuleCompleted = ruleData.isCompleteText;
+        
         this.courseData.set(
           'Bucket_Courses',
           ruleData.data.studentBucketCourses
@@ -154,6 +154,7 @@ export class ChecklistComponent implements OnInit {
         this.bucketCredits = ruleData.data.totalCredits;
         this.bucketStatus = ruleData.isCompleteBool;
         this.completedBuckets = ruleData.data.completedBuckets;
+        this.bucketsRuleCompleted = ruleData.isCompleteText;
       });
     return of(null);
   }

@@ -251,8 +251,229 @@ app.get("/api/minors", (req, res) => {
   res.json(isMinors(studentCourseData));
 });
 
-app.get("/api/semester-wise-cgpa", (req, res) => {
-  res.json(calculateCGPA(studentCourseData));
+app.get("/api/semester-wise-cgpa", async (req, res) => {
+  const semesterGPAs = calculateCGPA(studentCourseData);
+  res.json(semesterGPAs);
+});
+
+// Single API endpoint to process mandatory courses
+app.get("/api/single_api/:rollNumber", async (req, res) => {
+  try {
+    const { rollNumber } = req.params;
+    
+    // Get student info and course data
+    const studentInfo = await searchByRollNo(Number(rollNumber));
+    if (!studentInfo) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Get and preprocess student course data
+    const rawStudentData = await getStudentData(Number(rollNumber));
+    if (rawStudentData.length === 0) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    
+    const studentData = await preprocessCourseData(rawStudentData);
+    const semesterGPAs = calculateCGPA(studentData);
+
+    const graduationStatus = await getGraduationStatus(studentData, studentInfo.branch);
+
+    // Get all required data with proper branch context
+    const mandatoryData = mandatoryCoreRule.checkRule(studentData, studentInfo.branch);
+    const sgData = sgRule.checkRule(studentData, null);
+    const cwData = cwRule.checkRule(studentData, null);
+    const sshData = studentInfo.branch === 'CSSS' 
+      ? sshMajor.checkRule(studentData, null)
+      : sshRule.checkRule(studentData, studentInfo.branch);
+
+    // Get bucket and other rule data with proper branch context
+    const bucketData = mandatoryBucketRule.checkRule(studentData, studentInfo.branch);
+    const ipData = ipRule.checkRule(studentData, null);
+    const onlineCoursesData = onlineCoursesRule.checkRule(studentData, null);
+    const twoXXData = twoxxRule.checkRule(studentData, studentInfo.branch);
+    const btpData = btpRule.checkRule(studentData, null);
+    const honorsData = isHonors(studentData, studentInfo.branch);
+    const minorsData = isMinors(studentData);
+    const ecoMajorCoreData = ecoMajorCore.checkRule(studentData, null);
+    const ecoMajorElectiveData = ecoMajorElective.checkRule(studentData, null);
+    const incompleteGradeData = incompleteGradeRule.checkRule(studentData, null);
+    const totalCreditsData = required156CreditsRule.checkRule(studentData, null);
+
+    console.log("Student Branch:", studentInfo.branch);
+    
+    // Calculate core course credits
+    let coreCredits = 0;
+    mandatoryData.data.coreCourses.forEach((course: CourseData) => {
+        if (course.status === 'Complete') {
+            coreCredits += (course.credits || 4); // Default to 4 credits if not specified
+        }
+    });
+    
+    // Calculate bucket credits
+    let bucketCredits = 0;
+    bucketData.data.studentBucketCourses.forEach((bucket: CourseData[]) => {
+        let bucketComplete = false;
+        bucket.forEach((course: CourseData) => {
+            if (course.status === 'Complete' && !bucketComplete) {
+                bucketCredits += (course.credits || 4); // Default to 4 credits if not specified
+                bucketComplete = true; // Only count one course per bucket
+            }
+        });
+    });
+    
+    const totalMandatoryCredits = coreCredits;
+    const totalBucketCredits = bucketCredits;
+    
+    console.log("\nTotal Core Credits:", totalMandatoryCredits);
+    console.log("Total Bucket Credits:", totalBucketCredits);
+    console.log("Combined Total:", totalMandatoryCredits + totalBucketCredits);
+    const mandatoryStatus = mandatoryData.isCompleteBool;
+    const bucketStatus = bucketData.isCompleteBool;
+
+
+    // Get extra courses data based on branch
+    let extraCoursesData;
+    if (studentInfo.branch === 'CSAI') {
+      const csaiCseCore = csaiCseCoreRule.checkRule(studentData, null);
+      const csaiCore = csaiCoreRule.checkRule(studentData, null);
+      const csaiApplication = csaiApplicationRule.checkRule(studentData, null);
+      const csaiMathCore = csaiMathsCoreRule.checkRule(studentData, null);
+      const courses = [csaiCseCore, csaiCore, csaiApplication, csaiMathCore];
+      const status = courses.every(x => x.isCompleteBool);
+      const credits = courses.reduce((sum, course) => sum + course.data.totalCredits, 0);
+      extraCoursesData = {
+        coursedata: courses.flatMap(course => course.data.courses || []),
+        totalCredits: credits,
+        isComplete: status,
+        status: status ? 'Complete' : 'Incomplete',
+        type: 'AI Core & Application Courses'
+      };
+    } else {
+      const thirtyTwoCreds = thirtyTwoCreditsRule.checkRule(studentData, studentInfo.branch);
+      extraCoursesData = {
+        coursedata: thirtyTwoCreds.data.courseData,
+        totalCredits: thirtyTwoCreds.data.totalCredits,
+        isComplete: thirtyTwoCreds.isCompleteBool,
+        status: thirtyTwoCreds.isCompleteText,
+        type: studentInfo.branch === 'CSSS' ? '16 Credits of CSE Courses' : '32 Credits of Discipline Courses'
+      };
+    }
+
+    const overallMandatoryStatus = mandatoryStatus && bucketStatus;
+
+    const formattedMandatoryData = {
+      coursedata: mandatoryData.data.coreCourses,
+      mandatoryCredits: coreCredits + bucketCredits,  // Use the directly calculated credits
+      isComplete: overallMandatoryStatus,
+      status: overallMandatoryStatus ? 'Complete' : 'Incomplete',
+      buckets: {
+        coursedata: bucketData.data.studentBucketCourses,
+        bucketCredits: bucketCredits,  // Use the directly calculated bucket credits
+        isComplete: bucketStatus,
+        status: bucketData.isCompleteText,
+        completedBuckets: bucketData.data.completedBuckets,
+      },
+      bucketsRuleCompleted: bucketData.isCompleteText,
+    };
+
+    console.log("Core Credits:", coreCredits);
+    console.log("Bucket Credits:", bucketCredits);
+    console.log("Total Credits:", coreCredits + bucketCredits);
+    
+    // Format response to match frontend requirements
+    const response = {
+      studentInfo: {
+        name: studentInfo.Name,
+        rollNumber: Number(rollNumber),
+        branch: studentInfo.branch,
+        displayedColumns: ['index', 'rule', 'status', 'credits', 'action']
+      },
+      graduationStatus: graduationStatus,
+      mandatory: formattedMandatoryData,
+      sg: {
+        coursedata: sgData.data.courses,
+        totalCredits: sgData.data.totalCredits,
+        isComplete: sgData.isCompleteBool,
+        status: sgData.isCompleteText
+      },
+      cw: {
+        coursedata: cwData.data.courses,
+        totalCredits: cwData.data.totalCredits,
+        isComplete: cwData.isCompleteBool,
+        status: cwData.isCompleteText
+      },
+      ssh: {
+        coursedata: sshData.data.courses,
+        totalCredits: sshData.data.totalCredits,
+        isComplete: sshData.isCompleteBool,
+        status: sshData.isCompleteText,
+        requirement: studentInfo.branch === 'CSSS' ? '28 credits of SSH courses' :
+                    studentInfo.branch === 'CSD' ? '16 credits of SSH courses' :
+                    '12 credits of SSH courses'
+      },
+      extraCourses: extraCoursesData,
+      ip: {
+        coursedata: ipData.data.courses,
+        totalCredits: ipData.data.totalCredits,
+        isComplete: ipData.isCompleteBool,
+        status: ipData.isCompleteText
+      },
+      onlineCourses: {
+        coursedata: onlineCoursesData.data.courses,
+        totalCredits: onlineCoursesData.data.totalCredits,
+        isComplete: onlineCoursesData.isCompleteBool,
+        status: onlineCoursesData.isCompleteText
+      },
+      twoXX: {
+        coursedata: twoXXData.data.courses,
+        totalCredits: twoXXData.data.totalCredits,
+        isComplete: twoXXData.isCompleteBool,
+        status: twoXXData.isCompleteText
+      },
+      btp: {
+        coursedata: btpData.data.courses,
+        totalCredits: btpData.data.totalCredits,
+        isComplete: btpData.isCompleteBool,
+        status: btpData.isCompleteText
+      },
+      honors: {
+        data: honorsData.data,
+        isComplete: honorsData.isCompleteBool,
+        status: honorsData.isCompleteText
+      },
+      minors: minorsData,
+      ecoMajor: studentInfo.branch === 'CSSS' ? {
+        core: {
+          coursedata: ecoMajorCoreData.data.courses,
+          totalCredits: ecoMajorCoreData.data.totalCredits,
+          isComplete: ecoMajorCoreData.isCompleteBool,
+          status: ecoMajorCoreData.isCompleteText
+        },
+        elective: {
+          coursedata: ecoMajorElectiveData.data.courses,
+          totalCredits: ecoMajorElectiveData.data.totalCredits,
+          isComplete: ecoMajorElectiveData.isCompleteBool,
+          status: ecoMajorElectiveData.isCompleteText
+        }
+      } : null,
+      incompleteGrades: {
+        coursedata: incompleteGradeData.data.courseData,
+        totalCredits: incompleteGradeData.data.totalCredits,
+        isComplete: incompleteGradeData.isCompleteBool,
+        status: incompleteGradeData.isCompleteText
+      },
+      totalCredits: {
+        credits: totalCreditsData.data,
+        isComplete: totalCreditsData.isCompleteBool,
+        status: totalCreditsData.isCompleteText
+      }
+    };
+
+res.json(JSON.parse(JSON.stringify(response)));
+  } catch (error) {
+    console.error('Error processing mandatory courses:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 app.get("/api/:branch/graduation-check", (req, res) => {

@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@angular/common": "^19.1.6",
+    "@angular/core": "^19.1.6",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -7,6 +9,7 @@
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.13.0",
+    "rxjs": "^7.8.1",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

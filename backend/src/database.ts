@@ -87,7 +87,7 @@ export function getGraduatedStudents(filePath: string): GraduatedStudent[] {
       minorInCB: worksheet[`H${row + 1}`]?.v,
       minorInEco: worksheet[`I${row + 1}`]?.v,
       minorInENT: worksheet[`J${row + 1}`]?.v,
-      //minorInQuantum: worksheet[`K${row + 1}`]?.v,
+      minorInQuantum: worksheet[`K${row + 1}`]?.v,
       minorInDesign: worksheet[`K${row + 1}`]?.v,
       ecoMajor: worksheet[`L${row + 1}`]?.v,
       btp: worksheet[`M${row + 1}`]?.v,
