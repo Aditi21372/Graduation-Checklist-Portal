@@ -20,9 +20,7 @@
   "CSE bucket 1": [
     "MTH203",
     "ECE250",
-    "ECE270",
-    "MTH240",
-    "MTH211"
+    "ECE270"
   ],
   "CSE bucket 2": [
     "DES130",
@@ -74,9 +72,7 @@
     "MTH377",
     "CSE342",
     "CSE641",
-    "CSE633",
-    "MTH577",
-    "CSE511"
+    "CSE633"
   ],
   "CSAM": [
     "CSE101",
@@ -105,8 +101,7 @@
   ],
   "CSAM bucket 2": [
     "MTH374",
-    "MTH377",
-    "MTH577"
+    "MTH377"
   ],
   "CSAM 32": [
     "CSE523",
@@ -144,7 +139,8 @@
   ],
   "CSD bucket 2": [
     "MTH203",
-    "CSE121"
+    "CSE121",
+    "MTH210"
   ],
   "CSD bucket 3": [
     "ESC205A",
@@ -181,6 +177,32 @@
     "CSE222",
     "CSE223"
   ],
+  "CSSS": [
+    "CSE101",
+    "DES102",
+    "MTH100",
+    "ECE111",
+    "COM101",
+    "CSE102",
+    "SOC101",
+    "MTH201",
+    "CSE112",
+    "SSH101",
+    "CSE231",
+    "SSH201",
+    "CSE121",
+    "CSE201",
+    "MTH203",
+    "CSE222",
+    "MTH377",
+    "CSE202",
+    "ECO221",
+    "COM301A"
+  ],
+  "CSSS bucket 2": [
+    "ESC205A",
+    "ESC207A"
+  ],
   "CSAI": [
     "CSE101",
     "ECE111",
@@ -192,16 +214,17 @@
     "MTH201",
     "CSE201",
     "CSE231",
-    "CSE121",
     "MTH203",
     "ECE250",
     "CSE222",
+    "CSE342",
     "CSE343",
     "COM301A",
     "SSH325"
   ],
   "CSAI bucket 1": [
     "MTH374",
+    "MTH577",
     "MTH377"
   ],
   "CSAI bucket 2": [
@@ -209,8 +232,8 @@
     "ESC207A"
   ],
   "CSAI bucket 3": [
-    "CSE342",
-    "CSE542"
+    "CSE121",
+    "MTH210"
   ],
   "CSAI CSE CORE": [
     "CSE511",
@@ -242,13 +265,13 @@
     "CSE664/CSE664",
     "CSE632",
     "CSE999A2",
-    "CSE999A",
-    "CSE999A3",
-    "CSE999",
-    "CSE530",
-    "CSE340",
     "CSE999A4",
-    "CSE999A5"
+    "CSE999A7/ECE999",
+    "CSE340/CSE540/ECE340",
+    "CSE665",
+    "ECE351",
+    "CSE573",
+    "CSE999A"
   ],
   "CSAI MATH CORE": [
     "MTH204",
@@ -256,32 +279,6 @@
     "MTH372",
     "MTH300",
     "CSE322"
-  ],
-  "CSSS": [
-    "CSE101",
-    "ECE111",
-    "MTH100",
-    "DES102",
-    "COM101",
-    "CSE102",
-    "SOC101",
-    "MTH201",
-    "CSE112",
-    "SSH101",
-    "CSE231",
-    "CSE121",
-    "SSH201",
-    "CSE201",
-    "MTH203",
-    "CSE222",
-    "MTH377",
-    "CSE202",
-    "ECO221",
-    "COM301A"
-  ],
-  "CSSS bucket 1": [
-    "ESC205A",
-    "ESC207A"
   ],
   "ECO CORE": [
     "MTH377",
@@ -346,6 +343,7 @@
     "SOC211",
     "SOC212",
     "SOC213",
+    "SOC216",
     "SOC302",
     "SOC307",
     "SOC308",
@@ -388,10 +386,74 @@
     "SSH562",
     "SSH700",
     "SSH322",
-    "ECO323"
+    "SSH341"
   ],
-
-  "Minor in Design":[
+  "Online course": [
+    "CSE999A4",
+    "CSE999A3",
+    "CSE999A",
+    "CSE999A2",
+    "CSE999A5",
+    "CSE999B",
+    "CSE999B2",
+    "CSE998A1",
+    "CSE999",
+    "CSE998A2",
+    "DES999A",
+    "DES999C",
+    "ECE999A",
+    "ECE999A2",
+    "ECE999A4",
+    "ECE999A3",
+    "ECE999",
+    "MTH999B",
+    "SSH999A",
+    "SSH999B",
+    "BTA300",
+    "CSE998A3",
+    "CSE999A7",
+    "CSE999A1"
+  ],
+  "Minor in ECO": [
+    "ECO221",
+    "ECO301/ECO101",
+    "ECO311/ECO511"
+  ],
+  "Minor in ENT": [
+    "ENT412/ENT201",
+    "ENT411",
+    "ENT416/ENT516",
+    "MGT310",
+    "ENT413/ECO 331",
+    "ECO301",
+    "ENT421/BIO571",
+    "ENT414",
+    "ECO 332",
+    "ENT301",
+    "ENT404",
+    "ENT415",
+    "DES530",
+    "DES529"
+  ],
+  "Minor in BIO": [
+    "BIO213"
+  ],
+  "Minor in QT bucket 1": [
+    "ECE525",
+    "CSE422/CSE622",
+    "ECE524",
+    "ECE545",
+    "MTH551"
+  ],
+  "Minor in QT bucket 2": [
+    "ECE530",
+    "ECE517",
+    "ECE501",
+    "MTH514",
+    "CSE526",
+    "ECE613"
+  ],
+  "Minor in Design": [
     "DES534",
     "DES529",
     "DES530",
@@ -426,55 +488,7 @@
     "DES205",
     "DES204",
     "DES202",
-    "DES201"],
-
-    
-  "Online course": [
-    "CSE999A4",
-    "CSE999A3",
-    "CSE999A",
-    "CSE999A2",
-    "CSE999A5",
-    "CSE999B",
-    "CSE999B2",
-    "CSE998A1",
-    "CSE999",
-    "CSE998A2",
-    "DES999A",
-    "DES999C",
-    "ECE999A",
-    "ECE999A2",
-    "ECE999A4",
-    "ECE999A3",
-    "ECE999",
-    "MTH999B",
-    "SSH999A",
-    "SSH999B",
-    "BTA300",
-    "CSE999A6",
-    "CSE999A1"
-  ],
-  "Minor in ECO": [
-    "ECO221",
-    "ECO301/ECO101",
-    "ECO311/ECO511"
-  ],
-  "Minor in ENT": [
-    "ENT412/ENT201",
-    "ENT411",
-    "ENT416/ENT516",
-    "MGT310",
-    "ENT413/ECO 331",
-    "ECO301",
-    "ENT421/BIO571",
-    "ENT414",
-    "ECO 332",
-    "ENTxxx",
-    "ENT404",
-    "ENT415"
-  ],
-  "Minor in BIO": [
-    "BIO213"
+    "DES201]"
   ],
   "CW Course": [
     "MSC491",
@@ -496,6 +510,10 @@
     "MTH2",
     "DES2",
     "ENT2",
-    "MGT2"
+    "MGT2",
+    "SSH2",
+    "ECO2",
+    "PSY2",
+    "SOC2"
   ]
 }

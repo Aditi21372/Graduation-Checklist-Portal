@@ -960,7 +960,7 @@ export class QuantumMinors implements Minors {
 
     return {
       isCompleteBool: isMinorComplete,
-      isCompleteText: isMinorComplete ? "Complete" : "Incomplete",
+      isCompleteText: isMinorComplete ? "Done" : "Not Done",
       totalCredits: totalCredits,
       data: {
         stream: "Quantum Technologies",
@@ -1039,7 +1039,7 @@ export class DesignMinors implements Minors {
 
     return {
       isCompleteBool: totalCredits === totalCreditsPossible,
-      isCompleteText: totalCredits === totalCreditsPossible ? "Done" : "Not Done",
+      isCompleteText: totalCredits === totalCreditsPossible ? "Complete" : "Not Done",
       totalCredits,
       data: courses,
     };
@@ -1117,7 +1117,7 @@ export class DesignMinors implements Minors {
     if (this.checkSameBranch(studentInfo)) {
       return { 
         isCompleteBool: false, 
-        isCompleteText: "Incomplete", 
+        isCompleteText: "Not Done", 
         totalCredits: 0, 
         data: {
           stream: "Design",
@@ -1140,7 +1140,7 @@ export class DesignMinors implements Minors {
 
     return {
       isCompleteBool: isMinorComplete,
-      isCompleteText: isMinorComplete ? "Complete" : "Incomplete",
+      isCompleteText: isMinorComplete ? "Done" : "Not Done",
       totalCredits: totalCredits,
       data: {
         stream: "Design",
