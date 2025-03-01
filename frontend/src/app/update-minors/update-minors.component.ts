@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class UpdateMinorsComponent {
   showMessage: string = '';
   studentRollNumber: string = '';
-  minors: string[] = ['Computational Biology', 'Economics', 'Entrepreneurship'];
+  minors: string[] = ['Computational Biology', 'Economics', 'Entrepreneurship','Design','Quantum'];
   add: string[] = ['IP', 'BTP', 'Apprenticeship'];
   selectedMinors: string = '';
   selectedType: string = '';

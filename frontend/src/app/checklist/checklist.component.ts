@@ -721,8 +721,10 @@ export class ChecklistComponent implements OnInit {
           },
         });
         break;
-        case 'Minors in Quantum':
-          let minorsQuantum = this.courseData.get('Quantum');
+        case 'Minors in Quantum Technologies':
+          // console.log('Quantum:', this.courseData);
+          // console.log(this.courseData);
+          let minorsQuantum = this.courseData.get('Quantum Technologies');
           this.router.navigate(['/minors-detail'], {
             queryParams: {
               rollNumber: this.rollNumber,

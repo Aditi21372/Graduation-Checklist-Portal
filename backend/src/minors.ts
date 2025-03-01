@@ -844,35 +844,47 @@ export class QuantumMinors implements Minors {
     return false;
   }
 
-  // Checking core course completion (12 credits from Bucket 1)
   checkMandatoryCourses(studentInfo: StudentInfo): MinorsComponents {
-    const courses = [];
+    const courses: CourseData[] = [];
     let totalCredits = 0;
     const totalCreditsPossible = 12;
-
+    const usedCourses = new Set<string>();
+  
     for (const coreCourse of this.coreCourses) {
-      let courseEntry: CourseData = {
-        course: coreCourse,
-        courseName: "",
-        semester: "",
-        status: "Not Done",
-        credits: 0,
-        grade: "",
-      };
-
-      for (const course of studentInfo.courses) {
-        if (course.courseCode === coreCourse && !disallowedGrades.includes(course.grade)) {
-          courseEntry.courseName = course.course;
-          courseEntry.semester = course.semester;
-          courseEntry.status = "Complete";
-          courseEntry.credits = course.credit;
-          courseEntry.grade = course.grade;
-          totalCredits += course.credit;
+      let options = coreCourse.includes("/") ? coreCourse.split("/") : [coreCourse];
+  
+      for (const course of studentInfo["courses"]) {
+        if (
+          options.includes(course["courseCode"]) &&
+          !disallowedGrades.includes(course["grade"]) &&
+          !usedCourses.has(course["courseCode"])
+        ) {
+          const courseEntry: CourseData = {
+            course: coreCourse,
+            courseName: course["course"],
+            semester: course["semester"],
+            status: "Complete",
+            credits: course["credit"],
+            grade: course["grade"],
+          };
+  
+          courses.push(courseEntry);
+          this.doneCourses.push(coreCourse);
+          usedCourses.add(course["courseCode"]);
+  
+          totalCredits += course["credit"];
+          if (totalCredits >= totalCreditsPossible) {
+            totalCredits = totalCreditsPossible;
+            break;
+          }
         }
       }
-      courses.push(courseEntry);
+  
+      if (totalCredits >= totalCreditsPossible) {
+        break;
+      }
     }
-
+  
     return {
       isCompleteBool: totalCredits >= totalCreditsPossible,
       isCompleteText: totalCredits >= totalCreditsPossible ? "Complete" : "Not Done",
@@ -880,110 +892,125 @@ export class QuantumMinors implements Minors {
       data: courses,
     };
   }
+  
+
 
   // Checking elective course completion (4 credits from Bucket 2)
   checkAdditionalCredits(studentInfo: StudentInfo): MinorsComponents {
-    const creditsToComplete = 4;
-    let creditsCompleted = 0;
-    const courses = [];
-
-    for (const electiveCourse of this.electiveCourses) {
-      for (const course of studentInfo.courses) {
-        if (course.courseCode === electiveCourse && !disallowedGrades.includes(course.grade)) {
-          courses.push({
-            course: course.courseCode,
-            courseName: course.course,
-            semester: course.semester,
-            status: "Complete",
-            credits: course.credit,
-            grade: course.grade,
-          });
-
-          creditsCompleted += course.credit;
-          if (creditsCompleted >= creditsToComplete) break; // Stop when 4 credits are completed
-        }
-      }
-      if (creditsCompleted >= creditsToComplete) break;
-    }
-
-    return {
-      isCompleteBool: creditsCompleted >= creditsToComplete,
-      isCompleteText: creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
-      totalCredits: creditsCompleted,
-      data: courses,
-    };
-  }
-
-  // Checking IP/BTP/UR/IS credits (minimum 4 credits)
-  includeIp(studentInfo: StudentInfo): MinorsComponents {
-    const ipCourses = courseDatabase["IP/IS/UR"] || [];
     const courses = [];
     let totalCredits = 0;
+    let totalCreditsPosibble = 4;
 
-    for (const course of studentInfo.courses) {
-      if (
-        (ipCourses.includes(course.courseCode.substring(0, 3)) || course.courseCode.substring(0, 3) === "BTP") &&
-        !disallowedGrades.includes(course.grade) &&
-        course.includedInMinors === "Quantum"
-      ) {
-        courses.push({
-          course: course.courseCode,
-          courseName: course.course,
-          semester: course.semester,
-          status: "Complete",
-          credits: course.credit,
-          grade: course.grade,
-        });
-        totalCredits += course.credit;
+    for (const electiveCourse of this.electiveCourses) {
+      let options = [];
+      if (electiveCourse.length > 6) {
+        const splitOptions = electiveCourse.split("/");
+        options.push(...splitOptions);
+      }
+      let courseEntry: CourseData = {
+        course: electiveCourse,
+        courseName: "",
+        semester: "",
+        status: "Not Done",
+        credits: 0,
+        grade: "",
+      };
+
+      for (const course of studentInfo["courses"]) {
+        if (
+          (course["courseCode"] === electiveCourse ||
+            (options.length > 0 && options.includes(course["courseCode"]))) &&
+          !disallowedGrades.includes(course["grade"])
+        ) {
+          courseEntry["courseName"] = course["course"];
+          courseEntry["semester"] = course["semester"];
+          courseEntry["status"] = "Complete";
+          courseEntry["credits"] = course["credit"];
+          courseEntry["grade"] = course["grade"];
+
+          totalCredits += course["credit"];
+          this.doneCourses.push(electiveCourse);
+          courses.push(courseEntry);
+
+          if (totalCredits >= totalCreditsPosibble) {
+            break;
+          }
+        }
       }
     }
-
-    return {
-      isCompleteBool: totalCredits >= 4, // Should be at least 4 credits from IP/IS/UR/BTP
-      isCompleteText: totalCredits >= 4 ? "Complete" : "Not Done",
+    const minorsComponent: MinorsComponents = {
+      isCompleteBool: totalCredits === totalCreditsPosibble,
+      isCompleteText:
+      courses.length === this.electiveCourses.length ? "Complete" : "Not Done",
       totalCredits: totalCredits,
       data: courses,
     };
+    return minorsComponent;
   }
 
+
+  // Checking IP/BTP/UR/IS credits (minimum 4 credits)
+  includeIp(studentCourseData: StudentInfo): MinorsComponents {
+    const ipCourses = courseDatabase["IP/IS/UR"];
+    const courses = [];
+    let totalCredits = 0;
+    for (const course of studentCourseData["courses"]) {
+      if (
+        (ipCourses.includes(course["courseCode"].substring(0, 3)) ||
+          course["courseCode"].substring(0, 3) === "BTP") &&
+        !disallowedGrades.includes(course["grade"]) &&
+        course["includedInMinors"] === "Quantum"
+      ) {
+        courses.push({
+          course: course["courseCode"],
+          courseName: course["course"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        });
+
+        totalCredits += course["credit"];
+      }
+    }
+    const minorsComponent: MinorsComponents = {
+      isCompleteBool: false,
+      isCompleteText: "Not Done",
+      data: courses,
+      totalCredits: totalCredits,
+    };
+    return minorsComponent;
+  }
   // Final check if the minor is completed
   checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
     const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
     const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
     const ipIncluded = this.includeIp(studentInfo);
+    
 
+    const minors =
+      coreCoursesCompleted.isCompleteBool &&
+      (additionalCreditsCompleted.isCompleteBool  && ipIncluded.totalCredits > 0);
+    
     const totalCredits = coreCoursesCompleted.totalCredits + 
                          additionalCreditsCompleted.totalCredits + 
                          ipIncluded.totalCredits;
-
-    const isMinorComplete = totalCredits >= 20; // Total requirement is 20 credits
-
-    return {
-      isCompleteBool: isMinorComplete,
-      isCompleteText: isMinorComplete ? "Done" : "Not Done",
+    
+    const MinorsComponents: MinorsComponents = {
+      isCompleteBool: minors && totalCredits >= 20,
+      isCompleteText: minors && totalCredits >= 20 ? "Complete" : "Not Done",
       totalCredits: totalCredits,
       data: {
         stream: "Quantum Technologies",
         coreCoursesCompleted: {
-          isCompleteBool: coreCoursesCompleted.isCompleteBool,
-          isCompleteText: coreCoursesCompleted.isCompleteText,
-          totalCredits: coreCoursesCompleted.totalCredits,
-          data: coreCoursesCompleted.data
+          ...coreCoursesCompleted,
+          totalCredits: coreCoursesCompleted,
         },
-        additionalCreditsCompleted: {
-          isCompleteBool: additionalCreditsCompleted.isCompleteBool,
-          isCompleteText: additionalCreditsCompleted.isCompleteText,
-          totalCredits: additionalCreditsCompleted.totalCredits,
-          data: additionalCreditsCompleted.data
-        },
-        ipIncluded: {
-          isCompleteBool: ipIncluded.isCompleteBool,
-          isCompleteText: ipIncluded.isCompleteText,
-          totalCredits: ipIncluded.totalCredits,
-          data: ipIncluded.data
-        }
+        additionalCreditsCompleted: additionalCreditsCompleted,
+        ipIncluded: ipIncluded,
       },
     };
+    return MinorsComponents;
   }
 }
 

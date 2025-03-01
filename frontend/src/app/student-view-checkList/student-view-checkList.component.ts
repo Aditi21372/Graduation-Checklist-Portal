@@ -490,7 +490,7 @@ export class ChecklistComponent implements OnInit {
 
   // Add this function to navigate to different pages based on the row data
   navigateToPage(element: any): void {
-    // Example: Navigate to a page based on the 'rule' property
+    console.log('Navigating to page with element:', element); // Log the element being passed
     switch (element.rule) {
       case 'Core Courses':
         let coreCourses = this.courseData.get('Core_Courses');
@@ -706,6 +706,18 @@ export class ChecklistComponent implements OnInit {
             rollNumber: this.rollNumber,
             stream: 'Entrepreneurship',
             courseData: JSON.stringify(minorsEnt),
+            studentName: this.studentName,
+            program: this.branch,
+          },
+        });
+        break;
+      case 'Minors in Quantum Technologies':
+        let minorsQuantum = this.courseData.get('Quantum Technologies');
+        this.router.navigate(['/minors-detail'], {
+          queryParams: {
+            rollNumber: this.rollNumber,
+            stream: 'Quantum Technologies',
+            courseData: JSON.stringify(minorsQuantum),
             studentName: this.studentName,
             program: this.branch,
           },
