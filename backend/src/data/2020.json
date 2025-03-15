@@ -20,7 +20,8 @@
   "CSE bucket 1": [
     "MTH203",
     "ECE250",
-    "ECE270"
+    "ECE270",
+    "MTH211"
   ],
   "CSE bucket 2": [
     "DES130",
@@ -444,7 +445,8 @@
     "CSE622",
     "ECE524",
     "ECE545",
-    "MTH551"],
+    "MTH551"
+  ],
 
   "Minor in Quant bucket 2": [
     "ECE530",
@@ -455,6 +457,7 @@
     "CSE526",
     "ECE613"
   ],
+  
   "Minor in Design": [
     "DES534",
     "DES529",

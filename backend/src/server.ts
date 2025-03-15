@@ -73,15 +73,24 @@ let studentCourseData: StudentInfo = {
 };
 
 app.use((req, res, next) => {
-res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+  res.header("Access-Control-Allow-Origin", "http://192.168.3.164:8000");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
+
+// res.header("Access-Control-Allow-Origin", "*");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
 app.use(express.json());
+
 
 app.get("/api/login/:username/:password", (req, res) => {
   const { username, password } = req.params;
@@ -257,7 +266,7 @@ app.get("/api/semester-wise-cgpa", async (req, res) => {
 });
 
 // Single API endpoint to process mandatory courses
-app.get("/api/single_api/:rollNumber", async (req, res) => {
+app.get("/api8955c68e0511008dd686e68fcaf60ebfe210cd0e/single_api/:rollNumber", async (req, res) => {
   try {
     const { rollNumber } = req.params;
     
@@ -275,7 +284,7 @@ app.get("/api/single_api/:rollNumber", async (req, res) => {
     
     const studentData = await preprocessCourseData(rawStudentData);
     const semesterGPAs = calculateCGPA(studentData);
-
+    console.log("Semester GPAs:", semesterGPAs);
     const graduationStatus = await getGraduationStatus(studentData, studentInfo.branch);
 
     // Get all required data with proper branch context
@@ -388,6 +397,7 @@ app.get("/api/single_api/:rollNumber", async (req, res) => {
         branch: studentInfo.branch,
         displayedColumns: ['index', 'rule', 'status', 'credits', 'action']
       },
+      cgpa: semesterGPAs,
       graduationStatus: graduationStatus,
       mandatory: formattedMandatoryData,
       sg: {

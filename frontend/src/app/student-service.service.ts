@@ -6,7 +6,8 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
   providedIn: 'root',
 })
 export class StudentServiceService {
-  private apiUrl = 'http://192.168.3.164:3002/api/';
+  // private apiUrl = 'http://192.168.3.164:3002/api/';
+  private apiUrl = 'http://localhost:3002/api/';
   private graduationStatusSubject: BehaviorSubject<string> =
     new BehaviorSubject<string>('');
 

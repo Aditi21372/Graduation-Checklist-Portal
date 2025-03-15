@@ -11,7 +11,7 @@
 // import { StudentInfo } from './type';
 
 // export class StudentService {
-//   private apiUrl = 'http://192.168.3.164:3002/api/';
+//   private apiUrl = 'http://localhost:3002/api/';
 
 //   async getStudentData(rollNumber: string, res: Response) {
 //     try {
