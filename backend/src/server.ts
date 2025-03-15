@@ -85,7 +85,7 @@ app.use(express.json());
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   if (username === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
-    const token = jwt.sign({ userId: username, role: 'admin' }, process.env.JWT_SECRET as string);
+    const token = jwt.sign({ userId: username, role: 'admin' }, process.env.JWT_SECRET as string, { expiresIn: '10m' });
     res.json({ token });
   } else {
     res.status(404).json({ error: "User not found" });
@@ -96,7 +96,7 @@ app.post("/api/student-login", async (req, res) => {
   const { username, password } = req.body;
   const rollNo = await checkCredentials(username, password);
   if (rollNo) {
-    const token = jwt.sign({ userId: rollNo, role: 'student' }, process.env.JWT_SECRET as string);
+    const token = jwt.sign({ userId: rollNo, role: 'student' }, process.env.JWT_SECRET as string, { expiresIn: '10m' });
     res.json({ token });
   } else {
     res.status(404).json({ error: "Wrong Credentials" });
