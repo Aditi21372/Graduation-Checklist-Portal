@@ -3,6 +3,7 @@
 import express from "express";
 import multer from "multer";
 import xlsx from "xlsx";
+import { securityHeaders, corsConfig, rateLimiter, csrfProtection } from "./middleware/securityMiddleware";
 import { courseDatabase } from "./database";
 import { disallowedGrades, allRules } from "./rule";
 
@@ -72,23 +73,11 @@ let studentCourseData: StudentInfo = {
   courses: [],
 };
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://192.168.3.164:8000");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-    );
-    next();
-  });
-
-// res.header("Access-Control-Allow-Origin", "*");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Origin, X-Requested-With, Content-Type, Accept"
-//   );
-//   next();
-// });
-
+// Apply security middleware
+app.use(securityHeaders);
+app.use(corsConfig);
+app.use(rateLimiter);
+app.use(csrfProtection);
 app.use(express.json());
 
 
@@ -711,6 +700,12 @@ app.post(
     }
   }
 );
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
