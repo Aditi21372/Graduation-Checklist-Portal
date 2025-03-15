@@ -258,7 +258,7 @@ app.get("/api/semester-wise-cgpa", authenticateJWT, async (req, res) => {
 });
 
 // Single API endpoint to process mandatory courses
-app.get("/api8955c68e0511008dd686e68fcaf60ebfe210cd0e/single_api/:rollNumber", async (req, res) => {
+app.get("/api8955c68e0511008dd686e68fcaf60ebfe210cd0e/single_api/:rollNumber", authenticateJWT, async (req, res) => {
   try {
     const { rollNumber } = req.params;
     
