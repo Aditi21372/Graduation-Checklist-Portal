@@ -3,7 +3,8 @@
 import express from "express";
 import multer from "multer";
 import xlsx from "xlsx";
-import { securityHeaders, corsConfig, rateLimiter, csrfProtection } from "./middleware/securityMiddleware";
+import jwt from 'jsonwebtoken';
+import { securityHeaders, corsConfig, rateLimiter, csrfProtection, authenticateJWT } from "./middleware/securityMiddleware";
 import { courseDatabase } from "./database";
 import { disallowedGrades, allRules } from "./rule";
 
@@ -81,26 +82,28 @@ app.use(csrfProtection);
 app.use(express.json());
 
 
-app.get("/api/login/:username/:password", (req, res) => {
-  const { username, password } = req.params;
-  if (username === "iiitdadmin" && password === "Admin@2019") {
-    res.json(true);
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  if (username === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
+    const token = jwt.sign({ userId: username, role: 'admin' }, process.env.JWT_SECRET as string);
+    res.json({ token });
   } else {
     res.status(404).json({ error: "User not found" });
   }
 });
 
-app.get("/api/student-login/:username/:password", async (req, res) => {
-  const { username, password } = req.params;
+app.post("/api/student-login", async (req, res) => {
+  const { username, password } = req.body;
   const rollNo = await checkCredentials(username, password);
   if (rollNo) {
-    res.json(rollNo);
+    const token = jwt.sign({ userId: rollNo, role: 'student' }, process.env.JWT_SECRET as string);
+    res.json({ token });
   } else {
     res.status(404).json({ error: "Wrong Credentials" });
   }
 });
 
-app.get("/api/:rollNumber/info", async (req, res) => {
+app.get("/api/:rollNumber/info", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const studentInfo = await searchByRollNo(Number(rollNumber));
   if (studentInfo) {
@@ -110,7 +113,7 @@ app.get("/api/:rollNumber/info", async (req, res) => {
   }
 });
 
-app.get("/api/:rollNumber/checklist", async (req, res) => {
+app.get("/api/:rollNumber/checklist", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const studentInfo = await searchByRollNo(Number(rollNumber));
   
@@ -139,7 +142,7 @@ app.get("/api/:rollNumber/checklist", async (req, res) => {
   }
 });
 
-app.get("/api/:rollNumber/courseinfo", async (req, res) => {
+app.get("/api/:rollNumber/courseinfo", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const studentInfo = await searchByRollNo(Number(rollNumber));
   if (studentInfo) {
@@ -153,38 +156,38 @@ app.get("/api/:rollNumber/courseinfo", async (req, res) => {
 });
 
 
-app.get("/api/:branch/mandatory", (req, res) => {
+app.get("/api/:branch/mandatory", authenticateJWT, (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch } = req.params;
   res.json(mandatoryCoreRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/:branch/bucket", (req, res) => {
+app.get("/api/:branch/bucket", authenticateJWT, (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch } = req.params;
   res.json(mandatoryBucketRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/:branch/ssh", (req, res) => {
+app.get("/api/:branch/ssh", authenticateJWT, (req, res) => {
   // Get the branch parameter from the request URL.
   const { branch } = req.params;
   res.json(sshRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/cw", (req, res) => {
+app.get("/api/cw", authenticateJWT, (req, res) => {
   res.json(cwRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/sg", (req, res) => {
+app.get("/api/sg", authenticateJWT, (req, res) => {
   res.json(sgRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/:branch/thirtytwocredits", (req, res) => {
+app.get("/api/:branch/thirtytwocredits", authenticateJWT, (req, res) => {
   const { branch } = req.params;
   res.json(thirtyTwoCreditsRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/csai", (req, res) => {
+app.get("/api/csai", authenticateJWT, (req, res) => {
   const csaiCseCore = csaiCseCoreRule.checkRule(studentCourseData, null);
   const csaiCore = csaiCoreRule.checkRule(studentCourseData, null);
   const csaiApplication = csaiApplicationRule.checkRule(studentCourseData, null);
@@ -203,53 +206,53 @@ app.get("/api/csai", (req, res) => {
   res.json(responseJson);
 });
 
-app.get("/api/eco-major-core", (req, res) => {
+app.get("/api/eco-major-core", authenticateJWT, (req, res) => {
   res.json(ecoMajorCore.checkRule(studentCourseData, null));
 });
 
-app.get("/api/eco-major-elective", (req, res) => {
+app.get("/api/eco-major-elective", authenticateJWT, (req, res) => {
   res.json(ecoMajorElective.checkRule(studentCourseData, null));
 });
 
-app.get("/api/ssh-major", (req, res) => {
+app.get("/api/ssh-major", authenticateJWT, (req, res) => {
   res.json(sshMajor.checkRule(studentCourseData, null));
 });
 
-app.get("/api/ip", (req, res) => {
+app.get("/api/ip", authenticateJWT, (req, res) => {
   res.json(ipRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/onlinecourses", (req, res) => {
+app.get("/api/onlinecourses", authenticateJWT, (req, res) => {
   res.json(onlineCoursesRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/:branch/twoxxcourses", (req, res) => {
+app.get("/api/:branch/twoxxcourses", authenticateJWT, (req, res) => {
   const { branch } = req.params;
   res.json(twoxxRule.checkRule(studentCourseData, branch));
 });
 
-app.get("/api/btp", (req, res) => {
+app.get("/api/btp", authenticateJWT, (req, res) => {
   res.json(btpRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/incompletegrade", (req, res) => {
+app.get("/api/incompletegrade", authenticateJWT, (req, res) => {
   res.json(incompleteGradeRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/required-credits", (req, res) => {
+app.get("/api/required-credits", authenticateJWT, (req, res) => {
   res.json(required156CreditsRule.checkRule(studentCourseData, null));
 });
 
-app.get("/api/:branch/honors", (req, res) => {
+app.get("/api/:branch/honors", authenticateJWT, (req, res) => {
   const { branch } = req.params;
   res.json(isHonors(studentCourseData, branch));
 });
 
-app.get("/api/minors", (req, res) => {
+app.get("/api/minors", authenticateJWT, (req, res) => {
   res.json(isMinors(studentCourseData));
 });
 
-app.get("/api/semester-wise-cgpa", async (req, res) => {
+app.get("/api/semester-wise-cgpa", authenticateJWT, async (req, res) => {
   const semesterGPAs = calculateCGPA(studentCourseData);
   res.json(semesterGPAs);
 });
@@ -475,34 +478,34 @@ res.json(JSON.parse(JSON.stringify(response)));
   }
 });
 
-app.get("/api/:branch/graduation-check", (req, res) => {
+app.get("/api/:branch/graduation-check", authenticateJWT, (req, res) => {
   const { branch } = req.params;
   res.json(getGraduationStatus(studentCourseData, branch));
 });
 
-app.get("/api/:branch/graduation-date", (req, res) => {
+app.get("/api/:branch/graduation-date", authenticateJWT, (req, res) => {
   const { branch } = req.params;
   res.json(getGraduationDate(studentCourseData, branch));
 });
 
-app.get("/api/request-provisional/:rollNumber", async (req, res) => {
+app.get("/api/request-provisional/:rollNumber", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
 
   res.json({ message: await addToProvisional(Number(rollNumber)) });
 });
 
-app.get("/api/provisional-requests", async (req, res) => {
+app.get("/api/provisional-requests", authenticateJWT, async (req, res) => {
   res.json(await getAllProvisional());
 });
 
-app.get("/api/accept-request/:rollNumber", async (req, res) => {
+app.get("/api/accept-request/:rollNumber", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const studentData = await generateProvisionalDegree(rollNumber);
 
   res.send(studentData);
 });
 
-app.get("/api/:batch/summary", async (req, res) => {
+app.get("/api/:batch/summary", authenticateJWT, async (req, res) => {
   const { batch } = req.params;
   const studentData = await getSummary(Number(batch));
   if (studentData.length > 0) {
@@ -513,7 +516,7 @@ app.get("/api/:batch/summary", async (req, res) => {
   }
 });
 
-app.get("/api/:batch/download-summary", async (req, res) => {
+app.get("/api/:batch/download-summary", authenticateJWT, async (req, res) => {
   const { batch } = req.params;
   const studentData = await getSummary(Number(batch));
   const workbook = xlsx.utils.book_new();
@@ -536,14 +539,11 @@ app.get("/api/:batch/download-summary", async (req, res) => {
   }
 });
 
-app.get("/api/generate-summary", async (req, res) => {
+app.get("/api/generate-summary", authenticateJWT, async (req, res) => {
   res.json(generateSummary());
 });
 
-app.post(
-  "/api/upload-students-details",
-  upload.single("file"),
-  async (req, res) => {
+app.post("/api/upload-students-details", authenticateJWT, upload.single("file"), async (req, res) => {
     const fileBuffer: Buffer | undefined = req.file?.buffer;
 
     if (fileBuffer) {
@@ -561,7 +561,7 @@ app.post(
   }
 );
 
-app.get("/api/get-students-details", async (req, res) => {
+app.get("/api/get-students-details", authenticateJWT, async (req, res) => {
   const excelBuffer = await sendPasswords();
   res.setHeader(
     "Content-Type",
@@ -574,7 +574,7 @@ app.get("/api/get-students-details", async (req, res) => {
   res.send(excelBuffer);
 });
 
-app.get("/api/student/:rollNumber", async (req, res) => {
+app.get("/api/student/:rollNumber", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const studentData = await getStudentData(Number(rollNumber));
   if (studentData.length > 0) {
@@ -584,7 +584,7 @@ app.get("/api/student/:rollNumber", async (req, res) => {
   }
 });
 
-app.post("/api/updateStudent", async (req, res) => {
+app.post("/api/updateStudent", authenticateJWT, async (req, res) => {
   const studentData = req.body;
   const studentDataUpdated = await updateStudentGrade(studentData);
   if (studentDataUpdated) {
@@ -594,7 +594,7 @@ app.post("/api/updateStudent", async (req, res) => {
   }
 });
 
-app.get("/api/btp-sem-leave/:rollNumber", async (req, res) => {
+app.get("/api/btp-sem-leave/:rollNumber", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const btpData = await getBtpData(Number(rollNumber));
   if (btpData.length > 0) {
@@ -605,17 +605,17 @@ app.get("/api/btp-sem-leave/:rollNumber", async (req, res) => {
   }
 });
 
-app.post("/api/include-btp", async (req, res) => {
+app.post("/api/include-btp", authenticateJWT, async (req, res) => {
   const data = req.body;
   res.json(await includeBTP(data[0], data[1]));
 });
 
-app.post("/api/update-minors", async (req, res) => {
+app.post("/api/update-minors", authenticateJWT, async (req, res) => {
   const Data = req.body;
   res.json(await includeIp(Data[0], Data[1], studentCourseData["rollNumber"]));
 });
 
-app.post("/api/update-student-minors", async (req, res) => {
+app.post("/api/update-student-minors", authenticateJWT, async (req, res) => {
   const { rollNumber, type } = req.body;
   const studentData = await getStudentData(Number(rollNumber));
   // Check if the roll number exists in the database.
@@ -632,7 +632,7 @@ app.post("/api/update-student-minors", async (req, res) => {
   }
 });
 
-app.get("/api/twice-fail/:rollNumber", async (req, res) => {
+app.get("/api/twice-fail/:rollNumber", authenticateJWT, async (req, res) => {
   const { rollNumber } = req.params;
   const failCourses = await twiceFailCourses(Number(rollNumber));
   if (typeof failCourses === "string") {
@@ -642,7 +642,7 @@ app.get("/api/twice-fail/:rollNumber", async (req, res) => {
   return res.json(failCourses);
 });
 
-app.get("/api/substitute-twice-fail/:rollNumber/:course", async (req, res) => {
+app.get("/api/substitute-twice-fail/:rollNumber/:course", authenticateJWT, async (req, res) => {
   const { rollNumber, course } = req.params;
   const subCourses = await substituteCourses(Number(rollNumber), course);
   if (typeof subCourses === "string") {
@@ -652,7 +652,7 @@ app.get("/api/substitute-twice-fail/:rollNumber/:course", async (req, res) => {
   return res.json(subCourses);
 });
 
-app.post("/api/update-twice-fail", async (req, res) => {
+app.post("/api/update-twice-fail", authenticateJWT, async (req, res) => {
   const requestBody = req.body;
   const result = await updateTwiceFail(
     requestBody[0],
@@ -662,10 +662,7 @@ app.post("/api/update-twice-fail", async (req, res) => {
   res.json({ result: result });
 });
 
-app.post(
-  "/api/upload-student-database",
-  upload.single("file"),
-  async (req, res) => {
+app.post("/api/upload-student-database", authenticateJWT, upload.single("file"), async (req, res) => {
     const fileBuffer: Buffer | undefined = req.file?.buffer;
 
     if (fileBuffer) {
@@ -681,10 +678,7 @@ app.post(
   }
 );
 
-app.post(
-  "/api/upload-course-database",
-  upload.single("file"),
-  async (req, res) => {
+app.post("/api/upload-course-database", authenticateJWT, upload.single("file"), async (req, res) => {
     const fileBuffer: Buffer | undefined = req.file?.buffer;
     const originalFileName: string | undefined = req.file?.originalname;
 
