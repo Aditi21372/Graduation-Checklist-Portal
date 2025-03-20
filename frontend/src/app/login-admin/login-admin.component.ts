@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentServiceService } from '../student-service.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login-admin',
@@ -15,14 +16,18 @@ export class LoginAdminComponent {
 
   constructor(
     private studentService: StudentServiceService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
   onLogin() {
     this.studentService.login(this.username, this.password).subscribe(
-      (response) => {
+      (response:any) => {
+        if(response.token){
         // Handle the response from the backend, e.g., redirect to another page;
-        this.router.navigate(['/selection']);
+          this.authService.setToken(response.token);
+          this.router.navigate(['/selection']);
+        }
       },
       (error) => {
         // Handle any errors, e.g., display an error message

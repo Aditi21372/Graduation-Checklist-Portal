@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient, HttpRequest } from '@angular/common/http';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +10,7 @@ import { HttpClient, HttpRequest } from '@angular/common/http';
 export class StudentServiceService {
   // private apiUrl = 'http://192.168.3.164:3002/api/';
   private apiUrl = 'http://localhost:3002/api/';
+  
   private graduationStatusSubject: BehaviorSubject<string> =
     new BehaviorSubject<string>('');
 
@@ -19,7 +22,12 @@ export class StudentServiceService {
     return this.graduationStatusSubject.asObservable();
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private router: Router
+
+  ) {}
 
   getStudentData(rollNumber: string): Observable<any> {
     
@@ -122,9 +130,8 @@ export class StudentServiceService {
   }
 
   login(username: string, password: string): Observable<any> {
-    return this.http.get(
-      this.apiUrl + 'login' + '/' + username + '/' + password
-    );
+    return this.http.post(
+      this.apiUrl + 'login',{username,password});
   }
 
   studentLogin(username: string, password: string): Observable<any> {

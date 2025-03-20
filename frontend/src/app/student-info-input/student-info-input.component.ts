@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { StudentServiceService } from '../student-service.service';
-
+import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-student-info-input',
   templateUrl: './student-info-input.component.html',
@@ -14,15 +14,24 @@ export class StudentInfoInputComponent {
   showMessage: string = '';
   constructor(
     private router: Router,
-    private studentService: StudentServiceService
+    private studentService: StudentServiceService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    if(!this.authService.isAuthenticated()){
+      this.router.navigate(['/login']);
+      return;
+    }
     this.rollNumberExists = false;
     this.showMessage = '';
   }
 
   onSubmit() {
+    if(!this.authService.isAuthenticated()){
+      this.router.navigate(['/login']);
+      return;
+    }
     this.studentService.getStudentData(this.studentRollNumber).subscribe(
       (data) => {
         this.rollNumberExists = true;

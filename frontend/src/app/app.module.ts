@@ -50,7 +50,8 @@ import { SemLeaveComponent } from './sem-leave/sem-leave.component';
 import { ProvisionalRequestsComponent } from './provisional-requests/provisional-requests.component';
 import { ProvisionalCertificateComponent } from './provisional-certificate/provisional-certificate.component';
 import { UpdateTwiceFailComponent } from './update-twice-fail/update-twice-fail.component';
-
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtInterceptor } from './jwt.inspector';
 @NgModule({
   declarations: [
     AppComponent,
@@ -107,7 +108,8 @@ import { UpdateTwiceFailComponent } from './update-twice-fail/update-twice-fail.
     MatMenuModule,
     MatSnackBarModule
   ],
-  providers: [StudentServiceService],
+  providers: [StudentServiceService,   { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
