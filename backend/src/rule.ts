@@ -371,7 +371,7 @@ export const thirtyTwoCreditsRule: IRule = {
     const coreCourses = courseDatabase[context];
     let major = "CSE"; // Default major is CSE other option in ECE
     let extraCoursesMajor = courseDatabase["CSE 32"];
-    let extraCoursesBranch: string[] = [];
+    let extraCoursesBranch: string[] = []; 
     if (context === "ECE") {
       major = "ECE";
       extraCoursesMajor = courseDatabase["ECE 32"];
@@ -482,6 +482,10 @@ export const thirtyTwoCreditsRule: IRule = {
       returnData.isCompleteBool = true;
       returnData.isCompleteText = "Complete";
     }
+    // if (context === "EVE" && majorCredits + contextBranchCredits >= 16) {
+    //   returnData.isCompleteBool = true;
+    //   returnData.isCompleteText = "Complete";
+    // }
     returnData.data.totalCredits = majorCredits + contextBranchCredits;
     return returnData;
   },

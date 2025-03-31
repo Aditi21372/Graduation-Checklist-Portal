@@ -434,6 +434,10 @@ exports.thirtyTwoCreditsRule = {
             returnData.isCompleteBool = true;
             returnData.isCompleteText = "Complete";
         }
+        // if (context === "EVE" && majorCredits + contextBranchCredits >= 16) {
+        //     returnData.isCompleteBool = true;
+        //     returnData.isCompleteText = "Complete";
+        // }
         returnData.data.totalCredits = majorCredits + contextBranchCredits;
         return returnData;
     },

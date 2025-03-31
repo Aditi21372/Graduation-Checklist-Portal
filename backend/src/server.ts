@@ -85,7 +85,7 @@ app.use(express.json());
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   if (username === process.env.ADMIN_ID && password === process.env.ADMIN_PASSWORD) {
-    const token = jwt.sign({ userId: username, role: 'admin' }, process.env.JWT_SECRET as string, { expiresIn: '10m' });
+    const token = jwt.sign({ userId: username, role: 'admin' }, process.env.JWT_SECRET as string, { expiresIn: '6h' });
     res.json({ token });
   } else {
     res.status(404).json({ error: "User not found" });

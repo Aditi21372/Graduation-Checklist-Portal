@@ -104,7 +104,7 @@ export class MinorsDetailsComponent {
           courseName: courseData.courseName,
           semester: courseData.semester,
           status: courseData.status,
-          credits: courseData.credits,
+          credits: 4,
           grade: courseData.grade,
         });
       }

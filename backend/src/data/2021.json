@@ -18,16 +18,21 @@
     "COM301A"
   ],
   "CSE bucket 2": [
+    "MTH203",
+    "ECE250",
+    "ECE270"
+  ],
+  "CSE bucket 3": [
     "DES130",
     "CSE322",
     "BIO221",
     "DES206"
   ],
-  "CSE bucket 3": [
+  "CSE bucket 4": [
     "MTH204",
     "MTH310"
   ],
-  "CSE bucket 4": [
+  "CSE bucket 5": [
     "ESC205A",
     "ESC207A"
   ],
@@ -35,7 +40,8 @@
     "DES513",
     "ECE577",
     "MTH507",
-    "MTH517"
+    "MTH517",
+    "BIO546"
   ],
   "ECE": [
     "CSE101",
@@ -67,7 +73,8 @@
     "MTH377",
     "CSE342",
     "CSE641",
-    "CSE633"
+    "CSE633",
+    "CSE511"
   ],
   "CSAM": [
     "CSE101",
@@ -215,7 +222,8 @@
     "CSE342",
     "CSE343",
     "COM301A",
-    "SSH325"
+    "SSH325",
+    "CSE643"
   ],
   "CSAI bucket 1": [
     "MTH374",
@@ -266,7 +274,11 @@
     "CSE665",
     "ECE351",
     "CSE573",
-    "CSE999A"
+    "CSE999A",
+    "CSE333",
+    "CSE533",
+    "CSE999A3",
+    "CSE998A2"
   ],
   "CSAI MATH CORE": [
     "MTH204",
@@ -415,20 +427,23 @@
     "ECO311/ECO511"
   ],
   "Minor in ENT": [
-    "ENT412/ENT201",
+    "ENT412",
     "ENT411",
     "ENT416/ENT516",
     "MGT310",
-    "ENT413/ECO 331",
+    "ENT413/ECO331",
     "ECO301",
     "ENT421/BIO571",
     "ENT414",
-    "ECO 332",
+    "ECO332",
     "ENT301",
     "ENT404",
     "ENT415",
     "DES530",
-    "DES529"
+    "DES529",
+    "ENT201",
+    "ENT405",
+    "ENT302"
   ],
   "Minor in BIO": [
     "BIO213"

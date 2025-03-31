@@ -458,6 +458,8 @@ function mapProgramToBranch(program: string): string {
   switch (program) {
     case "Electronics and Communication Engineering":
       return "ECE";
+    // case "Electronics and VLSI Engineering":
+    //   return "EVE";
     case "Computer Science and Applied Mathematics":
       return "CSAM";
     case "Computer Science and Engineering":

@@ -269,6 +269,9 @@ export class ChecklistComponent implements OnInit {
         if (this.branch === 'CSSS') {
           newData.rule = '16 Credits of CSE Courses';
         }
+        // if (this.branch === 'EVE') {
+        //   newData.rule = '16 Credits of EVE Courses';
+        // }
 
         this.courseData.set('32Credits_Courses', ruleData.data.courseData);
         this.dataSourceTwo.push(newData);

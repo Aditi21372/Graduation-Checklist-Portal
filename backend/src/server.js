@@ -276,6 +276,7 @@ app.get("/api8955c68e0511008dd686e68fcaf60ebfe210cd0e/single_api/:rollNumber", (
                 isComplete: thirtyTwoCreds.isCompleteBool,
                 status: thirtyTwoCreds.isCompleteText,
                 type: studentInfo.branch === 'CSSS' ? '16 Credits of CSE Courses' : '32 Credits of Discipline Courses'
+                
             };
         }
         const overallMandatoryStatus = mandatoryStatus && bucketStatus;

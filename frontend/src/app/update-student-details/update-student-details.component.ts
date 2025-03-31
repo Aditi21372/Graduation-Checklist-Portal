@@ -27,7 +27,7 @@ export class UpdateStudentDetailsComponent {
       const fileExtension =
         fileNameParts[fileNameParts.length - 1].toLowerCase();
 
-      if (fileExtension === 'xls') {
+if (fileExtension === 'xls' || fileExtension === 'xlsx') {
         this.selectedFile = file;
       } else {
         this.errorMessage = 'Please select a valid xlsx file.';
@@ -63,10 +63,10 @@ export class UpdateStudentDetailsComponent {
   }
 
   downloadFileFormat() {
-    const fileUrl = '/studentdata_format.xlsx'; // Updated to relative path
+    const fileUrl = 'assets/studentdata_format.xlsx'; // Use relative path to assets folder
     const a = document.createElement('a');
     a.href = fileUrl;
-    a.download = 'studentdata_format.xlsx'; 
+    a.download = 'studentdata_format.xlsx';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
