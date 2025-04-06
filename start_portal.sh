@@ -7,6 +7,10 @@ kill $(lsof -t -i:40002) 2>/dev/null
 # Activate Conda environment
 conda activate GraduationChecklist
 
+# Load NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
 # Start backend with PM2
 cd backend
 nvm use 18.17

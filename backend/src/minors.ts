@@ -11,10 +11,12 @@ export function isMinors(studentInfo: StudentInfo): MinorsComponents[] {
   const ecoMinors = new EconomicsMinors();
   minors.push(ecoMinors.checkMinorsCompleted(studentInfo));
   const entMinors = new EntrepreneurshipMinors();
+  console.log("Triggering checkMinorsCompleted");
   minors.push(entMinors.checkMinorsCompleted(studentInfo));
   const designMinors = new DesignMinors();
   minors.push(designMinors.checkMinorsCompleted(studentInfo));
   const quantumMinors = new QuantumMinors();
+  console.log("Triggering checkMinorsCompleted");
   minors.push(quantumMinors.checkMinorsCompleted(studentInfo));
   return minors;
 }
@@ -85,7 +87,7 @@ export async function includeIp(
   const query = {
     "Roll No": rollNo,
     "Course Code": ipData["Course Code"],
-    "Grade": ipData["Grade"]
+    Grade: ipData["Grade"],
   };
   const update = {
     $set: {
@@ -157,7 +159,6 @@ export interface Minors {
 
 export class ComputationalBiologyMinors implements Minors {
   coreCourses: string[] = courseDatabase["Minor in BIO"];
-  
 
   checkSameBranch(studentInfo: StudentInfo): boolean {
     return studentInfo["program"].includes("CSB");
@@ -452,6 +453,207 @@ export class EconomicsMinors implements Minors {
   }
 }
 
+// export class EntrepreneurshipMinors implements Minors {
+//   coreCourses: string[] = courseDatabase["Minor in ENT"];
+//   doneCourses: string[] = [];
+
+//   checkSameBranch(studentInfo: StudentInfo): boolean {
+//     return false;
+//   }
+
+//   checkMandatoryCourses(studentInfo: StudentInfo): MinorsComponents {
+//     const courses = [];
+//     let totalCredits = 0;
+//     let totalCreditsPosibble = 16;
+
+//     for (const coreCourse of this.coreCourses) {
+//       let options = [];
+//       if (coreCourse.length > 6) {
+//         const splitOptions = coreCourse.split("/");
+//         options.push(...splitOptions);
+//       }
+//       let courseEntry: CourseData = {
+//         course: coreCourse,
+//         courseName: "",
+//         semester: "",
+//         status: "Not Done",
+//         credits: 0,
+//         grade: "",
+//       };
+
+//       for (const course of studentInfo["courses"]) {
+//         if (
+//           (course["courseCode"] === coreCourse ||
+//             (options.length > 0 && options.includes(course["courseCode"]))) &&
+//           !disallowedGrades.includes(course["grade"])
+//         ) {
+//           courseEntry["courseName"] = course["course"];
+//           courseEntry["semester"] = course["semester"];
+//           courseEntry["status"] = "Complete";
+//           courseEntry["credits"] = course["credit"];
+//           courseEntry["grade"] = course["grade"];
+
+//           totalCredits += course["credit"];
+//           this.doneCourses.push(coreCourse);
+//           courses.push(courseEntry);
+
+//           if (totalCredits >= totalCreditsPosibble) {
+//             break;
+//           }
+//         }
+//       }
+//     }
+//     const minorsComponent: MinorsComponents = {
+//       isCompleteBool: totalCredits >= totalCreditsPosibble,
+//       isCompleteText:
+//         courses.length === this.coreCourses.length ? "Complete" : "Not Done",
+//       totalCredits: totalCredits,
+//       data: courses,
+//     };
+//     return minorsComponent;
+//   }
+
+//   checkAdditionalCredits(studentInfo: StudentInfo): MinorsComponents {
+//     const creditsToComplete = 8;
+//     let creditsCompleted = 0;
+//     const studentCourses = studentInfo["courses"];
+//     const courses = [];
+
+//     for (const coreCourse of this.coreCourses) {
+//       if (this.doneCourses.includes(coreCourse)) {
+//         continue;
+//       }
+//       let options = [];
+//       if (coreCourse.length > 6) {
+//         const splitOptions = coreCourse.split("/");
+//         options.push(...splitOptions);
+//       }
+
+//       for (const studentCourse of studentCourses) {
+//         if (
+//           (studentCourse["courseCode"] === coreCourse ||
+//             (options.length > 0 &&
+//               options.includes(studentCourse["courseCode"]))) &&
+//           !disallowedGrades.includes(studentCourse["grade"])
+//         ) {
+//           creditsCompleted += studentCourse["credit"];
+//           courses.push({
+//             course: coreCourse,
+//             courseName: studentCourse["course"],
+//             semester: studentCourse["semester"],
+//             status: "Complete",
+//             credits: studentCourse["credit"],
+//             grade: studentCourse["grade"],
+//           });
+//         }
+//       }
+//     }
+
+//     const minorsComponent: MinorsComponents = {
+//       isCompleteBool: creditsCompleted >= creditsToComplete,
+//       isCompleteText:
+//         creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
+//       totalCredits: creditsCompleted,
+//       data: courses,
+//     };
+//     return minorsComponent;
+//   }
+
+//   checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
+//     const pursuingCSSS = this.checkSameBranch(studentInfo);
+//     const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
+//     const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
+//     const ipIncluded = this.includeIp(studentInfo);
+//     const apprenticeship = this.checkApprenticeship(studentInfo);
+//     console.log("Pursuing CSSS:", pursuingCSSS); // Line 21
+//     console.log("Core Courses Completed:", coreCoursesCompleted); // Line 22
+//     console.log("Additional Credits Completed:", additionalCreditsCompleted); // Line 23
+//     console.log("IP Included:", ipIncluded); // Line 24
+//     console.log("Apprenticeship Status:", apprenticeship); // Line 25
+//     const minors =
+//       !pursuingCSSS &&
+//       coreCoursesCompleted.isCompleteBool &&
+//       apprenticeship.isCompleteBool;
+//     const totalCredits =
+//       coreCoursesCompleted.totalCredits +
+//       additionalCreditsCompleted.totalCredits +
+//       ipIncluded.totalCredits;
+//     const MinorsComponents: MinorsComponents = {
+//       isCompleteBool: minors && totalCredits >= 24,
+//       isCompleteText: minors && totalCredits >= 24 ? "Complete" : "Not Done",
+//       totalCredits: totalCredits,
+//       data: {
+//         stream: "Entrepreneurship",
+//         coreCoursesCompleted: coreCoursesCompleted,
+//         additionalCreditsCompleted: additionalCreditsCompleted,
+//         ipIncluded: ipIncluded,
+//         apprenticeship: apprenticeship,
+//       },
+//     };
+//     return MinorsComponents;
+//   }
+
+//   includeIp(studentCourseData: StudentInfo): MinorsComponents {
+//     const ipCourses = courseDatabase["IP/IS/UR"];
+//     const courses = [];
+//     let totalCredits = 0;
+//     for (const course of studentCourseData["courses"]) {
+//       if (
+//         (ipCourses.includes(course["courseCode"].substring(0, 3)) ||
+//           course["courseCode"].substring(0, 3) === "BTP") &&
+//         !disallowedGrades.includes(course["grade"]) &&
+//         course["includedInMinors"] === "Entrepreneurship"
+//       ) {
+//         courses.push({
+//           course: course["courseCode"],
+//           courseName: course["course"],
+//           semester: course["semester"],
+//           status: "Complete",
+//           credits: course["credit"],
+//           grade: course["grade"],
+//         });
+
+//         totalCredits += course["credit"];
+//       }
+//     }
+
+//     const minorsComponent: MinorsComponents = {
+//       isCompleteBool: false,
+//       isCompleteText: "Not Done",
+//       data: courses,
+//       totalCredits: totalCredits,
+//     };
+//     return minorsComponent;
+//   }
+
+//   checkApprenticeship(studentInfo: StudentInfo): MinorsComponents {
+//     const courses = [];
+//     for (const course of studentInfo["courses"]) {
+//       if (
+//         course["course"] === "Apprenticeship" &&
+//         course["includedInMinors"] === "ENT"
+//       ) {
+//         courses.push({
+//           course: course["courseCode"],
+//           courseName: course["course"],
+//           semester: course["semester"],
+//           status: "Complete",
+//           credits: course["credit"],
+//           grade: course["grade"],
+//         });
+//       }
+//     }
+
+//     const minorsComponent: MinorsComponents = {
+//       isCompleteBool: courses.length > 0,
+//       isCompleteText: courses.length > 0 ? "Done" : "Not Done",
+//       data: courses,
+//       totalCredits: 0,
+//     };
+//     return minorsComponent;
+//   }
+// }
+
 export class EntrepreneurshipMinors implements Minors {
   coreCourses: string[] = courseDatabase["Minor in ENT"];
   doneCourses: string[] = [];
@@ -503,9 +705,9 @@ export class EntrepreneurshipMinors implements Minors {
       }
     }
     const minorsComponent: MinorsComponents = {
-      isCompleteBool: totalCredits === totalCreditsPosibble,
+      isCompleteBool: totalCredits >= totalCreditsPosibble,
       isCompleteText:
-        courses.length === this.coreCourses.length ? "Complete" : "Not Done",
+        totalCredits >= totalCreditsPosibble ? "Complete" : "Not Done",
       totalCredits: totalCredits,
       data: courses,
     };
@@ -513,90 +715,16 @@ export class EntrepreneurshipMinors implements Minors {
   }
 
   checkAdditionalCredits(studentInfo: StudentInfo): MinorsComponents {
-    const creditsToComplete = 8;
-    let creditsCompleted = 0;
-    const studentCourses = studentInfo["courses"];
-    const courses = [];
-
-    for (const coreCourse of this.coreCourses) {
-      if (this.doneCourses.includes(coreCourse)) {
-        continue;
-      }
-      let options = [];
-      if (coreCourse.length > 6) {
-        const splitOptions = coreCourse.split("/");
-        options.push(...splitOptions);
-      }
-
-      for (const studentCourse of studentCourses) {
-        if (
-          (studentCourse["courseCode"] === coreCourse ||
-            (options.length > 0 &&
-              options.includes(studentCourse["courseCode"]))) &&
-          !disallowedGrades.includes(studentCourse["grade"])
-        ) {
-          creditsCompleted += studentCourse["credit"];
-          courses.push({
-            course: coreCourse,
-            courseName: studentCourse["course"],
-            semester: studentCourse["semester"],
-            status: "Complete",
-            credits: studentCourse["credit"],
-            grade: studentCourse["grade"],
-          });
-        }
-      }
-    }
-
-    const minorsComponent: MinorsComponents = {
-      isCompleteBool: creditsCompleted >= creditsToComplete,
-      isCompleteText:
-        creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
-      totalCredits: creditsCompleted,
-      data: courses,
-    };
-    return minorsComponent;
-  }
-
-  checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
-    const pursuingCSSS = this.checkSameBranch(studentInfo);
-    const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
-    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
-    const ipIncluded = this.includeIp(studentInfo);
-    const apprenticeship = this.checkApprenticeship(studentInfo);
-    const minors =
-      !pursuingCSSS &&
-      coreCoursesCompleted.isCompleteBool &&
-      apprenticeship.isCompleteBool;
-    const totalCredits =
-      coreCoursesCompleted.totalCredits +
-      additionalCreditsCompleted.totalCredits +
-      ipIncluded.totalCredits;
-    const MinorsComponents: MinorsComponents = {
-      isCompleteBool: minors && totalCredits >= 24,
-      isCompleteText: minors && totalCredits >= 24 ? "Complete" : "Not Done",
-      totalCredits: totalCredits,
-      data: {
-        stream: "Entrepreneurship",
-        coreCoursesCompleted: coreCoursesCompleted,
-        additionalCreditsCompleted: additionalCreditsCompleted,
-        ipIncluded: ipIncluded,
-        apprenticeship: apprenticeship,
-      },
-    };
-    return MinorsComponents;
-  }
-
-  includeIp(studentCourseData: StudentInfo): MinorsComponents {
     const ipCourses = courseDatabase["IP/IS/UR"];
     const courses = [];
     let totalCredits = 0;
-    for (const course of studentCourseData["courses"]) {
+
+    for (const course of studentInfo["courses"]) {
       if (
         (ipCourses.includes(course["courseCode"].substring(0, 3)) ||
           course["courseCode"].substring(0, 3) === "BTP") &&
         !disallowedGrades.includes(course["grade"]) &&
-        course["includedInMinors"] === "Entrepreneurship"
+        course["includedInMinors"] === "ENT"
       ) {
         courses.push({
           course: course["courseCode"],
@@ -612,19 +740,21 @@ export class EntrepreneurshipMinors implements Minors {
     }
 
     const minorsComponent: MinorsComponents = {
-      isCompleteBool: false,
-      isCompleteText: "Not Done",
-      data: courses,
+      isCompleteBool: totalCredits >= 8,
+      isCompleteText: totalCredits >= 8 ? "Complete" : "Not Done",
       totalCredits: totalCredits,
+      data: courses,
     };
     return minorsComponent;
   }
 
   checkApprenticeship(studentInfo: StudentInfo): MinorsComponents {
+    const apprenticeshipCourses = courseDatabase["Apprenticeship"];
     const courses = [];
+
     for (const course of studentInfo["courses"]) {
       if (
-        course["course"] === "Apprenticeship" &&
+        apprenticeshipCourses.includes(course["courseCode"]) &&
         course["includedInMinors"] === "ENT"
       ) {
         courses.push({
@@ -641,15 +771,80 @@ export class EntrepreneurshipMinors implements Minors {
     const minorsComponent: MinorsComponents = {
       isCompleteBool: courses.length > 0,
       isCompleteText: courses.length > 0 ? "Done" : "Not Done",
-      data: courses,
       totalCredits: 0,
+      data: courses,
     };
     return minorsComponent;
   }
+
+  includeIp(studentCourseData: StudentInfo): MinorsComponents {
+    const ipCourses = courseDatabase["IP/IS/UR"];
+    const courses = [];
+    let totalCredits = 0;
+
+    for (const course of studentCourseData["courses"]) {
+      if (
+        (ipCourses.includes(course["courseCode"].substring(0, 3)) ||
+          course["courseCode"].substring(0, 3) === "BTP") &&
+        !disallowedGrades.includes(course["grade"]) &&
+        course["includedInMinors"] === "ENT"
+      ) {
+        courses.push({
+          course: course["courseCode"],
+          courseName: course["course"],
+          semester: course["semester"],
+          status: "Complete",
+          credits: course["credit"],
+          grade: course["grade"],
+        });
+
+        totalCredits += course["credit"];
+      }
+    }
+
+    const minorsComponent: MinorsComponents = {
+      isCompleteBool: totalCredits == 8,
+      isCompleteText: totalCredits == 8 ? "Done" : "Not Done",
+      data: courses,
+      totalCredits: totalCredits,
+    };
+    return minorsComponent;
+  }
+
+  checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
+    const pursuingCSSS = this.checkSameBranch(studentInfo);
+    const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
+    const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
+    const ipIncluded = this.includeIp(studentInfo);
+    const apprenticeship = this.checkApprenticeship(studentInfo);
+
+    const minors =
+      !pursuingCSSS &&
+      (coreCoursesCompleted.totalCredits >= 24 ||
+        (coreCoursesCompleted.totalCredits >= 16 &&
+          ipIncluded.totalCredits >= 8)) &&
+      apprenticeship.isCompleteBool;
+
+    const totalCredits =
+      coreCoursesCompleted.totalCredits +
+      ipIncluded.totalCredits +
+      ipIncluded.totalCredits;
+
+    const MinorsComponents: MinorsComponents = {
+      isCompleteBool: minors && totalCredits >= 24,
+      isCompleteText: minors && totalCredits >= 24 ? "Complete" : "Not Done",
+      totalCredits: totalCredits,
+      data: {
+        stream: "Entrepreneurship",
+        coreCoursesCompleted: coreCoursesCompleted,
+        additionalCreditsCompleted: additionalCreditsCompleted,
+        ipIncluded: ipIncluded,
+        apprenticeship: apprenticeship,
+      },
+    };
+    return MinorsComponents;
+  }
 }
-
-
-
 
 /*export class QuantumMinors implements Minors {
   coreCourses: string[] = courseDatabase["Minor in Quant bucket 1"] || [];
@@ -849,10 +1044,12 @@ export class QuantumMinors implements Minors {
     let totalCredits = 0;
     const totalCreditsPossible = 12;
     const usedCourses = new Set<string>();
-  
+
     for (const coreCourse of this.coreCourses) {
-      let options = coreCourse.includes("/") ? coreCourse.split("/") : [coreCourse];
-  
+      let options = coreCourse.includes("/")
+        ? coreCourse.split("/")
+        : [coreCourse];
+
       for (const course of studentInfo["courses"]) {
         if (
           options.includes(course["courseCode"]) &&
@@ -867,11 +1064,11 @@ export class QuantumMinors implements Minors {
             credits: course["credit"],
             grade: course["grade"],
           };
-  
+
           courses.push(courseEntry);
           this.doneCourses.push(coreCourse);
           usedCourses.add(course["courseCode"]);
-  
+
           totalCredits += course["credit"];
           if (totalCredits >= totalCreditsPossible) {
             totalCredits = totalCreditsPossible;
@@ -879,21 +1076,20 @@ export class QuantumMinors implements Minors {
           }
         }
       }
-  
+
       if (totalCredits >= totalCreditsPossible) {
         break;
       }
     }
-  
+
     return {
       isCompleteBool: totalCredits >= totalCreditsPossible,
-      isCompleteText: totalCredits >= totalCreditsPossible ? "Complete" : "Not Done",
+      isCompleteText:
+        totalCredits >= totalCreditsPossible ? "Complete" : "Not Done",
       totalCredits: totalCredits,
       data: courses,
     };
   }
-  
-
 
   // Checking elective course completion (4 credits from Bucket 2)
   checkAdditionalCredits(studentInfo: StudentInfo): MinorsComponents {
@@ -941,13 +1137,14 @@ export class QuantumMinors implements Minors {
     const minorsComponent: MinorsComponents = {
       isCompleteBool: totalCredits === totalCreditsPosibble,
       isCompleteText:
-      courses.length === this.electiveCourses.length ? "Complete" : "Not Done",
+        courses.length === this.electiveCourses.length
+          ? "Complete"
+          : "Not Done",
       totalCredits: totalCredits,
       data: courses,
     };
     return minorsComponent;
   }
-
 
   // Checking IP/BTP/UR/IS credits (minimum 4 credits)
   includeIp(studentCourseData: StudentInfo): MinorsComponents {
@@ -986,16 +1183,17 @@ export class QuantumMinors implements Minors {
     const coreCoursesCompleted = this.checkMandatoryCourses(studentInfo);
     const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
     const ipIncluded = this.includeIp(studentInfo);
-    
 
     const minors =
       coreCoursesCompleted.isCompleteBool &&
-      (additionalCreditsCompleted.isCompleteBool  && ipIncluded.totalCredits > 0);
-    
-    const totalCredits = coreCoursesCompleted.totalCredits + 
-                         additionalCreditsCompleted.totalCredits + 
-                         ipIncluded.totalCredits;
-    
+      additionalCreditsCompleted.isCompleteBool &&
+      ipIncluded.totalCredits > 0;
+
+    const totalCredits =
+      coreCoursesCompleted.totalCredits +
+      additionalCreditsCompleted.totalCredits +
+      ipIncluded.totalCredits;
+
     const MinorsComponents: MinorsComponents = {
       isCompleteBool: minors && totalCredits >= 20,
       isCompleteText: minors && totalCredits >= 20 ? "Complete" : "Not Done",
@@ -1014,10 +1212,9 @@ export class QuantumMinors implements Minors {
   }
 }
 
-
 export class DesignMinors implements Minors {
   coreCourses: string[] = courseDatabase["Minor in Design"];
-  
+
   doneCourses: string[] = [];
 
   checkSameBranch(studentInfo: StudentInfo): boolean {
@@ -1066,7 +1263,8 @@ export class DesignMinors implements Minors {
 
     return {
       isCompleteBool: totalCredits === totalCreditsPossible,
-      isCompleteText: totalCredits === totalCreditsPossible ? "Complete" : "Not Done",
+      isCompleteText:
+        totalCredits === totalCreditsPossible ? "Complete" : "Not Done",
       totalCredits,
       data: courses,
     };
@@ -1080,7 +1278,7 @@ export class DesignMinors implements Minors {
     for (const studentCourse of studentInfo.courses) {
       // Extract the numeric part of the course code
       const courseNumber = parseInt(studentCourse.courseCode.substring(3));
-      
+
       if (
         studentCourse.courseCode.startsWith("DES") &&
         courseNumber >= 200 &&
@@ -1101,7 +1299,8 @@ export class DesignMinors implements Minors {
 
     return {
       isCompleteBool: creditsCompleted >= creditsToComplete,
-      isCompleteText: creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
+      isCompleteText:
+        creditsCompleted >= creditsToComplete ? "Complete" : "Not Done",
       totalCredits: creditsCompleted,
       data: courses,
     };
@@ -1142,16 +1341,16 @@ export class DesignMinors implements Minors {
 
   checkMinorsCompleted(studentInfo: StudentInfo): MinorsComponents {
     if (this.checkSameBranch(studentInfo)) {
-      return { 
-        isCompleteBool: false, 
-        isCompleteText: "Not Done", 
-        totalCredits: 0, 
+      return {
+        isCompleteBool: false,
+        isCompleteText: "Not Done",
+        totalCredits: 0,
         data: {
           stream: "Design",
           coreCoursesCompleted: { data: [] },
           additionalCreditsCompleted: { data: [] },
-          ipIncluded: { data: [] }
-        } 
+          ipIncluded: { data: [] },
+        },
       };
     }
 
@@ -1159,11 +1358,13 @@ export class DesignMinors implements Minors {
     const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
     const ipIncluded = this.includeIp(studentInfo);
 
-    const isMinorComplete = coreCoursesCompleted.isCompleteBool && 
-                          (additionalCreditsCompleted.isCompleteBool || ipIncluded.isCompleteBool);
-    const totalCredits = coreCoursesCompleted.totalCredits + 
-                       additionalCreditsCompleted.totalCredits + 
-                       ipIncluded.totalCredits;
+    const isMinorComplete =
+      coreCoursesCompleted.isCompleteBool &&
+      (additionalCreditsCompleted.isCompleteBool || ipIncluded.isCompleteBool);
+    const totalCredits =
+      coreCoursesCompleted.totalCredits +
+      additionalCreditsCompleted.totalCredits +
+      ipIncluded.totalCredits;
 
     return {
       isCompleteBool: isMinorComplete,
@@ -1173,12 +1374,8 @@ export class DesignMinors implements Minors {
         stream: "Design",
         coreCoursesCompleted: coreCoursesCompleted,
         additionalCreditsCompleted: additionalCreditsCompleted,
-        ipIncluded: ipIncluded
+        ipIncluded: ipIncluded,
       },
     };
   }
 }
-
-
-
-

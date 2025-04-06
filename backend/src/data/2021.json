@@ -20,7 +20,8 @@
   "CSE bucket 2": [
     "MTH203",
     "ECE250",
-    "ECE270"
+    "ECE270",
+    "MTH211"
   ],
   "CSE bucket 3": [
     "DES130",
@@ -42,6 +43,7 @@
     "MTH507",
     "MTH517",
     "BIO546"
+    
   ],
   "ECE": [
     "CSE101",
@@ -278,7 +280,8 @@
     "CSE333",
     "CSE533",
     "CSE999A3",
-    "CSE998A2"
+    "CSE998A2",
+    "CSE665A"
   ],
   "CSAI MATH CORE": [
     "MTH204",
@@ -393,7 +396,8 @@
     "SSH562",
     "SSH700",
     "SSH322",
-    "SSH341"
+    "SSH341",
+    "SSH240"
   ],
   "Online course": [
     "CSE999A4",
@@ -419,7 +423,8 @@
     "BTA300",
     "CSE998A3",
     "CSE999A7",
-    "CSE999A1"
+    "CSE999A1",
+    "BIO999"
   ],
   "Minor in ECO": [
     "ECO221",

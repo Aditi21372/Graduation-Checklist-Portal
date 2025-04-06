@@ -394,6 +394,7 @@ export class ChecklistComponent implements OnInit {
 
   populateMinors(index: number): Observable<any> {
     console.log('Minorsss:', this.courseData);
+    
     return this.studentService.getMinors().pipe(
       map((courseData: any) => {
         let finalNumber = 0;
@@ -411,7 +412,7 @@ export class ChecklistComponent implements OnInit {
           newData.rule += courseData[i].data.stream;
           newData.credits = courseData[i].totalCredits;
           newData.status = courseData[i].isCompleteText;
-
+          console.log(newData.status);
           // Special handling for Quantum minors
           if (courseData[i].data.stream === 'Quantum') {
             newData.rule = 'Minors in Quantum Technologies';

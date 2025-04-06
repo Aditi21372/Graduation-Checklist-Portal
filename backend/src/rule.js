@@ -371,8 +371,10 @@ exports.thirtyTwoCreditsRule = {
                 course["courseCode"].startsWith(branch + "1") ||
                 course["courseCode"].startsWith(major + "2") ||
                 course["courseCode"].startsWith(branch + "2") ||
-                course["semester"] < "5" ||
-                course["semester"].toString().startsWith("Summer Term")) {
+                course["semester"] < "5" 
+                ||
+                /^Summer Term [1-2]$/.test(course["semester"].toString())
+                ) {
                 continue;
             }
             // Checks if the course has a valid grade against it and is a CSE course.

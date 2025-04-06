@@ -19,15 +19,17 @@ export class UpdateStudentDetailsComponent {
   ) {}
 
   onFileChange(event: any) {
+    console.log('File change event triggered');
     this.errorMessage = '';
     const fileList: FileList = event.target.files;
     if (fileList.length > 0) {
       const file: File = fileList[0];
+      console.log('Selected file:', file);
       const fileNameParts = file.name.split('.');
       const fileExtension =
         fileNameParts[fileNameParts.length - 1].toLowerCase();
 
-if (fileExtension === 'xls' || fileExtension === 'xlsx') {
+      if (fileExtension === 'xls' || fileExtension === 'xlsx') {
         this.selectedFile = file;
       } else {
         this.errorMessage = 'Please select a valid xlsx file.';
@@ -37,6 +39,7 @@ if (fileExtension === 'xls' || fileExtension === 'xlsx') {
   }
 
   uploadFile() {
+    console.log('Upload file method triggered');
     if (this.selectedFile && this.selectedFile.size > 0) {
       this.errorMessage = '';
       this.studentService
@@ -70,6 +73,9 @@ if (fileExtension === 'xls' || fileExtension === 'xlsx') {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+  }
+  testFunction() {
+    console.log('Test button clicked');
   }
 
   goBack() {
