@@ -349,6 +349,7 @@ exports.thirtyTwoCreditsRule = {
         let branch = context; // Default branch is CSE other options are BIO, DES, MTH
         if (context === "CSB") {
             branch = "BIO";
+            extraCoursesBranch = database_1.courseDatabase["CSB 32"];
         }
         else if (context === "CSD") {
             branch = "DES";
@@ -360,6 +361,7 @@ exports.thirtyTwoCreditsRule = {
         else if (context === "CSAI") {
             branch = "CSE";
         }
+        
         const studentCourses = studentCourseData["courses"];
         let majorCredits = 0;
         let contextBranchCredits = 0;
@@ -373,7 +375,7 @@ exports.thirtyTwoCreditsRule = {
                 course["courseCode"].startsWith(branch + "2") ||
                 course["semester"] < "5" 
                 ||
-                /^Summer Term [1-2]$/.test(course["semester"].toString())
+                /^Summer Term [1]$/.test(course["semester"].toString())
                 ) {
                 continue;
             }
@@ -565,10 +567,10 @@ exports.twoxxRule = {
         for (const course of studentCourses) {
             if (course["courseCode"].substring(3, 4) === "2" &&
                 !exports.disallowedGrades.includes(course["grade"]) &&
-                ((course["semester"] >= "5" &&
+                ((course["semester"] >= "2" &&
                     !course["semester"].toString().startsWith("Summer")) ||
                     course["semester"] >= "Summer Term 3") &&
-                !database_1.courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
+ //               !database_1.courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
                 !coreCourses.includes(course["courseCode"]) &&
                 !mandatoryBucketCourses.includes(course["courseCode"])) {
                 let courseEntry = {

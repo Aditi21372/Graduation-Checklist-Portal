@@ -35,8 +35,7 @@
     "DES513",
     "ECE577",
     "MTH507",
-    "MTH517",
-    "CSE401A"
+    "MTH517"
   ],
   "ECE": [
     "CSE101",
@@ -204,27 +203,23 @@
     "CSE102",
     "CSE112",
     "MTH201",
-    "BIO101",
+    "BIO102",
     "CSE231",
     "CSE201",
-    "MTH203",
-    "BIO211",
-    "BIO214",
+    "CSE121/MTH210",
     "CSE202",
-    "ECE113",
-    "BIO221",
-    "BIO213",
     "BIO361",
     "BIO321",
-    "COM301A"
+    "COM301A",
+    "CSE222"
   ],
   "CSB bucket 1": [
     "ESC205A",
     "ESC207A"
   ],
   "CSB bucket 2": [
-    "CSE222",
-    "CSE223"
+    "MTH310/MTH520",
+    "MTH300"
   ],
   "CSSS": [
     "CSE101",

@@ -8,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
+
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DesignMinors = exports.QuantumMinors = exports.EntrepreneurshipMinors = exports.EconomicsMinors = exports.ComputationalBiologyMinors = exports.approveApprenticeship = exports.includeIp = exports.checkIpBtpForMinors = exports.isMinors = void 0;
 const database_1 = require("./database");
@@ -447,8 +449,8 @@ class EntrepreneurshipMinors {
             }
         }
         const minorsComponent = {
-            isCompleteBool: totalCredits === totalCreditsPosibble,
-            isCompleteText: courses.length === this.coreCourses.length ? "Complete" : "Not Done",
+            isCompleteBool: totalCredits >= totalCreditsPosibble,
+            isCompleteText: courses.length >= this.coreCourses.length ? "Complete" : "Not Done",
             totalCredits: totalCredits,
             data: courses,
         };

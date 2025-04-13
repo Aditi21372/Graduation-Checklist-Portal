@@ -371,7 +371,7 @@ export const thirtyTwoCreditsRule: IRule = {
     const coreCourses = courseDatabase[context];
     let major = "CSE"; // Default major is CSE other option in ECE
     let extraCoursesMajor = courseDatabase["CSE 32"];
-    let extraCoursesBranch: string[] = []; 
+    let extraCoursesBranch: string[] = [];
     if (context === "ECE") {
       major = "ECE";
       extraCoursesMajor = courseDatabase["ECE 32"];
@@ -385,8 +385,7 @@ export const thirtyTwoCreditsRule: IRule = {
     } else if (context === "CSAM") {
       branch = "MTH";
       extraCoursesBranch = courseDatabase["CSAM 32"];
-    }
-    else if (context === "CSAI"){
+    } else if (context === "CSAI") {
       branch = "CSE";
     }
     const studentCourses = studentCourseData["courses"];
@@ -399,12 +398,12 @@ export const thirtyTwoCreditsRule: IRule = {
       // Doesn't check for courses that were Incomplete in the last four semesters.
       console.log(course["courseCode"]);
       if (
-        course["courseCode"].startsWith(major + "1")||
-        course["courseCode"].startsWith(branch + "1")||
+        course["courseCode"].startsWith(major + "1") ||
+        course["courseCode"].startsWith(branch + "1") ||
         course["courseCode"].startsWith(major + "2") ||
-        course["courseCode"].startsWith(branch + "2") 
+        course["courseCode"].startsWith(branch + "2")
         // ||
-        // course["semester"] < "5" 
+        // course["semester"] < "5"
         // ||
         // course["semester"].toString().startsWith("Summer Term")
       ) {
@@ -989,7 +988,8 @@ export const csaiApplicationRule: IRule = {
           (studentCourse["courseCode"] === course ||
             (options.length > 0 &&
               options.includes(studentCourse["courseCode"]))) &&
-          (!disallowedGrades.includes(studentCourse["grade"]) || studentCourse["grade"] == 'S')
+          (!disallowedGrades.includes(studentCourse["grade"]) ||
+            studentCourse["grade"] == "S")
         ) {
           let courseEntry: CourseData = {
             course: studentCourse["courseCode"],

@@ -817,7 +817,6 @@ export class EntrepreneurshipMinors implements Minors {
     const additionalCreditsCompleted = this.checkAdditionalCredits(studentInfo);
     const ipIncluded = this.includeIp(studentInfo);
     const apprenticeship = this.checkApprenticeship(studentInfo);
-
     const minors =
       !pursuingCSSS &&
       (coreCoursesCompleted.totalCredits >= 24 ||
