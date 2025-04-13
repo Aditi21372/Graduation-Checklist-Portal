@@ -43,16 +43,50 @@ const cgpa_1 = require("./cgpa");
 const honors_1 = require("./honors");
 const minors_1 = require("./minors");
 exports.courseDatabase = {};
+// function preprocessCourseData(studentData) {
+//     return __awaiter(this, void 0, void 0, function* () {
+//         const student = yield searchByRollNo(studentData[0]["Roll No"]);
+//         const studentInfo = {
+//             studentName: student["Name"],
+//             rollNumber: studentData[0]["Roll No"],
+//             program: student["branch"],
+//             batch: studentData[0]["Batch"],
+//             courses: [],
+//         };
+//         studentData.forEach((entry) => {
+//             const course = {
+//                 courseCode: entry["Course Code"],
+//                 course: entry["Course"],
+//                 grade: entry["Grade"],
+//                 semester: entry["Batch / Term Code"],
+//                 credit: entry["Credit"],
+//                 includedInMinors: entry["IncludedInMinors"],
+//             };
+//             studentInfo.courses.push(course);
+//         });
+//         exports.courseDatabase = getCourseDatabase(studentData[0]["Batch"].toString());
+//         return studentInfo;
+//     });
+// }
+
 function preprocessCourseData(studentData) {
     return __awaiter(this, void 0, void 0, function* () {
-        const student = yield searchByRollNo(studentData[0]["Roll No"]);
+        const rollNo = studentData[0]["Roll No"];
+        const student = yield searchByRollNo(rollNo);
+
+        if (!student) {
+            console.warn(`⚠️ Skipping student: Not found for Roll No: ${rollNo}`);
+            return null;
+        }
+
         const studentInfo = {
             studentName: student["Name"],
-            rollNumber: studentData[0]["Roll No"],
+            rollNumber: rollNo,
             program: student["branch"],
             batch: studentData[0]["Batch"],
             courses: [],
         };
+
         studentData.forEach((entry) => {
             const course = {
                 courseCode: entry["Course Code"],
@@ -64,10 +98,13 @@ function preprocessCourseData(studentData) {
             };
             studentInfo.courses.push(course);
         });
+
         exports.courseDatabase = getCourseDatabase(studentData[0]["Batch"].toString());
         return studentInfo;
     });
 }
+
+
 exports.preprocessCourseData = preprocessCourseData;
 function getCourseDatabase(batch) {
     const filePath = `src/data/${batch}.json`;
@@ -303,6 +340,9 @@ function generateSummary() {
                     continue;
                 }
                 const studentCourseData = yield preprocessCourseData(studentData);
+                if (!studentCourseData) {
+                    continue;
+                  }
                 const branch = studentCourseData["program"];
                 // if (!getGraduationStatus(studentCourseData, branch)) {
                 //   continue;

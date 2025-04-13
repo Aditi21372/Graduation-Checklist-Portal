@@ -325,6 +325,128 @@ exports.sgRule = {
         return returnData;
     },
 };
+// exports.thirtyTwoCreditsRule = {
+//     ruleId: 5,
+//     checkRule: (studentCourseData, context) => {
+//         let returnData = {
+//             isCompleteBool: false,
+//             isCompleteText: "Incomplete",
+//             data: {
+//                 totalCredits: 0,
+//                 courseData: [],
+//             },
+//         };
+//         context = context ? context : "CSE";
+//         const coreCourses = database_1.courseDatabase[context];
+//         let major = "CSE"; // Default major is CSE other option in ECE
+//         let extraCoursesMajor = database_1.courseDatabase["CSE 32"];
+//         let extraCoursesBranch = [];
+//         if (context === "ECE") {
+//             major = "ECE";
+//             extraCoursesMajor = database_1.courseDatabase["ECE 32"];
+//             extraCoursesBranch = database_1.courseDatabase["ECE 32"];
+//         }
+//         let branch = context; // Default branch is CSE other options are BIO, DES, MTH
+//         if (context === "CSB") {
+//             branch = "BIO";
+//             extraCoursesBranch = database_1.courseDatabase["CSB 32"];
+//         }
+//         else if (context === "CSD") {
+//             branch = "DES";
+//         }
+//         else if (context === "CSAM") {
+//             branch = "MTH";
+//             extraCoursesBranch = database_1.courseDatabase["CSAM 32"];
+//         }
+//         else if (context === "CSAI") {
+//             branch = "CSE";
+//         }
+        
+//         const studentCourses = studentCourseData["courses"];
+//         let majorCredits = 0;
+//         let contextBranchCredits = 0;
+//         let coursesTaken = new Map();
+//         for (const course of studentCourses) {
+//             // Doesn't check for a 2xx coursec
+//             // Doesn't check for courses that were Incomplete in the last four semesters.
+//             if (course["courseCode"].startsWith(major + "1") ||
+//                 course["courseCode"].startsWith(branch + "1") ||
+//                 course["courseCode"].startsWith(major + "2") ||
+//                 course["courseCode"].startsWith(branch + "2") ||
+//                 course["semester"] < "5" 
+//                 ||
+//                 /^Summer Term [1]$/.test(course["semester"].toString())
+//                 ) {
+//                 continue;
+//             }
+//             // Checks if the course has a valid grade against it and is a CSE course.
+//             if (!exports.disallowedGrades.includes(course["grade"]) &&
+//                 !coursesTaken.has(course["courseCode"]) &&
+//                 course["includedInMinors"].length < 3 &&
+//                 (course["courseCode"].startsWith(major) ||
+//                     course["courseCode"].startsWith(branch) ||
+//                     extraCoursesMajor.includes(course["courseCode"]) ||
+//                     extraCoursesBranch.includes(course["courseCode"]))) {
+//                 let courseEntry = {
+//                     course: course["courseCode"],
+//                     courseName: course["course"],
+//                     semester: course["semester"],
+//                     status: "Complete",
+//                     credits: course["credit"],
+//                     grade: course["grade"],
+//                 };
+//                 if (course["courseCode"].startsWith(major) ||
+//                     extraCoursesMajor.includes(course["courseCode"])) {
+//                     majorCredits += course["credit"];
+//                 }
+//                 else if (course["courseCode"].startsWith(branch) ||
+//                     extraCoursesBranch.includes(course["courseCode"])) {
+//                     contextBranchCredits += course["credit"];
+//                 }
+//                 coursesTaken.set(course["courseCode"], course["credit"]);
+//                 returnData.data.courseData.push(courseEntry);
+//             }
+//         }
+//         let onlineCourseData = exports.onlineCoursesRule.checkRule(studentCourseData, context);
+//         for (let course of onlineCourseData.data.courses) {
+//             if (course["course"].startsWith(branch) ||
+//                 course["course"].startsWith(major)) {
+//                 let courseEntry = {
+//                     course: course["course"],
+//                     courseName: course["course"],
+//                     semester: course["semester"],
+//                     status: "Complete",
+//                     credits: course["credits"],
+//                     grade: course["grade"],
+//                 };
+//                 if (course["course"].startsWith(major)) {
+//                     majorCredits += Number(course["credits"]);
+//                 }
+//                 else {
+//                     contextBranchCredits += Number(course["credits"]);
+//                 }
+//                 returnData.data.courseData.push(courseEntry);
+//             }
+//         }
+//         if (majorCredits + contextBranchCredits >= 32 &&
+//             majorCredits >= 12 &&
+//             (context === major || contextBranchCredits >= 12)) {
+//             returnData.isCompleteBool = true;
+//             returnData.isCompleteText = "Complete";
+//         }
+//         if (context === "CSSS" && majorCredits + contextBranchCredits >= 16) {
+//             returnData.isCompleteBool = true;
+//             returnData.isCompleteText = "Complete";
+//         }
+//         // if (context === "EVE" && majorCredits + contextBranchCredits >= 16) {
+//         //     returnData.isCompleteBool = true;
+//         //     returnData.isCompleteText = "Complete";
+//         // }
+//         returnData.data.totalCredits = majorCredits + contextBranchCredits;
+//         return returnData;
+//     },
+// };
+
 exports.thirtyTwoCreditsRule = {
     ruleId: 5,
     checkRule: (studentCourseData, context) => {
@@ -336,57 +458,61 @@ exports.thirtyTwoCreditsRule = {
                 courseData: [],
             },
         };
+
         context = context ? context : "CSE";
+
         const coreCourses = database_1.courseDatabase[context];
-        let major = "CSE"; // Default major is CSE other option in ECE
-        let extraCoursesMajor = database_1.courseDatabase["CSE 32"];
+        let major = "CSE"; // Default major
+        let extraCoursesMajor = database_1.courseDatabase["CSE 32"] || [];
         let extraCoursesBranch = [];
+
         if (context === "ECE") {
             major = "ECE";
-            extraCoursesMajor = database_1.courseDatabase["ECE 32"];
-            extraCoursesBranch = database_1.courseDatabase["ECE 32"];
+            extraCoursesMajor = database_1.courseDatabase["ECE 32"] || [];
+            extraCoursesBranch = database_1.courseDatabase["ECE 32"] || [];
         }
-        let branch = context; // Default branch is CSE other options are BIO, DES, MTH
+
+        let branch = context;
         if (context === "CSB") {
             branch = "BIO";
-            extraCoursesBranch = database_1.courseDatabase["CSB 32"];
-        }
-        else if (context === "CSD") {
+            extraCoursesBranch = database_1.courseDatabase["CSB 32"] || [];
+        } else if (context === "CSD") {
             branch = "DES";
-        }
-        else if (context === "CSAM") {
+        } else if (context === "CSAM") {
             branch = "MTH";
-            extraCoursesBranch = database_1.courseDatabase["CSAM 32"];
-        }
-        else if (context === "CSAI") {
+            extraCoursesBranch = database_1.courseDatabase["CSAM 32"] || [];
+        } else if (context === "CSAI") {
             branch = "CSE";
         }
-        
+
         const studentCourses = studentCourseData["courses"];
         let majorCredits = 0;
         let contextBranchCredits = 0;
         let coursesTaken = new Map();
+
         for (const course of studentCourses) {
-            // Doesn't check for a 2xx coursec
-            // Doesn't check for courses that were Incomplete in the last four semesters.
-            if (course["courseCode"].startsWith(major + "1") ||
+            if (
+                course["courseCode"].startsWith(major + "1") ||
                 course["courseCode"].startsWith(branch + "1") ||
                 course["courseCode"].startsWith(major + "2") ||
                 course["courseCode"].startsWith(branch + "2") ||
-                course["semester"] < "5" 
-                ||
+                course["semester"] < "5" ||
                 /^Summer Term [1]$/.test(course["semester"].toString())
-                ) {
+            ) {
                 continue;
             }
-            // Checks if the course has a valid grade against it and is a CSE course.
-            if (!exports.disallowedGrades.includes(course["grade"]) &&
+
+            if (
+                !exports.disallowedGrades.includes(course["grade"]) &&
                 !coursesTaken.has(course["courseCode"]) &&
                 course["includedInMinors"].length < 3 &&
-                (course["courseCode"].startsWith(major) ||
+                (
+                    course["courseCode"].startsWith(major) ||
                     course["courseCode"].startsWith(branch) ||
                     extraCoursesMajor.includes(course["courseCode"]) ||
-                    extraCoursesBranch.includes(course["courseCode"]))) {
+                    extraCoursesBranch.includes(course["courseCode"])
+                )
+            ) {
                 let courseEntry = {
                     course: course["courseCode"],
                     courseName: course["course"],
@@ -395,22 +521,30 @@ exports.thirtyTwoCreditsRule = {
                     credits: course["credit"],
                     grade: course["grade"],
                 };
-                if (course["courseCode"].startsWith(major) ||
-                    extraCoursesMajor.includes(course["courseCode"])) {
+
+                if (
+                    course["courseCode"].startsWith(major) ||
+                    extraCoursesMajor.includes(course["courseCode"])
+                ) {
                     majorCredits += course["credit"];
-                }
-                else if (course["courseCode"].startsWith(branch) ||
-                    extraCoursesBranch.includes(course["courseCode"])) {
+                } else if (
+                    course["courseCode"].startsWith(branch) ||
+                    extraCoursesBranch.includes(course["courseCode"])
+                ) {
                     contextBranchCredits += course["credit"];
                 }
+
                 coursesTaken.set(course["courseCode"], course["credit"]);
                 returnData.data.courseData.push(courseEntry);
             }
         }
+
         let onlineCourseData = exports.onlineCoursesRule.checkRule(studentCourseData, context);
         for (let course of onlineCourseData.data.courses) {
-            if (course["course"].startsWith(branch) ||
-                course["course"].startsWith(major)) {
+            if (
+                course["course"].startsWith(branch) ||
+                course["course"].startsWith(major)
+            ) {
                 let courseEntry = {
                     course: course["course"],
                     courseName: course["course"],
@@ -419,33 +553,41 @@ exports.thirtyTwoCreditsRule = {
                     credits: course["credits"],
                     grade: course["grade"],
                 };
+
                 if (course["course"].startsWith(major)) {
                     majorCredits += Number(course["credits"]);
-                }
-                else {
+                } else {
                     contextBranchCredits += Number(course["credits"]);
                 }
+
                 returnData.data.courseData.push(courseEntry);
             }
         }
-        if (majorCredits + contextBranchCredits >= 32 &&
+
+        if (
+            majorCredits + contextBranchCredits >= 32 &&
             majorCredits >= 12 &&
-            (context === major || contextBranchCredits >= 12)) {
+            (context === major || contextBranchCredits >= 12)
+        ) {
             returnData.isCompleteBool = true;
             returnData.isCompleteText = "Complete";
         }
+
         if (context === "CSSS" && majorCredits + contextBranchCredits >= 16) {
             returnData.isCompleteBool = true;
             returnData.isCompleteText = "Complete";
         }
+
         // if (context === "EVE" && majorCredits + contextBranchCredits >= 16) {
         //     returnData.isCompleteBool = true;
         //     returnData.isCompleteText = "Complete";
         // }
+
         returnData.data.totalCredits = majorCredits + contextBranchCredits;
         return returnData;
     },
 };
+
 exports.ipRule = {
     ruleId: 6,
     checkRule: (studentCourseData, context) => {

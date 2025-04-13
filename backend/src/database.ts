@@ -314,6 +314,11 @@ export async function generateSummary(): Promise<any> {
         continue;
       }
       const studentCourseData = await preprocessCourseData(studentData);
+      if (!studentCourseData) {
+        continue;
+      }
+      
+
       const branch = studentCourseData["program"];
       // if (!getGraduationStatus(studentCourseData, branch)) {
       //   continue;
