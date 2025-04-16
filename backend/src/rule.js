@@ -491,16 +491,39 @@ exports.thirtyTwoCreditsRule = {
         let coursesTaken = new Map();
 
         for (const course of studentCourses) {
+            // if (
+            //     course["courseCode"].startsWith(major + "1") ||
+            //     course["courseCode"].startsWith(branch + "1") ||
+            //     course["courseCode"].startsWith(major + "2") ||
+            //     course["courseCode"].startsWith(branch + "2") ||
+            //     course["semester"] < "5" ||
+            //     /^Summer Term [1]$/.test(course["semester"].toString())
+            // ) {
+            //     continue;
+            // }
             if (
-                course["courseCode"].startsWith(major + "1") ||
-                course["courseCode"].startsWith(branch + "1") ||
-                course["courseCode"].startsWith(major + "2") ||
-                course["courseCode"].startsWith(branch + "2") ||
-                course["semester"] < "5" ||
-                /^Summer Term [1]$/.test(course["semester"].toString())
+                course["courseCode"] !== "CSE200A" &&
+                (
+                    course["courseCode"].startsWith(major + "1") ||
+                    course["courseCode"].startsWith(branch + "1") ||
+                    course["courseCode"].startsWith(major + "2") ||
+                    course["courseCode"].startsWith(branch + "2") ||
+                    course["semester"] < "5" ||
+                    /^Summer Term [1]$/.test(course["semester"].toString())
+                )
             ) {
                 continue;
             }
+            
+            if (
+                course["courseCode"] === "CSE200A" &&
+                course["semester"] < "5" &&
+                !/^Summer Term [2]$/.test(course["semester"].toString())
+            ) {
+                continue;
+            }
+            
+            
 
             if (
                 !exports.disallowedGrades.includes(course["grade"]) &&
@@ -709,7 +732,7 @@ exports.twoxxRule = {
         for (const course of studentCourses) {
             if (course["courseCode"].substring(3, 4) === "2" &&
                 !exports.disallowedGrades.includes(course["grade"]) &&
-                ((course["semester"] >= "2" &&
+                ((course["semester"] >= "5" &&
                     !course["semester"].toString().startsWith("Summer")) ||
                     course["semester"] >= "Summer Term 3") &&
  //               !database_1.courseDatabase["SSH Courses"].includes(course["courseCode"]) &&
