@@ -1,6 +1,6 @@
 # Graduation Checklist Portal
 
-> An in-house academic tool that **automates graduation eligibility checks** — recalculation of CGPA, degree requirements, and honors rules straight from ERP data, replacing a manual Excel-and-macros workflow.
+> An in-house academic tool that **automates graduation eligibility checks**: recalculation of CGPA, degree requirements, and honors rules straight from ERP data, replacing a manual Excel-and-macros workflow.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-DD0031?style=flat&logo=angular&logoColor=white)
@@ -11,7 +11,7 @@
 
 Provisional degrees must be declared by early July, but the window between May and June is short. Course replacements and ERP-side limitations make CGPA verification error-prone, so the academic team recalculated everything by hand, repeatedly, in Excel with macros.
 
-This portal does it automatically: pull the student's record, apply the degree rules, recompute the CGPA, and flag anything that blocks graduation — with an admin view for the academic team and a student view for self-service.
+This portal does it automatically: pull the student's record, apply the degree rules, recompute the CGPA, and flag anything that blocks graduation, with an admin view for the academic team and a student view for self-service.
 
 ## Features
 
@@ -24,11 +24,11 @@ This portal does it automatically: pull the student's record, apply the degree r
 
 ```
 Angular SPA (frontend/)          Node + TypeScript API (backend/)
-  student view  ─┐               degree.ts      — degree requirements
-  admin login   ─┼── REST ──►    cgpa.ts        — CGPA computation
-  minors view   ─┘               rule.ts        — eligibility rules
-                                 honors.ts      — honors criteria
-                                 database.ts    — persistence (MongoDB)
+  student view  ─┐               degree.ts     : degree requirements
+  admin login   ─┼── REST ──►    cgpa.ts       : CGPA computation
+  minors view   ─┘               rule.ts       : eligibility rules
+                                 honors.ts     : honors criteria
+                                 database.ts   : persistence (MongoDB)
 ```
 
 ## Quick start
@@ -46,7 +46,7 @@ cd ../frontend && npm install && npm start
 
 ## Impact
 
-Replaced a recurring manual, multi-person Excel workflow with an automated check — cutting hours of error-prone recalculation out of a hard two-month deadline window.
+Replaced a recurring manual, multi-person Excel workflow with an automated check: cutting hours of error-prone recalculation out of a hard two-month deadline window.
 
 ---
 
