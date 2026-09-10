@@ -22,7 +22,16 @@ import { calculateCGPA } from "./cgpa";
 import { isHonors } from "./honors";
 import { isMinors } from "./minors";
 
-export let courseDatabase: CourseMap = {};
+export let courseDatabase: CourseMap = loadCourseDatabase();
+
+function loadCourseDatabase(): CourseMap {
+  try {
+    const data = fs.readFileSync("src/data/Course Data Batch wise.json");
+    return JSON.parse(data.toString());
+  } catch {
+    return {};
+  }
+}
 
 export async function preprocessCourseData(
   studentData: any

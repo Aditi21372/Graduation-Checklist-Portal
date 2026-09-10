@@ -37,7 +37,7 @@ export const mandatoryCoreRule: IRule = {
     };
 
     context = context ? context : "CSE";
-    const coreCourses = courseDatabase[context];
+    const coreCourses  = courseDatabase[context] ?? [];
     const studentCourses = studentCourseData["courses"];
     let studentCoreCourse = [];
 
@@ -130,7 +130,7 @@ export const mandatoryBucketRule: IRule = {
 
     for (const key of Object.keys(courseDatabase)) {
       if (key.startsWith(bucketName)) {
-        mandatoryBuckets.push(courseDatabase[key]);
+        mandatoryBuckets.push(courseDatabase[key] ?? []);
       }
     }
 
@@ -219,7 +219,7 @@ export const mandatoryBucketRule: IRule = {
 export const sshRule: IRule = {
   ruleId: 2,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    const sshCourses = courseDatabase["SSH Courses"];
+    const sshCourses  = courseDatabase["SSH Courses"] ?? [];
     const studentCourses = studentCourseData["courses"];
     const branch = context ? context : "CSE";
     let coursesTaken = new Map<string, number>();
@@ -270,7 +270,7 @@ export const sshRule: IRule = {
 export const cwRule: IRule = {
   ruleId: 3,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    const cwCourses = courseDatabase["CW Course"];
+    const cwCourses  = courseDatabase["CW Course"] ?? [];
     const studentCourses = studentCourseData["courses"];
     let credits = 0;
     let returnData: RuleData = {
@@ -313,7 +313,7 @@ export const cwRule: IRule = {
 export const sgRule: IRule = {
   ruleId: 4,
   checkRule: (studentCourseData: StudentInfo, context: any): RuleData => {
-    const sgCourses = courseDatabase["SG Course"];
+    const sgCourses  = courseDatabase["SG Course"] ?? [];
     const studentCourses = studentCourseData["courses"];
     let coursesTaken = new Map<string, number>();
     let credits = 0;
@@ -368,7 +368,7 @@ export const thirtyTwoCreditsRule: IRule = {
     };
 
     context = context ? context : "CSE";
-    const coreCourses = courseDatabase[context];
+    const coreCourses  = courseDatabase[context] ?? [];
     let major = "CSE"; // Default major is CSE other option in ECE
     let extraCoursesMajor = courseDatabase["CSE 32"];
     let extraCoursesBranch: string[] = [];
@@ -551,7 +551,7 @@ export const onlineCoursesRule: IRule = {
       },
     };
 
-    const onlineCourses = courseDatabase["Online course"];
+    const onlineCourses  = courseDatabase["Online course"] ?? [];
     const studentCourses = studentCourseData["courses"];
     let credits = 0;
 
@@ -599,14 +599,14 @@ export const twoxxRule: IRule = {
 
     context = context ? context : "CSE";
     const bucketName = context + " bucket";
-    const coreCourses = courseDatabase[context];
+    const coreCourses  = courseDatabase[context] ?? [];
     const studentCourses = studentCourseData["courses"];
     const mandatoryBuckets = [];
     let credits = 0;
 
     for (const key of Object.keys(courseDatabase)) {
       if (key.startsWith(bucketName)) {
-        mandatoryBuckets.push(courseDatabase[key]);
+        mandatoryBuckets.push(courseDatabase[key] ?? []);
       }
     }
 
@@ -796,7 +796,7 @@ export const required156CreditsRule: IRule = {
     };
 
     const avoidCourses = ["BIP", "BIS", "BUR", "MSC", "BTA", "BTP"];
-    const onlineCourses = courseDatabase["Online course"];
+    const onlineCourses  = courseDatabase["Online course"] ?? [];
     const disallowedGrades = ["F", "I", "W", "X"];
     let credits = 0;
     let coursesTaken = new Map<string, number>();
@@ -859,7 +859,7 @@ export const csaiCseCoreRule: IRule = {
     };
 
     const studentCourses = studentCourseData["courses"];
-    const csaiCseCore = courseDatabase["CSAI CSE CORE"];
+    const csaiCseCore  = courseDatabase["CSAI CSE CORE"] ?? [];
     let csaiCseCoreCredits = 8;
     let credits = 0;
 
@@ -913,7 +913,7 @@ export const csaiCoreRule: IRule = {
     };
 
     const studentCourses = studentCourseData["courses"];
-    const csaiCore = courseDatabase["AI CORE"];
+    const csaiCore  = courseDatabase["AI CORE"] ?? [];
     let csaiCoreCredits = 8;
     let credits = 0;
 
@@ -967,7 +967,7 @@ export const csaiApplicationRule: IRule = {
     };
 
     const studentCourses = studentCourseData["courses"];
-    const csaiApplication = courseDatabase["AI APPLICATION"];
+    const csaiApplication  = courseDatabase["AI APPLICATION"] ?? [];
     let csaiApplicationCredits = 16;
     let credits = 0;
 
@@ -1021,7 +1021,7 @@ export const csaiMathsCoreRule: IRule = {
     };
 
     const studentCourses = studentCourseData["courses"];
-    const csaiMathCore = courseDatabase["CSAI MATH CORE"];
+    const csaiMathCore  = courseDatabase["CSAI MATH CORE"] ?? [];
     let csaiMathCredits = 4;
     let credits = 0;
 
@@ -1075,7 +1075,7 @@ export const ecoMajorCore: IRule = {
     };
     let credits = 0;
 
-    const ecoMajor = courseDatabase["ECO CORE"];
+    const ecoMajor  = courseDatabase["ECO CORE"] ?? [];
     const studentCourses = studentCourseData["courses"];
 
     for (const course of ecoMajor) {
@@ -1133,7 +1133,7 @@ export const ecoMajorElective: IRule = {
     };
     let credits = 0;
 
-    const ecoMajor = courseDatabase["ECO ELECTIVE"];
+    const ecoMajor  = courseDatabase["ECO ELECTIVE"] ?? [];
     const studentCourses = studentCourseData["courses"];
 
     for (const course of ecoMajor) {
@@ -1186,9 +1186,9 @@ export const sshMajor: IRule = {
     };
     let credits = 0;
 
-    const sshMajor = courseDatabase["SSH Courses"];
+    const sshMajor  = courseDatabase["SSH Courses"] ?? [];
     const studentCourses = studentCourseData["courses"];
-    const coreCourses = courseDatabase["CSSS"];
+    const coreCourses  = courseDatabase["CSSS"] ?? [];
 
     for (const course of sshMajor) {
       for (const studentCourse of studentCourses) {

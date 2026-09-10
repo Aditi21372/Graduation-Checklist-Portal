@@ -1,5 +1,7 @@
 # Graduation Checklist Portal
 
+![License](https://img.shields.io/badge/License-MIT-green)
+
 > An in-house academic tool that **automates graduation eligibility checks**: recalculation of CGPA, degree requirements, and honors rules straight from ERP data, replacing a manual Excel-and-macros workflow.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)

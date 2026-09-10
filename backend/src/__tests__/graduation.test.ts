@@ -1,50 +1,45 @@
 import { describe, expect, test } from "@jest/globals";
-
-import { getGraduatedStudents, preprocessCourseData, searchByRollNo } from "../database";
-
 import { getGraduationStatus } from "../degree";
+import { StudentInfo } from "../type";
 
-describe("Graduation Algorithm tests", () => {
-  test("All graduation positive cases are correct", () => {
-    const filePath = "src/data/2019_final_graduated.xlsx";
-    const graduatedStudents = getGraduatedStudents(filePath);
+function makeStudent(
+  courses: {
+    courseCode: string;
+    grade: "A+" | "A" | "A-" | "B" | "B-" | "C" | "C-" | "D" | "F" | "S";
+    semester: string;
+    credit: 1 | 2 | 4 | 8 | 12;
+  }[]
+): StudentInfo {
+  return {
+    studentName: "Test Student",
+    rollNumber: 2026001,
+    program: "Computer Science and Engineering",
+    batch: 2022,
+    courses: courses.map((c) => ({ ...c, course: c.courseCode, includedInMinors: "No" as const })),
+  };
+}
 
-    graduatedStudents.forEach((student) => {
-      // Skip students who are not from Computer Science Engineering
-      let branch = "";
-      if (student.program === "Computer Science and Engineering") {
-        branch = "CSE";
-      }
-      else if (student.program === "Electronics and Communication Engineering") {
-        branch = "ECE";
-      }
-      else if(student.program === "Computer Science and Applied Mathematics") {
-        branch = "CSAM";
-      }
-      else if(student.program === "Computer Science and Design") {
-        branch = "CSD";
-      }
-      else if(student.program === "Computer Science and Biosciences") {
-        branch = "CSB";
-      }
-      else if(student.program === "Computer Science and Social Sciences") {
-        branch = "CSSS";
-        return;
-      }
-      else if(student.program === "Computer Science and Artificial Intelligence") {
-        branch = "CSAI";
-        return;
-      }
+describe("getGraduationStatus (pure algorithm, no DB)", () => {
+  test("a student with far fewer than 156 credits is not graduated (CSE)", () => {
+    const student = makeStudent([
+      { courseCode: "CSE101", grade: "A", semester: "1", credit: 4 },
+      { courseCode: "MTH100", grade: "B", semester: "2", credit: 4 },
+    ]);
 
-      const processStudentData = async () => {
-        const studentData = await searchByRollNo(student.rollNo);
-        if (studentData.length > 0) {
-          let studentCourseData = preprocessCourseData(studentData);
-          expect(getGraduationStatus(studentCourseData, branch)).toBeTruthy;
-        }
-      };
+    expect(getGraduationStatus(student, "CSE")).toBe(false);
+  });
 
-      processStudentData();
-    });
+  test("a student with no courses at all is not graduated", () => {
+    const student = makeStudent([]);
+
+    expect(getGraduationStatus(student, "CSE")).toBe(false);
+  });
+
+  test("an empty transcript is not graduated for every branch", () => {
+    const student = makeStudent([]);
+
+    for (const branch of ["CSE", "ECE", "CSAM", "CSD", "CSB", "CSAI", "CSSS"]) {
+      expect(getGraduationStatus(student, branch)).toBe(false);
+    }
   });
 });
